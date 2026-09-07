@@ -1,0 +1,42 @@
+from fastapi.testclient import TestClient
+
+
+def test_database_catalog_requires_superadmin(client: TestClient) -> None:
+    response = client.get(
+        "/api/v1/admin/databases",
+        headers={"x-researchhub-role": "Administrador"},
+    )
+
+    assert response.status_code == 403
+    assert response.json()["error"]["code"] == "admin.forbidden"
+
+
+def test_superadmin_can_read_database_catalog(
+    client: TestClient, monkeypatch
+) -> None:
+    monkeypatch.setattr(
+        "app.modules.admin.api.routes.list_database_tables",
+        lambda: [
+            {
+                "schema": "public",
+                "name": "usuarios",
+                "type": "table",
+                "column_count": 2,
+                "columns": [
+                    {"name": "id", "type": "INTEGER", "nullable": False},
+                    {"name": "email", "type": "VARCHAR", "nullable": False},
+                ],
+            }
+        ],
+    )
+
+    response = client.get(
+        "/api/v1/admin/databases",
+        headers={"x-researchhub-role": "Super administrador"},
+    )
+
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["mode"] == "read_only"
+    assert payload["databases"][0]["name"] == "researchhub_u"
+    assert payload["databases"][0]["tables"][0]["name"] == "usuarios"

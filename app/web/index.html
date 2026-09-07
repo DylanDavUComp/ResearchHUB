@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ResearchHub-U</title>
+  <link rel="stylesheet" href="/static/styles.css?v=14" />
+</head>
+
+<body>
+  <section class="login-view" id="login-view">
+    <div class="login-brand-panel">
+      <header class="login-brand-header">
+        <div class="brand compact">
+          <span class="brand-mark" aria-hidden="true">
+            <span></span><span></span><span></span><span></span><span></span>
+          </span>
+          <span class="brand-name dark">ucompensar</span>
+        </div>
+        <div class="brand-divider"></div>
+        <strong class="brand-slogan">HACER<br />PARA<br />SABER</strong>
+      </header>
+
+      <div class="login-hero-copy">
+        <h1>ResearchHub<span>-U</span></h1>
+        <p>Plataforma de gestion de investigacion y automatizacion de procesos universitarios</p>
+      </div>
+
+      <div class="login-benefits">
+        <article><span class="benefit-icon">⌂</span>
+          <div><strong>Investigacion</strong>
+            <p>Gestiona proyectos, semilleros y produccion cientifica.</p>
+          </div>
+        </article>
+        <article><span class="benefit-icon">●●</span>
+          <div><strong>Colaboracion</strong>
+            <p>Conecta con investigadores y grupos de trabajo.</p>
+          </div>
+        </article>
+        <article><span class="benefit-icon">↗</span>
+          <div><strong>Impacto</strong>
+            <p>Genera conocimiento que transforma la sociedad.</p>
+          </div>
+        </article>
+      </div>
+
+      <div class="research-illustration" aria-hidden="true">
+        <div class="orb one"></div>
+        <div class="orb two"></div>
+        <div class="orb three"></div>
+        <div class="book-stack"></div>
+        <div class="laptop"></div>
+        <div class="lens"></div>
+        <div class="sprout"></div>
+      </div>
+
+      <footer>La Universidad del Futuro</footer>
+    </div>
+
+    <div class="login-form-panel">
+      <form class="login-card" id="login-form">
+        <span class="login-lock">▣</span>
+        <h2>¡Bienvenido de nuevo!</h2>
+        <p>Inicia sesion para continuar en <strong>ResearchHub<span>-U</span></strong></p>
+
+        <label>
+          Correo institucional
+          <span class="field">
+            <span class="field-icon">✉</span>
+            <input id="login-email" type="email" placeholder="usuario@ucompensar.edu.co" autocomplete="username"
+              required />
+          </span>
+        </label>
+
+        <label>
+          Contraseña
+          <span class="field">
+            <span class="field-icon">▣</span>
+            <input id="login-password" type="password" placeholder="Ingresa tu contraseña"
+              autocomplete="current-password" required />
+            <button class="plain-icon" id="toggle-password" type="button" aria-label="Mostrar contraseña">◉</button>
+          </span>
+        </label>
+
+        <div class="login-options">
+          <label class="checkbox-row"><input type="checkbox" /> Recordarme</label>
+          <a href="#">¿Olvidaste tu contraseña?</a>
+        </div>
+
+        <p class="login-error" id="login-error" role="alert"></p>
+
+        <button class="login-submit" type="submit">Iniciar sesion</button>
+
+        <div class="separator"><span>o continuar con</span></div>
+        <button class="microsoft-button" type="button"><span class="microsoft-mark"></span>Iniciar sesion con
+          Microsoft</button>
+        <p class="request-access">
+          ¿No tienes cuenta?
+          <a href="#" id="show-register">Regístrate aquí</a>
+        </p>
+      </form>
+      <form class="login-card is-hidden" id="register-form">
+        <span class="login-lock">▣</span>
+
+        <h2>Crear una cuenta</h2>
+
+        <p>
+          Regístrate con tu correo institucional para acceder a
+          <strong>ResearchHub<span>-U</span></strong>
+        </p>
+
+        <label>
+          Nombre completo
+          <span class="field">
+            <span class="field-icon">●</span>
+            <input id="register-name" type="text" placeholder="Ingresa tu nombre completo" autocomplete="name"
+              required />
+          </span>
+        </label>
+
+        <label>
+          Correo institucional
+          <span class="field">
+            <span class="field-icon">✉</span>
+            <input id="register-email" type="email" placeholder="usuario@ucompensar.edu.co" autocomplete="email"
+              required />
+          </span>
+        </label>
+
+        <label>
+          Contraseña
+          <span class="field">
+            <span class="field-icon">▣</span>
+            <input id="register-password" type="password" placeholder="Crea una contraseña" autocomplete="new-password"
+              required />
+          </span>
+        </label>
+
+        <label>
+          Confirmar contraseña
+          <span class="field">
+            <span class="field-icon">▣</span>
+            <input id="register-password-confirm" type="password" placeholder="Confirma tu contraseña"
+              autocomplete="new-password" required />
+          </span>
+        </label>
+
+        <p class="login-error" id="register-error" role="alert"></p>
+
+        <button class="login-submit" type="submit">
+          Crear cuenta
+        </button>
+
+        <p class="request-access">
+          ¿Ya tienes una cuenta?
+          <a href="#" id="show-login">Inicia sesión</a>
+        </p>
+      </form>
+
+      <footer class="login-footer">
+        <span>▿ Seguridad y privacidad</span>
+        <span>? Soporte</span>
+        <span>v1.0.0</span>
+      </footer>
+    </div>
+  </section>
+
+  <div class="app-shell is-hidden" id="app-view">
+    <aside class="sidebar" aria-label="Navegacion principal">
+      <div class="brand">
+        <span class="brand-mark" aria-hidden="true">
+          <span></span><span></span><span></span><span></span><span></span>
+        </span>
+        <span class="brand-name">ResearchHub-U</span>
+      </div>
+
+      <nav class="nav-list">
+        <a class="nav-item active" href="#" data-view="home"><span class="icon home"></span>Inicio</a>
+        <details class="nav-group" open>
+          <summary class="nav-item nav-group-summary">
+            <span class="icon briefcase"></span>
+            Gestion administrativa
+            <span class="chevron">â€º</span>
+          </summary>
+          <div class="nav-sublist">
+            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon clipboard"></span>Mi
+              solicitud</a>
+            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon check"></span>Mis
+              actividades</a>
+            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon clock"></span>Mis horas</a>
+            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon bell"></span>Notificaciones</a>
+            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon briefcase"></span>Proyectos</a>
+            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon users"></span>Comite</a>
+            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon columns"></span>Consejo de
+              Facultad</a>
+            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon doc"></span>Registro y
+              Control</a>
+          </div>
+        </details>
+        <a class="nav-item" href="#" data-view="home"><span class="icon chart"></span>Reportes</a>
+        <a class="nav-item admin-only" href="#" data-view="settings"><span
+            class="icon settings"></span>Configuracion</a>
+        <a class="nav-item logout js-logout" href="#"><span class="icon exit"></span>Cerrar sesion</a>
+      </nav>
+
+      <a class="support" href="#">
+        <span class="icon headset"></span>
+        <span><strong>¿Necesitas ayuda?</strong><small>Soporte en linea</small></span>
+        <span class="chevron">›</span>
+      </a>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div>
+          <h1>ResearchHub-U</h1>
+          <p>Homologacion de Trabajo de Grado mediante Semillero de Investigacion</p>
+        </div>
+        <div class="user-tools">
+          <button class="notification-button" aria-label="Notificaciones">
+            <span class="icon bell"></span>
+            <span class="badge">3</span>
+          </button>
+          <div class="profile">
+            <img src="/static/avatar.svg" alt="" />
+            <div>
+              <strong id="profile-name">Usuario</strong>
+              <span id="profile-role">Rol institucional</span>
+            </div>
+            <span class="chevron">⌄</span>
+          </div>
+          <button class="top-logout js-logout" type="button">
+            <span class="icon exit"></span>
+            Cerrar sesion
+          </button>
+        </div>
+      </header>
+
+      <section class="content app-section" id="home-section">
+        <div class="page-title">
+          <h2>Inicio</h2>
+          <p id="welcome-text">Bienvenida</p>
+        </div>
+
+        <div class="layout-grid">
+          <div class="primary-column">
+            <section class="hero-panel">
+              <div class="hero-art" aria-hidden="true">
+                <div class="book book-top"></div>
+                <div class="book book-mid"></div>
+                <div class="book book-bottom"></div>
+                <div class="cap"></div>
+                <div class="plant"><span></span><span></span><span></span></div>
+                <div class="pot"></div>
+              </div>
+              <div class="hero-copy">
+                <h3>¡Avanza en tu proceso de homologacion!</h3>
+                <p>Estas realizando la Homologacion de Trabajo de Grado mediante Semillero de Investigacion.</p>
+                <div class="hero-actions">
+                  <a class="button primary" href="#">Continuar proceso <span>→</span></a>
+                  <a class="button secondary" href="#">Ver mi solicitud</a>
+                </div>
+              </div>
+            </section>
+
+            <section class="process-panel">
+              <div class="section-heading">
+                <h3>Etapas del proceso (4 de 11)</h3>
+                <a href="#">Ver todas las etapas</a>
+              </div>
+              <ol class="timeline">
+                <li class="done"><span>✓</span>
+                  <p>Inscripcion semillero</p>
+                </li>
+                <li class="done"><span>✓</span>
+                  <p>Registro en semillero</p>
+                </li>
+                <li class="current"><span>3</span>
+                  <p>Etapa actual Validacion</p>
+                </li>
+                <li><span>4</span>
+                  <p>Plan de trabajo de investigacion</p>
+                </li>
+                <li><span>5</span>
+                  <p>Asignacion de actividades</p>
+                </li>
+                <li><span>6</span>
+                  <p>Ejecucion de actividades</p>
+                </li>
+                <li class="decision"><span>7</span>
+                  <p>Acta de aprobacion 1</p>
+                </li>
+                <li><span>8</span>
+                  <p>Formulacion del articulo</p>
+                </li>
+                <li><span>9</span>
+                  <p>Turnitin y pago derechos</p>
+                </li>
+                <li class="decision"><span>10</span>
+                  <p>Acta de aprobacion 2</p>
+                </li>
+                <li><span>11</span>
+                  <p>Fin</p>
+                </li>
+              </ol>
+            </section>
+
+            <section class="metrics">
+              <article class="metric-card"><span class="metric-icon purple"><span class="icon clipboard"></span></span>
+                <div><span>Etapa actual</span><strong>Validacion</strong>
+                  <p>Etapa 3 de 11</p>
+                </div>
+              </article>
+              <article class="metric-card"><span class="metric-icon orange"><span class="icon clock"></span></span>
+                <div><span>Horas de formacion</span><strong>32 / 20</strong>
+                  <p>160% completadas</p><i style="--value: 100%"></i>
+                </div>
+              </article>
+              <article class="metric-card"><span class="metric-icon teal"><span class="icon users"></span></span>
+                <div><span>Horas de actividades</span><strong>24 / 60</strong>
+                  <p>40% completadas</p><i style="--value: 40%"></i>
+                </div>
+              </article>
+              <article class="metric-card"><span class="metric-icon green"><span class="icon check"></span></span>
+                <div><span>Estado general</span><strong>En revision</strong>
+                  <p>Todo va segun lo planeado</p>
+                </div>
+              </article>
+            </section>
+
+            <section class="cards-row">
+              <article class="data-card documents">
+                <h3><span class="icon doc"></span>Documentos recientes</h3>
+                <ul>
+                  <li><b class="file pdf">PDF</b><span>Plan_trabajo_investigacion_v2.pdf<small>PDF · 2.4 MB ·
+                        18/05/2025</small></span><button>↓</button></li>
+                  <li><b class="file word">W</b><span>Formato_inscripcion_semillero.docx<small>DOCX · 280 KB ·
+                        10/05/2025</small></span><button>↓</button></li>
+                  <li><b class="file pdf">PDF</b><span>Certificado_horas_formacion.pdf<small>PDF · 1.1 MB ·
+                        02/05/2025</small></span><button>↓</button></li>
+                  <li><b class="file excel">X</b><span>Registro_actividades.xlsx<small>XLSX · 95 KB ·
+                        28/04/2025</small></span><button>↓</button></li>
+                </ul>
+                <a href="#">Ver todos los documentos</a>
+              </article>
+
+              <article class="data-card notifications">
+                <div class="section-heading compact">
+                  <h3><span class="icon bell"></span>Notificaciones</h3><a href="#">Ver todas</a>
+                </div>
+                <ul>
+                  <li><i class="dot purple"></i><span>Tu plan de trabajo fue enviado para validacion.</span><time>Hoy,
+                      9:30 a. m.</time></li>
+                  <li><i class="dot orange"></i><span>Tienes una actividad pendiente por completar.</span><time>Ayer,
+                      4:15 p. m.</time></li>
+                  <li><i class="dot teal"></i><span>Nuevo comentario en tu plan de
+                      trabajo.</span><time>19/05/2025</time></li>
+                  <li><i class="dot violet"></i><span>Reunion de seguimiento programada.</span><time>16/05/2025</time>
+                  </li>
+                </ul>
+              </article>
+
+              <article class="data-card calendar">
+                <h3><span class="icon calendar"></span>Calendario / fechas clave</h3>
+                <ul>
+                  <li><b><span>MAY</span>25</b><span>Validacion del plan de trabajo<small>Fecha limite:
+                        25/05/2025</small></span></li>
+                  <li><b><span>JUN</span>05</b><span>Reunion de seguimiento<small>Fecha: 05/06/2025 10:00 a.
+                        m.</small></span></li>
+                  <li><b><span>JUN</span>20</b><span>Entrega de avances<small>Fecha limite: 20/06/2025</small></span>
+                  </li>
+                </ul>
+                <a href="#">Ver calendario completo</a>
+              </article>
+            </section>
+          </div>
+
+          <aside class="side-column">
+            <section class="next-action">
+              <div class="action-icon"><span class="icon calendar"></span></div>
+              <div>
+                <span class="pill">Siguiente paso</span>
+                <h3>Validar plan de trabajo</h3>
+                <p>Revisa y valida tu plan de trabajo de investigacion cargado.</p>
+                <dl>
+                  <dt><span class="icon calendar"></span>Fecha limite</dt>
+                  <dd>25/05/2025</dd>
+                  <dt><span class="icon users"></span>Responsable</dt>
+                  <dd>Director de trabajo de grado</dd>
+                </dl>
+                <a class="button primary" href="#">Ir a mi actividad <span>→</span></a>
+              </div>
+            </section>
+
+            <section class="progress-card">
+              <h3>Resumen de avance</h3>
+              <div class="progress-body">
+                <div class="donut"><strong>36%</strong><span>Avance total</span></div>
+                <ul>
+                  <li><i class="dot purple"></i>Completadas <b>4</b></li>
+                  <li><i class="dot teal"></i>En curso <b>2</b></li>
+                  <li><i class="dot orange"></i>Pendientes <b>4</b></li>
+                  <li><i class="dot gray"></i>Decisiones <b>1</b></li>
+                </ul>
+              </div>
+              <small>Ultima actualizacion: 20/05/2025 10:45 a. m.</small>
+            </section>
+
+            <section class="help-card">
+              <h3><span class="help-icon">?</span>Ayuda rapida</h3>
+              <a href="#">¿Como avanzar en mi proceso?<span>›</span></a>
+              <a href="#">Guia del estudiante<span>›</span></a>
+              <a href="#">Preguntas frecuentes<span>›</span></a>
+              <a href="#">Contactar soporte<span>›</span></a>
+            </section>
+          </aside>
+        </div>
+      </section>
+
+      <section class="content app-section is-hidden" id="settings-section">
+        <div class="page-title">
+          <h2>Configuracion</h2>
+          <p>Administracion de usuarios y roles institucionales.</p>
+        </div>
+
+        <div class="settings-grid">
+          <section class="settings-card users-settings-card">
+            <div class="section-heading">
+              <h3>Usuarios institucionales</h3>
+              <button class="button primary" id="new-user-button" type="button">Nuevo usuario</button>
+            </div>
+
+            <div class="user-table-wrap">
+              <table class="user-table">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Permisos</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table-body"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <aside class="settings-card user-form-card">
+            <h3 id="user-form-title">Nuevo usuario</h3>
+            <form id="user-form">
+              <input id="user-id" type="hidden" />
+              <label>Nombre completo<input id="user-name" required /></label>
+              <label>Correo institucional<input id="user-email" type="email" required /></label>
+              <label>Rol
+                <select id="user-role" required>
+                  <option value="Estudiante">Estudiante</option>
+                  <option value="Coordinador de programa">Coordinador de programa</option>
+                  <option value="Director de trabajo de grado">Director de trabajo de grado</option>
+                  <option value="Comite">Comite</option>
+                  <option value="Registro y Control">Registro y Control</option>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Super administrador">Super administrador</option>
+                </select>
+              </label>
+              <label>Estado
+                <select id="user-status">
+                  <option value="Activo">Activo</option>
+                  <option value="Inactivo">Inactivo</option>
+                </select>
+              </label>
+              <label>Contraseña inicial<input id="user-password" type="password"
+                  placeholder="Solo para prototipo local" /></label>
+              <fieldset>
+                <legend>Permisos</legend>
+                <label><input type="checkbox" name="permission" value="users:create" /> Crear usuarios</label>
+                <label><input type="checkbox" name="permission" value="users:read" /> Consultar usuarios</label>
+                <label><input type="checkbox" name="permission" value="users:update" /> Actualizar usuarios</label>
+                <label><input type="checkbox" name="permission" value="users:delete" /> Eliminar usuarios</label>
+                <label><input type="checkbox" name="permission" value="settings:manage" /> Gestionar
+                  configuracion</label>
+              </fieldset>
+              <div class="form-actions">
+                <button class="button secondary" id="cancel-user-button" type="button">Cancelar</button>
+                <button class="button primary" type="submit">Guardar</button>
+              </div>
+            </form>
+            <p class="prototype-note">Super administrador inicial: superadmin@researchhub-u.edu.co / ResearchHubU2026!
+            </p>
+          </aside>
+
+          <section class="settings-card database-card superadmin-only is-hidden" id="database-settings-card">
+            <div class="section-heading">
+              <h3>Bases de datos del proyecto</h3>
+              <span class="status-pill">Solo superadministrador</span>
+            </div>
+            <p class="database-state" id="database-state">Consulta en modo lectura.</p>
+            <div class="database-list">
+              <article>
+                <span class="database-icon"><span class="icon columns"></span></span>
+                <div>
+                  <strong id="database-name">researchhub_u</strong>
+                  <dl>
+                    <dt>Motor</dt>
+                    <dd id="database-engine">PostgreSQL</dd>
+                    <dt>Host</dt>
+                    <dd id="database-host">localhost</dd>
+                    <dt>Puerto</dt>
+                    <dd id="database-port">5432</dd>
+                    <dt>Volumen Docker</dt>
+                    <dd id="database-volume">postgres_data</dd>
+                    <dt>Directorio interno</dt>
+                    <dd id="database-directory">/var/lib/postgresql/data</dd>
+                  </dl>
+                </div>
+              </article>
+            </div>
+            <div class="database-table-wrap">
+              <table class="database-table">
+                <thead>
+                  <tr>
+                    <th>Esquema</th>
+                    <th>Tabla / vista</th>
+                    <th>Tipo</th>
+                    <th>Columnas</th>
+                  </tr>
+                </thead>
+                <tbody id="database-tables-body">
+                  <tr>
+                    <td colspan="4">Sin datos cargados.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/app.js?v=8"></script>
+</body>
+
+</html>
