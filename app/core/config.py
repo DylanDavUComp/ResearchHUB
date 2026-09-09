@@ -1,7 +1,7 @@
 from functools import lru_cache
 from urllib.parse import urlsplit
 
-from pydantic import Field, model_validator
+from pydantic import Field, field_validator, model_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -18,6 +18,7 @@ class Settings(BaseSettings):
     cris_url: str | None = None
     crai_url: str | None = "https://crai.ucompensar.edu.co/"
     research_blog_url: str | None = None
+    services_marketplace_url: str | None = None
 
     postgres_db: str = "researchhub_u"
     postgres_user: str = "researchhub_user"
@@ -69,6 +70,20 @@ class Settings(BaseSettings):
             value.strip() for value in self.cors_origins.split(",") if value.strip()
         ]
 
+    @field_validator(
+        "research_os_url",
+        "cris_url",
+        "crai_url",
+        "research_blog_url",
+        "services_marketplace_url",
+        mode="before",
+    )
+    @classmethod
+    def normalize_optional_url(cls, value: object) -> object:
+        if isinstance(value, str) and not value.strip():
+            return None
+        return value
+
     @model_validator(mode="after")
     def validate_operational_safety(self) -> "Settings":
         application_urls = {
@@ -76,6 +91,7 @@ class Settings(BaseSettings):
             "CRIS_URL": self.cris_url,
             "CRAI_URL": self.crai_url,
             "RESEARCH_BLOG_URL": self.research_blog_url,
+            "SERVICES_MARKETPLACE_URL": self.services_marketplace_url,
         }
         for setting_name, application_url in application_urls.items():
             if not application_url:

@@ -23,7 +23,8 @@ docker compose up --build
 La interfaz queda en `http://localhost:8000`; salud en `/health/live` y
 `/health/ready`; OpenAPI local en `/docs`.
 
-La portada permite elegir entre ResearchHUB, ResearchOS, CRIS y CRAI.
+La portada permite elegir entre ResearchHUB, ResearchOS, CRIS, CRAI y Servicios y
+marketplace.
 ResearchHUB abre el flujo local de autenticacion. Los accesos externos se
 configuran con URL absolutas y en produccion deben usar HTTPS. CRAI incluye su URL
 institucional como valor predeterminado:
@@ -33,11 +34,16 @@ RESEARCH_OS_URL=https://research-os.example.edu.co
 CRIS_URL=https://cris.example.edu.co
 CRAI_URL=https://crai.ucompensar.edu.co/
 RESEARCH_BLOG_URL=https://investigacion.example.edu.co/blog
+SERVICES_MARKETPLACE_URL=https://servicios.example.edu.co
 ```
 
 El carrusel de oportunidades permanece visible con estado `Proximamente` mientras
 `RESEARCH_BLOG_URL` no este configurada. Al definirla, los flyers habilitan su
 acceso al blog sin modificar el frontend.
+
+El espacio `Servicios y marketplace` permanece en estado `Proximamente` mientras
+`SERVICES_MARKETPLACE_URL` no este configurada. Al definirla, habilita el acceso
+sin modificar el frontend.
 
 Una base nueva no contiene usuarios predeterminados. Para crear el primer
 superadministrador, configura temporalmente en `.env`:

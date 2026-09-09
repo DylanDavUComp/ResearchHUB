@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.3.2"
+version: "1.4.0"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -19,6 +19,8 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
   proyectos, productos, capacidades e indicadores.
 - `CRAI`: recursos bibliograficos, digitales y servicios de apoyo para el
   aprendizaje y la investigacion.
+- `Servicios y marketplace`: catalogo institucional de servicios, capacidades y
+  conexiones entre la universidad y sus aliados.
 
 ## Comportamiento
 
@@ -41,10 +43,14 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
    segundos, se detiene con foco o puntero y respeta movimiento reducido.
 10. Los flyers usan `RESEARCH_BLOG_URL`. Sin URL, comunican `Próximamente` y no
     ejecutan navegacion.
+11. `Servicios y marketplace` ocupa un panel alto equivalente al carrusel de
+    oportunidades y usa `SERVICES_MARKETPLACE_URL` para habilitar su acceso.
+12. Sin URL de marketplace, el panel comunica `Próximamente` y no ejecuta
+    navegacion.
 
 ## Criterios de aceptacion
 
-- La portada identifica el logo institucional y las cuatro aplicaciones en el primer
+- La portada identifica el logo institucional y las cinco aplicaciones en el primer
   recorrido de lectura.
 - El layout no presenta desplazamiento horizontal a 320, 390, 768 o 1440 px.
 - Los controles tienen foco visible, nombres accesibles y estado deshabilitado

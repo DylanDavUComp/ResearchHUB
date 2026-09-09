@@ -40,6 +40,10 @@ def read_meta() -> dict[str, object]:
                 "available": bool(settings.crai_url),
                 "url": settings.crai_url,
             },
+            "services_marketplace": {
+                "available": bool(settings.services_marketplace_url),
+                "url": settings.services_marketplace_url,
+            },
         },
         "links": {
             "research_blog": {

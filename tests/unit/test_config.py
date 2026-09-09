@@ -45,6 +45,12 @@ def test_production_accepts_hardened_configuration() -> None:
     assert config.allowed_host_list == ["localhost", "127.0.0.1", "testserver"]
 
 
+def test_empty_optional_application_url_is_normalized() -> None:
+    config = Settings(services_marketplace_url="", _env_file=None)
+
+    assert config.services_marketplace_url is None
+
+
 @pytest.mark.parametrize(
     ("field", "http_url", "https_url"),
     [
@@ -67,6 +73,11 @@ def test_production_accepts_hardened_configuration() -> None:
             "research_blog_url",
             "http://blog.example.edu.co",
             "https://blog.example.edu.co",
+        ),
+        (
+            "services_marketplace_url",
+            "http://servicios.example.edu.co",
+            "https://servicios.example.edu.co",
         ),
     ],
 )

@@ -94,6 +94,10 @@ const elements = {
   opportunityCount: document.querySelector(".opportunity-count"),
   opportunityStatus: document.querySelector("#opportunity-status"),
   researchBlogLinks: document.querySelectorAll(".js-research-blog-link"),
+  openServicesMarketplace: document.querySelector("#open-services-marketplace"),
+  servicesMarketplaceActionLabel: document.querySelector(
+    "#services-marketplace-action-label",
+  ),
   launcherBack: document.querySelector("#back-to-apps"),
   loginView: document.querySelector("#login-view"),
   appView: document.querySelector("#app-view"),
@@ -703,6 +707,10 @@ elements.openResearchOs.addEventListener(
 );
 elements.openCris.addEventListener("click", preventDisabledApplicationNavigation);
 elements.openCrai.addEventListener("click", preventDisabledApplicationNavigation);
+elements.openServicesMarketplace.addEventListener(
+  "click",
+  preventDisabledApplicationNavigation,
+);
 elements.researchBlogLinks.forEach((link) => {
   link.addEventListener("click", preventDisabledApplicationNavigation);
 });
@@ -886,6 +894,12 @@ async function initializeApp() {
         "Blog de investigación",
       );
     });
+    configureExternalApplication(
+      metadata?.applications?.services_marketplace,
+      elements.openServicesMarketplace,
+      elements.servicesMarketplaceActionLabel,
+      "Servicios y marketplace",
+    );
   } catch (error) {
     elements.registerAccess.classList.add("is-hidden");
   }

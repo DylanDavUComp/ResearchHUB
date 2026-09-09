@@ -41,6 +41,10 @@ def test_meta_uses_versioned_prefix(client: TestClient) -> None:
     assert response.json()["applications"]["research_hub_u"]["available"] is True
     assert response.json()["applications"]["research_os"]["available"] is False
     assert response.json()["applications"]["cris"]["available"] is False
+    assert response.json()["applications"]["services_marketplace"] == {
+        "available": False,
+        "url": None,
+    }
     assert response.json()["applications"]["crai"] == {
         "available": True,
         "url": "https://crai.ucompensar.edu.co/",
@@ -98,6 +102,23 @@ def test_meta_enables_research_blog_when_url_is_configured(
     }
 
 
+def test_meta_enables_services_marketplace_when_url_is_configured(
+    client: TestClient, monkeypatch
+) -> None:
+    monkeypatch.setattr(
+        settings,
+        "services_marketplace_url",
+        "https://servicios.example.edu.co",
+    )
+
+    response = client.get("/api/v1/meta")
+
+    assert response.json()["applications"]["services_marketplace"] == {
+        "available": True,
+        "url": "https://servicios.example.edu.co",
+    }
+
+
 def test_responses_include_security_and_cache_headers(client: TestClient) -> None:
     response = client.get("/api/v1/meta")
 
@@ -114,6 +135,8 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert response.status_code == 200
     assert "ResearchHUB" in response.text
     assert "ResarchHUB" not in response.text
+    assert "Research<span>HUB</span>" in response.text
+    assert "Resarch<span>HUB</span>" not in response.text
     assert "ResearchHub" + "-U" not in response.text
     assert "login-view" in response.text
     assert 'id="app-launcher"' in response.text
@@ -125,6 +148,10 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'id="opportunity-prev"' in response.text
     assert 'id="opportunity-next"' in response.text
     assert 'id="open-research-blog"' in response.text
+    assert 'id="services-marketplace"' in response.text
+    assert 'id="open-services-marketplace"' in response.text
+    assert "Servicios y marketplace" in response.text
+    assert "/static/brand/services-marketplace-flyer-v1.png" in response.text
     assert 'data-autoplay-ms="4000"' in response.text
     assert response.text.count("data-opportunity-slide") == 3
     assert "Investigacion formativa" in response.text
@@ -140,7 +167,7 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
     assert "/static/styles.css?v=29" in response.text
-    assert "/static/app.js?v=16" in response.text
+    assert "/static/app.js?v=17" in response.text
     assert "/static/degree-work.js?v=2" in response.text
 
 
@@ -171,6 +198,7 @@ def test_launcher_uses_consistent_action_labels(client: TestClient) -> None:
     assert "Ingresar a CRIS" not in script.text
     assert "Ingresar al CRAI" not in script.text
     assert "Leer en el blog" not in script.text
+    assert "elements.openServicesMarketplace.addEventListener" in script.text
 
 
 def test_home_uses_the_ucompensar_2026_visual_system(client: TestClient) -> None:
