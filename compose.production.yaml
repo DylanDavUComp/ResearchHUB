@@ -1,0 +1,61 @@
+services:
+  migrate:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: ["alembic", "upgrade", "head"]
+    env_file:
+      - ${ENV_FILE:-.env.production}
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: "no"
+    security_opt: ["no-new-privileges:true"]
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    command: >
+      sh -c "exec uvicorn app.main:app --host 0.0.0.0 --port 8000
+      --workers ${WEB_CONCURRENCY:-2} --proxy-headers
+      --forwarded-allow-ips '${FORWARDED_ALLOW_IPS}'"
+    env_file:
+      - ${ENV_FILE:-.env.production}
+    environment:
+      FORWARDED_ALLOW_IPS: ${FORWARDED_ALLOW_IPS}
+    init: true
+    restart: always
+    read_only: true
+    tmpfs: [/tmp]
+    ports: ["8000:8000"]
+    depends_on:
+      migrate:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/ready')"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
+    security_opt: ["no-new-privileges:true"]
+    stop_grace_period: 30s
+
+  db:
+    image: postgres:16.4-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    restart: always
+    security_opt: ["no-new-privileges:true"]
+
+volumes:
+  postgres_data:

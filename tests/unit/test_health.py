@@ -1,3 +1,4 @@
+from app.core.config import settings
 from fastapi.testclient import TestClient
 
 
@@ -36,6 +37,75 @@ def test_meta_uses_versioned_prefix(client: TestClient) -> None:
 
     assert response.status_code == 200
     assert response.json()["service"] == "researchhub-u"
+    assert response.json()["features"]["self_registration"] is False
+    assert response.json()["applications"]["research_hub_u"]["available"] is True
+    assert response.json()["applications"]["research_os"]["available"] is False
+    assert response.json()["applications"]["cris"]["available"] is False
+    assert response.json()["applications"]["crai"] == {
+        "available": True,
+        "url": "https://crai.ucompensar.edu.co/",
+    }
+    assert response.json()["links"]["research_blog"] == {
+        "available": False,
+        "url": None,
+    }
+
+
+def test_meta_enables_research_os_when_url_is_configured(
+    client: TestClient, monkeypatch
+) -> None:
+    monkeypatch.setattr(
+        settings,
+        "research_os_url",
+        "https://research-os.example.edu.co",
+    )
+
+    response = client.get("/api/v1/meta")
+
+    assert response.json()["applications"]["research_os"] == {
+        "available": True,
+        "url": "https://research-os.example.edu.co",
+    }
+
+
+def test_meta_enables_cris_when_url_is_configured(
+    client: TestClient, monkeypatch
+) -> None:
+    monkeypatch.setattr(settings, "cris_url", "https://cris.example.edu.co")
+
+    response = client.get("/api/v1/meta")
+
+    assert response.json()["applications"]["cris"] == {
+        "available": True,
+        "url": "https://cris.example.edu.co",
+    }
+
+
+def test_meta_enables_research_blog_when_url_is_configured(
+    client: TestClient, monkeypatch
+) -> None:
+    monkeypatch.setattr(
+        settings,
+        "research_blog_url",
+        "https://blog.example.edu.co",
+    )
+
+    response = client.get("/api/v1/meta")
+
+    assert response.json()["links"]["research_blog"] == {
+        "available": True,
+        "url": "https://blog.example.edu.co",
+    }
+
+
+def test_responses_include_security_and_cache_headers(client: TestClient) -> None:
+    response = client.get("/api/v1/meta")
+
+    assert response.headers["x-content-type-options"] == "nosniff"
+    assert response.headers["x-frame-options"] == "DENY"
+    assert response.headers["referrer-policy"] == "strict-origin-when-cross-origin"
+    assert response.headers["cache-control"] == "no-store"
+    assert "default-src 'self'" in response.headers["content-security-policy"]
 
 
 def test_home_dashboard_is_served(client: TestClient) -> None:
@@ -44,5 +114,70 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert response.status_code == 200
     assert "ResearchHub-U" in response.text
     assert "login-view" in response.text
+    assert 'id="app-launcher"' in response.text
+    assert 'id="open-researchhub"' in response.text
+    assert 'id="open-researchos"' in response.text
+    assert 'id="open-cris"' in response.text
+    assert 'id="open-crai"' in response.text
+    assert 'id="opportunity-carousel"' in response.text
+    assert 'id="opportunity-prev"' in response.text
+    assert 'id="opportunity-next"' in response.text
+    assert 'id="open-research-blog"' in response.text
+    assert 'data-autoplay-ms="4000"' in response.text
+    assert response.text.count("data-opportunity-slide") == 3
+    assert "Investigacion formativa" in response.text
+    assert "Investigacion aplicada y transferencia" in response.text
+    assert "Informacion cientifica institucional" in response.text
+    assert "Recursos para el aprendizaje y la investigacion" in response.text
     assert "settings-section" in response.text
-    assert "/static/app.js?v=8" in response.text
+    assert "degree-work-section" in response.text
+    assert "degree-work-case-form" in response.text
+    assert "modality-settings-card" in response.text
+    assert 'id="degree-work-journey"' in response.text
+    assert 'data-stage="OFFER"' in response.text
+    assert 'data-stage="CLOSURE"' in response.text
+    assert 'id="journey-step-detail"' in response.text
+    assert "/static/styles.css?v=26" in response.text
+    assert "/static/app.js?v=15" in response.text
+    assert "/static/degree-work.js?v=2" in response.text
+
+
+def test_home_uses_the_ucompensar_2026_visual_system(client: TestClient) -> None:
+    home = client.get("/")
+    stylesheet = client.get("/static/styles.css")
+
+    assert home.status_code == 200
+    assert stylesheet.status_code == 200
+    assert 'class="institution-name"' in home.text
+    assert 'class="product-name"' in home.text
+    assert "brand-mark" not in home.text
+    assert "La Universidad del Futuro" not in home.text
+    assert "SourceSans3-VariableFont_wght.ttf" in stylesheet.text
+    assert "Agrandir-Narrow.otf" in stylesheet.text
+    assert "#6d20e5" in stylesheet.text.lower()
+    assert "#3b0970" in stylesheet.text.lower()
+    assert "#ff7000" in stylesheet.text.lower()
+
+
+def test_home_exposes_responsive_navigation_and_brand_art(client: TestClient) -> None:
+    home = client.get("/")
+    illustration = client.get("/static/brand/degree-work-journey-v1.png")
+    brand_logo = client.get("/static/brand/ucompensar-hacer-para-saber.png")
+    blog_flyer = client.get("/static/brand/research-blog-flyer-v1.png")
+    opportunities_flyer = client.get(
+        "/static/brand/research-opportunities-flyer-v1.png"
+    )
+    agenda_flyer = client.get("/static/brand/research-agenda-flyer-v1.png")
+
+    assert home.status_code == 200
+    assert illustration.status_code == 200
+    assert brand_logo.status_code == 200
+    assert blog_flyer.status_code == 200
+    assert opportunities_flyer.status_code == 200
+    assert agenda_flyer.status_code == 200
+    assert 'id="mobile-menu-button"' in home.text
+    assert 'aria-controls="main-sidebar"' in home.text
+    assert 'id="sidebar-backdrop"' in home.text
+    assert 'src="/static/brand/degree-work-journey-v1.png"' in home.text
+    assert 'class="brand-logo"' in home.text
+    assert 'src="/static/brand/ucompensar-hacer-para-saber.png"' in home.text

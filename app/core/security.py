@@ -1,4 +1,7 @@
+from collections.abc import Callable
+from datetime import UTC, datetime, timedelta
 from typing import Annotated
+from uuid import uuid4
 
 import jwt
 from fastapi import Depends, HTTPException, status
@@ -18,15 +21,16 @@ db_dependency = Annotated[Session, Depends(get_db)]
 
 
 def create_access_token(user_id: str) -> str:
-    from datetime import UTC, datetime, timedelta
-
-    expire = datetime.now(UTC) + timedelta(
-        minutes=settings.access_token_expire_minutes
-    )
+    issued_at = datetime.now(UTC)
+    expire = issued_at + timedelta(minutes=settings.access_token_expire_minutes)
 
     payload = {
         "sub": user_id,
         "exp": expire,
+        "iat": issued_at,
+        "jti": str(uuid4()),
+        "iss": settings.jwt_issuer,
+        "aud": settings.jwt_audience,
     }
 
     return jwt.encode(
@@ -40,7 +44,6 @@ def get_current_user(
     token: token_dependency,
     db: db_dependency,
 ) -> User:
-
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="No se pudo validar la autenticación.",
@@ -52,6 +55,8 @@ def get_current_user(
             token,
             settings.secret_key,
             algorithms=[ALGORITHM],
+            issuer=settings.jwt_issuer,
+            audience=settings.jwt_audience,
         )
 
         user_id = payload.get("sub")
@@ -76,11 +81,10 @@ def get_current_user(
     return user
 
 
-def require_permission(permission: str):
+def require_permission(permission: str) -> Callable[[User], User]:
     def permission_dependency(
         current_user: Annotated[User, Depends(get_current_user)],
     ) -> User:
-
         if current_user.role == "Super administrador":
             return current_user
 
@@ -98,7 +102,6 @@ def require_permission(permission: str):
 def require_superadmin(
     current_user: Annotated[User, Depends(get_current_user)],
 ) -> User:
-
     if current_user.role != "Super administrador":
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,

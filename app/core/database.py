@@ -17,7 +17,14 @@ logger = logging.getLogger(__name__)
 
 @lru_cache
 def get_engine() -> Engine:
-    return create_engine(settings.database_url, pool_pre_ping=True)
+    return create_engine(
+        settings.database_url,
+        pool_pre_ping=True,
+        pool_size=settings.database_pool_size,
+        max_overflow=settings.database_max_overflow,
+        pool_timeout=settings.database_pool_timeout_seconds,
+        pool_recycle=settings.database_pool_recycle_seconds,
+    )
 
 
 def get_session_factory() -> sessionmaker[Session]:
@@ -43,6 +50,7 @@ def database_is_ready() -> bool:
 
 def initialize_database_schema() -> None:
     try:
+        import app.modules.trabajos_grado.models  # noqa: F401
         import app.modules.usuarios.models  # noqa: F401
 
         Base.metadata.create_all(bind=get_engine())

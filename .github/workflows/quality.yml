@@ -1,0 +1,53 @@
+name: quality
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16.4-alpine
+        env:
+          POSTGRES_DB: researchhub_u
+          POSTGRES_USER: researchhub_user
+          POSTGRES_PASSWORD: ci_database_password
+        ports: ["5432:5432"]
+        options: >-
+          --health-cmd "pg_isready -U researchhub_user -d researchhub_u"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+    env:
+      APP_ENV: ci
+      APP_DEBUG: "false"
+      DATABASE_URL: postgresql+pg8000://researchhub_user:ci_database_password@localhost:5432/researchhub_u
+      POSTGRES_PASSWORD: ci_database_password
+      SECRET_KEY: ci-secret-with-at-least-thirty-two-characters
+      SELF_REGISTRATION_ENABLED: "false"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install -e ".[dev]"
+      - run: python -m ruff check app tests
+      - run: python -m mypy app
+      - run: alembic upgrade head
+      - run: alembic downgrade base
+      - run: alembic upgrade head
+      - run: python -m pytest
+
+  container:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build --target test -t researchhub-u:test .
+      - run: docker run --rm researchhub-u:test
+      - run: docker build --target production -t researchhub-u:${{ github.sha }} .

@@ -47,6 +47,7 @@ class Role(Base):
         "User",
         secondary="usuario_roles",
         back_populates="roles",
+        viewonly=True,
     )
 
     role_permissions: Mapped[list["RolePermission"]] = relationship(

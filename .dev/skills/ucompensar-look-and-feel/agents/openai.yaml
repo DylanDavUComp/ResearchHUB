@@ -1,0 +1,5 @@
+interface:
+  display_name: "UCompensar Look & Feel"
+  short_description: "Aplica la identidad visual UCompensar 2026"
+  brand_color: "#6D20E5"
+  default_prompt: "Usa $ucompensar-look-and-feel para aplicar y verificar la identidad UCompensar 2026 en este desarrollo."

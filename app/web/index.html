@@ -4,22 +4,188 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>ResearchHub-U</title>
-  <link rel="stylesheet" href="/static/styles.css?v=14" />
+  <title>Investigacion UCompensar</title>
+  <link rel="icon" href="/static/avatar.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/styles.css?v=26" />
 </head>
 
 <body>
-  <section class="login-view" id="login-view">
+  <section class="app-launcher" id="app-launcher">
+    <header class="launcher-header">
+      <img class="launcher-logo" src="/static/brand/ucompensar-hacer-para-saber.png"
+        alt="UCompensar, Hacer para saber" />
+      <span class="launcher-context">Ecosistema de investigacion</span>
+    </header>
+
+    <div class="launcher-main" role="main">
+      <div class="launcher-heading">
+        <p class="launcher-eyebrow">Elige tu espacio de trabajo</p>
+        <h1>Investigacion que conecta conocimiento y accion</h1>
+        <p>Accede a la plataforma que corresponde al tipo de investigacion que vas a gestionar.</p>
+      </div>
+
+      <div class="launcher-experience">
+        <div class="application-grid" aria-label="Aplicaciones disponibles">
+        <article class="application-card researchhub-card">
+          <div class="application-visual researchhub-visual">
+            <img src="/static/brand/degree-work-journey-v1.png" alt="" />
+          </div>
+          <div class="application-content">
+            <span class="application-type">Investigacion formativa</span>
+            <h2>ResearchHub-U</h2>
+            <p>Semilleros, modalidades de trabajo de grado y procesos academicos de investigacion.</p>
+            <button class="application-action primary" id="open-researchhub" type="button">
+              Ingresar a ResearchHub-U <span aria-hidden="true">&#8594;</span>
+            </button>
+          </div>
+        </article>
+
+        <article class="application-card researchos-card">
+          <div class="application-visual researchos-visual" aria-hidden="true">
+            <span class="researchos-mark">R<span>OS</span></span>
+            <span class="researchos-line"></span>
+          </div>
+          <div class="application-content">
+            <span class="application-type">Investigacion aplicada y transferencia</span>
+            <h2>ResearchOS</h2>
+            <p>Proyectos aplicados, capacidades, resultados de investigacion y transferencia.</p>
+            <a class="application-action secondary is-disabled" id="open-researchos" href="#"
+              aria-disabled="true">
+              <span id="researchos-action-label">No configurado</span>
+              <span aria-hidden="true">&#8594;</span>
+            </a>
+          </div>
+        </article>
+
+        <article class="application-card cris-card">
+          <div class="application-visual cris-visual" aria-hidden="true">
+            <div class="cris-emblem">
+              <span class="cris-mark">CRIS</span>
+              <span class="cris-caption">Research information</span>
+              <span class="cris-data-grid">
+                <i></i><i></i><i></i><i></i><i></i><i></i>
+              </span>
+            </div>
+          </div>
+          <div class="application-content">
+            <span class="application-type">Informacion cientifica institucional</span>
+            <h2>CRIS</h2>
+            <p>Investigadores, grupos, proyectos, productos, capacidades e indicadores en una fuente institucional.</p>
+            <a class="application-action secondary is-disabled" id="open-cris" href="#"
+              aria-disabled="true">
+              <span id="cris-action-label">No configurado</span>
+              <span aria-hidden="true">&#8594;</span>
+            </a>
+          </div>
+        </article>
+
+          <article class="application-card crai-card">
+          <div class="application-visual crai-visual" aria-hidden="true">
+            <div class="crai-emblem">
+              <span class="crai-book"><i></i></span>
+              <span class="crai-mark">CRAI</span>
+              <span class="crai-caption">Aprende, consulta, investiga</span>
+            </div>
+          </div>
+          <div class="application-content">
+            <span class="application-type">Recursos para el aprendizaje y la investigacion</span>
+            <h2>CRAI</h2>
+            <p>Biblioteca, recursos digitales, servicios de consulta y apoyo para aprender e investigar.</p>
+            <a class="application-action secondary is-disabled" id="open-crai" href="#"
+              aria-disabled="true">
+              <span id="crai-action-label">No configurado</span>
+              <span aria-hidden="true">&#8594;</span>
+            </a>
+          </div>
+          </article>
+        </div>
+
+        <aside class="opportunity-carousel" id="opportunity-carousel"
+          aria-labelledby="opportunity-title" aria-roledescription="carrusel" data-autoplay-ms="4000">
+          <header class="opportunity-header">
+            <div>
+              <span class="launcher-eyebrow">Ecosistema en movimiento</span>
+              <h2 id="opportunity-title">Oportunidades</h2>
+            </div>
+            <span class="opportunity-count" aria-hidden="true">01 / 03</span>
+          </header>
+
+          <div class="opportunity-viewport">
+            <article class="opportunity-slide is-active" data-opportunity-slide
+              aria-roledescription="diapositiva" aria-label="1 de 3">
+              <img src="/static/brand/research-blog-flyer-v1.png" width="1024" height="1536"
+                alt="Equipo universitario leyendo y analizando resultados de investigacion" fetchpriority="high" />
+              <div class="opportunity-copy">
+                <span>Blog de investigacion</span>
+                <h3>Ideas para investigar y transformar</h3>
+                <p>Historias, hallazgos y conversaciones del ecosistema UCompensar.</p>
+                <a class="opportunity-link is-disabled js-research-blog-link" id="open-research-blog"
+                  href="#" aria-disabled="true">
+                  <span class="opportunity-link-label">Proximamente</span>
+                  <span aria-hidden="true">&#8594;</span>
+                </a>
+              </div>
+            </article>
+
+            <article class="opportunity-slide" data-opportunity-slide aria-hidden="true"
+              aria-roledescription="diapositiva" aria-label="2 de 3">
+              <img data-src="/static/brand/research-opportunities-flyer-v1.png" width="1024" height="1536"
+                alt="Equipo preparando una propuesta para una convocatoria de investigacion" />
+              <div class="opportunity-copy">
+                <span>Convocatorias</span>
+                <h3>Encuentra tu proxima oportunidad</h3>
+                <p>Recursos para convertir una buena pregunta en un proyecto con impacto.</p>
+                <a class="opportunity-link is-disabled js-research-blog-link" href="#" aria-disabled="true">
+                  <span class="opportunity-link-label">Proximamente</span>
+                  <span aria-hidden="true">&#8594;</span>
+                </a>
+              </div>
+            </article>
+
+            <article class="opportunity-slide" data-opportunity-slide aria-hidden="true"
+              aria-roledescription="diapositiva" aria-label="3 de 3">
+              <img data-src="/static/brand/research-agenda-flyer-v1.png" width="1024" height="1536"
+                alt="Investigadores compartiendo ideas en un encuentro colaborativo" />
+              <div class="opportunity-copy">
+                <span>Agenda del ecosistema</span>
+                <h3>Conocimiento que crea conexiones</h3>
+                <p>Encuentros, talleres y conversaciones para aprender haciendo.</p>
+                <a class="opportunity-link is-disabled js-research-blog-link" href="#" aria-disabled="true">
+                  <span class="opportunity-link-label">Proximamente</span>
+                  <span aria-hidden="true">&#8594;</span>
+                </a>
+              </div>
+            </article>
+          </div>
+
+          <footer class="opportunity-controls">
+            <button type="button" class="carousel-arrow" id="opportunity-prev"
+              aria-label="Oportunidad anterior" title="Oportunidad anterior">&#8592;</button>
+            <div class="carousel-dots" aria-label="Seleccionar oportunidad">
+              <button type="button" class="is-active" data-opportunity-index="0"
+                aria-label="Mostrar oportunidad 1" aria-current="true"></button>
+              <button type="button" data-opportunity-index="1" aria-label="Mostrar oportunidad 2"></button>
+              <button type="button" data-opportunity-index="2" aria-label="Mostrar oportunidad 3"></button>
+            </div>
+            <button type="button" class="carousel-arrow" id="opportunity-next"
+              aria-label="Siguiente oportunidad" title="Siguiente oportunidad">&#8594;</button>
+          </footer>
+          <p class="sr-only" id="opportunity-status" aria-live="polite"></p>
+        </aside>
+      </div>
+    </div>
+
+    <footer class="launcher-footer">
+      <span>UCompensar</span>
+      <span>Practica, aprende y conecta</span>
+    </footer>
+  </section>
+
+  <section class="login-view is-hidden" id="login-view">
     <div class="login-brand-panel">
       <header class="login-brand-header">
-        <div class="brand compact">
-          <span class="brand-mark" aria-hidden="true">
-            <span></span><span></span><span></span><span></span><span></span>
-          </span>
-          <span class="brand-name dark">ucompensar</span>
-        </div>
-        <div class="brand-divider"></div>
-        <strong class="brand-slogan">HACER<br />PARA<br />SABER</strong>
+        <img class="brand-logo" src="/static/brand/ucompensar-hacer-para-saber.png"
+          alt="UCompensar, Hacer para saber" />
       </header>
 
       <div class="login-hero-copy">
@@ -28,39 +194,34 @@
       </div>
 
       <div class="login-benefits">
-        <article><span class="benefit-icon">⌂</span>
+        <article><span class="benefit-icon"><span class="icon doc" aria-hidden="true"></span></span>
           <div><strong>Investigacion</strong>
             <p>Gestiona proyectos, semilleros y produccion cientifica.</p>
           </div>
         </article>
-        <article><span class="benefit-icon">●●</span>
+        <article><span class="benefit-icon"><span class="icon users" aria-hidden="true"></span></span>
           <div><strong>Colaboracion</strong>
             <p>Conecta con investigadores y grupos de trabajo.</p>
           </div>
         </article>
-        <article><span class="benefit-icon">↗</span>
+        <article><span class="benefit-icon"><span class="icon chart" aria-hidden="true"></span></span>
           <div><strong>Impacto</strong>
             <p>Genera conocimiento que transforma la sociedad.</p>
           </div>
         </article>
       </div>
 
-      <div class="research-illustration" aria-hidden="true">
-        <div class="orb one"></div>
-        <div class="orb two"></div>
-        <div class="orb three"></div>
-        <div class="book-stack"></div>
-        <div class="laptop"></div>
-        <div class="lens"></div>
-        <div class="sprout"></div>
-      </div>
+      <img class="research-illustration" src="/static/brand/degree-work-journey-v1.png" alt="" />
 
-      <footer>La Universidad del Futuro</footer>
+      <footer>PRACTICA &middot; APRENDE &middot; CONECTA</footer>
     </div>
 
     <div class="login-form-panel">
+      <button class="launcher-back" id="back-to-apps" type="button">
+        <span aria-hidden="true">&#8592;</span> Aplicaciones
+      </button>
       <form class="login-card" id="login-form">
-        <span class="login-lock">▣</span>
+        <span class="login-lock"><span class="icon lock" aria-hidden="true"></span></span>
         <h2>¡Bienvenido de nuevo!</h2>
         <p>Inicia sesion para continuar en <strong>ResearchHub<span>-U</span></strong></p>
 
@@ -95,13 +256,13 @@
         <div class="separator"><span>o continuar con</span></div>
         <button class="microsoft-button" type="button"><span class="microsoft-mark"></span>Iniciar sesion con
           Microsoft</button>
-        <p class="request-access">
+        <p class="request-access is-hidden" id="register-access">
           ¿No tienes cuenta?
           <a href="#" id="show-register">Regístrate aquí</a>
         </p>
       </form>
       <form class="login-card is-hidden" id="register-form">
-        <span class="login-lock">▣</span>
+        <span class="login-lock"><span class="icon lock" aria-hidden="true"></span></span>
 
         <h2>Crear una cuenta</h2>
 
@@ -132,7 +293,7 @@
           Contraseña
           <span class="field">
             <span class="field-icon">▣</span>
-            <input id="register-password" type="password" placeholder="Crea una contraseña" autocomplete="new-password"
+            <input id="register-password" type="password" minlength="12" maxlength="128" placeholder="Crea una contraseña" autocomplete="new-password"
               required />
           </span>
         </label>
@@ -141,7 +302,7 @@
           Confirmar contraseña
           <span class="field">
             <span class="field-icon">▣</span>
-            <input id="register-password-confirm" type="password" placeholder="Confirma tu contraseña"
+            <input id="register-password-confirm" type="password" minlength="12" maxlength="128" placeholder="Confirma tu contraseña"
               autocomplete="new-password" required />
           </span>
         </label>
@@ -167,12 +328,10 @@
   </section>
 
   <div class="app-shell is-hidden" id="app-view">
-    <aside class="sidebar" aria-label="Navegacion principal">
-      <div class="brand">
-        <span class="brand-mark" aria-hidden="true">
-          <span></span><span></span><span></span><span></span><span></span>
-        </span>
-        <span class="brand-name">ResearchHub-U</span>
+    <aside class="sidebar" id="main-sidebar" aria-label="Navegacion principal">
+      <div class="brand product-brand">
+        <span class="institution-name">UCompensar</span>
+        <span class="product-name">ResearchHub-U</span>
       </div>
 
       <nav class="nav-list">
@@ -184,21 +343,21 @@
             <span class="chevron">â€º</span>
           </summary>
           <div class="nav-sublist">
-            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon clipboard"></span>Mi
+            <a class="nav-item nav-subitem" href="#" data-view="degree-work"><span class="icon clipboard"></span>Mi
               solicitud</a>
-            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon check"></span>Mis
+            <a class="nav-item nav-subitem" href="#" data-view="degree-work"><span class="icon check"></span>Mis
               actividades</a>
-            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon clock"></span>Mis horas</a>
+            <a class="nav-item nav-subitem" href="#" data-view="degree-work"><span class="icon clock"></span>Mis horas</a>
             <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon bell"></span>Notificaciones</a>
-            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon briefcase"></span>Proyectos</a>
-            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon users"></span>Comite</a>
-            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon columns"></span>Consejo de
+            <a class="nav-item nav-subitem" href="#" data-view="degree-work"><span class="icon briefcase"></span>Proyectos</a>
+            <a class="nav-item nav-subitem" href="#" data-view="degree-work"><span class="icon users"></span>Comite</a>
+            <a class="nav-item nav-subitem" href="#" data-view="degree-work"><span class="icon columns"></span>Consejo de
               Facultad</a>
-            <a class="nav-item nav-subitem" href="#" data-view="home"><span class="icon doc"></span>Registro y
+            <a class="nav-item nav-subitem" href="#" data-view="degree-work"><span class="icon doc"></span>Registro y
               Control</a>
           </div>
         </details>
-        <a class="nav-item" href="#" data-view="home"><span class="icon chart"></span>Reportes</a>
+        <a class="nav-item" href="#" data-view="degree-work"><span class="icon chart"></span>Reportes</a>
         <a class="nav-item admin-only" href="#" data-view="settings"><span
             class="icon settings"></span>Configuracion</a>
         <a class="nav-item logout js-logout" href="#"><span class="icon exit"></span>Cerrar sesion</a>
@@ -210,12 +369,18 @@
         <span class="chevron">›</span>
       </a>
     </aside>
+    <button class="sidebar-backdrop" id="sidebar-backdrop" type="button" tabindex="-1"
+      aria-label="Cerrar menu de navegacion"></button>
 
     <main class="main">
       <header class="topbar">
+        <button class="mobile-menu-button" id="mobile-menu-button" type="button" aria-controls="main-sidebar"
+          aria-expanded="false" aria-label="Abrir menu de navegacion">
+          <span class="icon menu" aria-hidden="true"></span>
+        </button>
         <div>
           <h1>ResearchHub-U</h1>
-          <p>Homologacion de Trabajo de Grado mediante Semillero de Investigacion</p>
+          <p>Gestion integral de modalidades de trabajo de grado</p>
         </div>
         <div class="user-tools">
           <button class="notification-button" aria-label="Notificaciones">
@@ -247,12 +412,7 @@
           <div class="primary-column">
             <section class="hero-panel">
               <div class="hero-art" aria-hidden="true">
-                <div class="book book-top"></div>
-                <div class="book book-mid"></div>
-                <div class="book book-bottom"></div>
-                <div class="cap"></div>
-                <div class="plant"><span></span><span></span><span></span></div>
-                <div class="pot"></div>
+                <img src="/static/brand/degree-work-journey-v1.png" alt="" loading="lazy" />
               </div>
               <div class="hero-copy">
                 <h3>¡Avanza en tu proceso de homologacion!</h3>
@@ -418,6 +578,111 @@
         </div>
       </section>
 
+      <section class="content app-section is-hidden" id="degree-work-section">
+        <div class="page-title degree-work-title">
+          <div>
+            <span class="page-eyebrow">Gestion academica</span>
+            <h2 id="degree-work-heading">Trabajos de grado</h2>
+            <p id="degree-work-subtitle">Consulta modalidades y gestiona el avance de cada proceso.</p>
+          </div>
+          <button class="button primary student-only" id="open-case-form" type="button">Nueva solicitud</button>
+        </div>
+
+        <section class="degree-work-panel degree-work-journey" id="degree-work-journey" aria-labelledby="journey-title">
+          <div class="section-heading journey-heading">
+            <div>
+              <span class="page-eyebrow">Paso a paso</span>
+              <h3 id="journey-title">Ruta institucional del trabajo de grado</h3>
+              <p id="journey-context">Selecciona una modalidad para consultar su recorrido.</p>
+            </div>
+            <span class="journey-legend"><i></i> Etapa actual</span>
+          </div>
+          <ol class="journey-track" aria-label="Etapas del proceso">
+            <li><button class="journey-stage" type="button" data-stage="OFFER"><span class="journey-icon"><span class="icon briefcase"></span></span><strong>Oferta</strong><small>Modalidades</small></button></li>
+            <li><button class="journey-stage" type="button" data-stage="ELIGIBILITY"><span class="journey-icon"><span class="icon check"></span></span><strong>Elegibilidad</strong><small>Requisitos</small></button></li>
+            <li><button class="journey-stage" type="button" data-stage="APPLICATION"><span class="journey-icon"><span class="icon doc"></span></span><strong>Postulacion</strong><small>Documentos</small></button></li>
+            <li><button class="journey-stage" type="button" data-stage="VALIDATION"><span class="journey-icon"><span class="icon clipboard"></span></span><strong>Validacion</strong><small>Revision</small></button></li>
+            <li><button class="journey-stage" type="button" data-stage="FORMALIZATION"><span class="journey-icon"><span class="icon users"></span></span><strong>Formalizacion</strong><small>Aval y tutor</small></button></li>
+            <li><button class="journey-stage" type="button" data-stage="EXECUTION"><span class="journey-icon"><span class="icon clock"></span></span><strong>Ejecucion</strong><small>Seguimiento</small></button></li>
+            <li><button class="journey-stage" type="button" data-stage="EVALUATION"><span class="journey-icon"><span class="icon chart"></span></span><strong>Evaluacion</strong><small>Rubrica</small></button></li>
+            <li><button class="journey-stage" type="button" data-stage="REGISTRATION"><span class="journey-icon"><span class="icon columns"></span></span><strong>Registro</strong><small>Calificacion</small></button></li>
+            <li><button class="journey-stage" type="button" data-stage="CLOSURE"><span class="journey-icon"><span class="icon check"></span></span><strong>Cierre</strong><small>Resultado</small></button></li>
+          </ol>
+          <div class="journey-step-detail" id="journey-step-detail" aria-live="polite">
+            <div class="journey-detail-copy">
+              <span class="journey-step-number" id="journey-step-number">Etapa 1 de 9</span>
+              <h4 id="journey-step-title">Oferta de modalidades</h4>
+              <p id="journey-step-description">Consulta las alternativas habilitadas por la politica institucional.</p>
+            </div>
+            <div class="journey-configured-steps" id="journey-configured-steps"></div>
+          </div>
+        </section>
+
+        <div class="degree-work-metrics" aria-label="Resumen de trabajos de grado">
+          <article><span>Modalidades disponibles</span><strong id="modality-count">-</strong><small>Segun politica vigente</small></article>
+          <article><span>Casos visibles</span><strong id="case-count">-</strong><small>De acuerdo con tu rol</small></article>
+          <article><span>En proceso</span><strong id="active-case-count">-</strong><small>Con actividad pendiente</small></article>
+          <article><span>Finalizados</span><strong id="closed-case-count">-</strong><small>Con trazabilidad completa</small></article>
+        </div>
+
+        <div class="degree-work-grid">
+          <section class="degree-work-panel modality-catalog-panel">
+            <div class="section-heading">
+              <div><h3>Modalidades</h3><p>Opciones habilitadas para nuevas solicitudes.</p></div>
+              <label class="compact-search">Buscar
+                <input id="modality-search" type="search" placeholder="Nombre o requisito" />
+              </label>
+            </div>
+            <div class="modality-catalog" id="modality-catalog" aria-live="polite">
+              <p class="empty-state">Cargando modalidades...</p>
+            </div>
+          </section>
+
+          <aside class="degree-work-panel case-detail-panel" id="case-detail-panel">
+            <div class="case-empty" id="case-empty">
+              <span class="empty-icon"><span class="icon clipboard"></span></span>
+              <h3>Selecciona un proceso</h3>
+              <p>Consulta una solicitud para ver su flujo, responsables e historial.</p>
+            </div>
+            <div class="is-hidden" id="case-detail">
+              <div class="case-detail-heading">
+                <div><span class="status-pill" id="case-detail-status">Borrador</span><h3 id="case-detail-title">Solicitud</h3></div>
+                <strong id="case-progress-value">0%</strong>
+              </div>
+              <p class="case-meta" id="case-detail-meta"></p>
+              <div class="case-progress-track"><span id="case-progress-bar"></span></div>
+              <ol class="case-steps" id="case-steps"></ol>
+              <div class="case-actions" id="case-actions"></div>
+              <div class="case-history-block"><h4>Historial reciente</h4><ul id="case-history"></ul></div>
+            </div>
+          </aside>
+        </div>
+
+        <section class="degree-work-panel case-inbox-panel">
+          <div class="section-heading">
+            <div><h3 id="case-inbox-title">Mis solicitudes</h3><p id="case-inbox-description">Procesos disponibles segun tu alcance.</p></div>
+            <button class="icon-action" id="refresh-degree-work" type="button" title="Actualizar" aria-label="Actualizar casos">&#8635;</button>
+          </div>
+          <div class="degree-work-table-wrap">
+            <table class="degree-work-table">
+              <thead><tr><th>Proceso</th><th>Modalidad</th><th>Programa</th><th>Etapa actual</th><th>Estado</th><th>Avance</th><th></th></tr></thead>
+              <tbody id="degree-work-cases-body"><tr><td colspan="7">Cargando procesos...</td></tr></tbody>
+            </table>
+          </div>
+        </section>
+
+        <dialog class="degree-work-dialog" id="case-dialog">
+          <form method="dialog" id="degree-work-case-form">
+            <div class="dialog-heading"><div><span class="page-eyebrow">Nueva solicitud</span><h3>Inicia tu trabajo de grado</h3></div><button class="icon-action" value="cancel" aria-label="Cerrar">&times;</button></div>
+            <label>Modalidad<select id="case-modality" required></select></label>
+            <label>Titulo provisional<input id="case-title" maxlength="220" required placeholder="Nombre del proyecto o proceso" /></label>
+            <label>Programa academico<input id="case-program" maxlength="160" required value="Ingenieria de software" /></label>
+            <p class="form-message" id="case-form-message" role="alert"></p>
+            <div class="form-actions"><button class="button secondary" value="cancel" type="button" id="cancel-case-form">Cancelar</button><button class="button primary" type="submit">Crear solicitud</button></div>
+          </form>
+        </dialog>
+      </section>
+
       <section class="content app-section is-hidden" id="settings-section">
         <div class="page-title">
           <h2>Configuracion</h2>
@@ -457,10 +722,8 @@
               <label>Rol
                 <select id="user-role" required>
                   <option value="Estudiante">Estudiante</option>
-                  <option value="Coordinador de programa">Coordinador de programa</option>
-                  <option value="Director de trabajo de grado">Director de trabajo de grado</option>
-                  <option value="Comite">Comite</option>
-                  <option value="Registro y Control">Registro y Control</option>
+                  <option value="Docente">Docente</option>
+                  <option value="Director de programa">Director de programa</option>
                   <option value="Administrador">Administrador</option>
                   <option value="Super administrador">Super administrador</option>
                 </select>
@@ -471,8 +734,8 @@
                   <option value="Inactivo">Inactivo</option>
                 </select>
               </label>
-              <label>Contraseña inicial<input id="user-password" type="password"
-                  placeholder="Solo para prototipo local" /></label>
+              <label>Contraseña inicial<input id="user-password" type="password" minlength="12" maxlength="128"
+                  placeholder="Obligatoria al crear una cuenta" autocomplete="new-password" /></label>
               <fieldset>
                 <legend>Permisos</legend>
                 <label><input type="checkbox" name="permission" value="users:create" /> Crear usuarios</label>
@@ -487,9 +750,20 @@
                 <button class="button primary" type="submit">Guardar</button>
               </div>
             </form>
-            <p class="prototype-note">Super administrador inicial: superadmin@researchhub-u.edu.co / ResearchHubU2026!
-            </p>
           </aside>
+
+          <section class="settings-card modality-settings-card admin-only" id="modality-settings-card">
+            <div class="section-heading">
+              <div><h3>Modalidades y flujos</h3><p>Administra borradores; publicar y retirar requiere superadministrador.</p></div>
+              <button class="button primary" id="new-modality-button" type="button">Nueva modalidad</button>
+            </div>
+            <div class="degree-work-table-wrap">
+              <table class="degree-work-table">
+                <thead><tr><th>Modalidad</th><th>Version</th><th>Homologable</th><th>Participantes</th><th>Flujo</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody id="modality-settings-body"><tr><td colspan="7">Cargando catalogo...</td></tr></tbody>
+              </table>
+            </div>
+          </section>
 
           <section class="settings-card database-card superadmin-only is-hidden" id="database-settings-card">
             <div class="section-heading">
@@ -537,10 +811,32 @@
           </section>
         </div>
       </section>
+
+      <dialog class="degree-work-dialog modality-dialog" id="modality-dialog">
+        <form method="dialog" id="modality-form">
+          <input id="modality-id" type="hidden" />
+          <div class="dialog-heading"><div><span class="page-eyebrow">Configuracion</span><h3 id="modality-form-title">Nueva modalidad</h3></div><button class="icon-action" value="cancel" aria-label="Cerrar">&times;</button></div>
+          <div class="modality-form-grid">
+            <label>Codigo estable<input id="modality-code" pattern="[A-Z0-9_]+" required placeholder="NUEVA_MODALIDAD" /></label>
+            <label>Nombre<input id="modality-name" maxlength="160" required /></label>
+            <label class="wide-field">Descripcion<textarea id="modality-description" maxlength="2000" rows="3"></textarea></label>
+            <label>Semestre inicial<input id="modality-semester" type="number" min="1" max="20" /></label>
+            <label>Duracion<input id="modality-duration" maxlength="120" value="Por definir" /></label>
+            <label>Participantes minimos<input id="modality-min-participants" type="number" min="1" max="20" value="1" required /></label>
+            <label>Participantes maximos<input id="modality-max-participants" type="number" min="1" max="20" value="1" required /></label>
+            <label class="checkbox-row wide-field"><input id="modality-homologatable" type="checkbox" /> Es objeto de homologacion</label>
+          </div>
+          <div class="workflow-builder-heading"><div><h4>Flujo de trabajo</h4><p>Ordena pasos y define el rol responsable.</p></div><button class="button secondary" id="add-workflow-step" type="button">Agregar paso</button></div>
+          <div class="workflow-step-list" id="workflow-step-list"></div>
+          <p class="form-message" id="modality-form-message" role="alert"></p>
+          <div class="form-actions"><button class="button secondary" type="button" id="cancel-modality-form">Cancelar</button><button class="button primary" type="submit">Guardar borrador</button></div>
+        </form>
+      </dialog>
     </main>
   </div>
 
-  <script src="/static/app.js?v=8"></script>
+  <script src="/static/app.js?v=15"></script>
+  <script src="/static/degree-work.js?v=2"></script>
 </body>
 
 </html>

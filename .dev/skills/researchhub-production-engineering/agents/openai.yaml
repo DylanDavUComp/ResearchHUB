@@ -1,0 +1,8 @@
+interface:
+  display_name: "ResearchHub Production Engineering"
+  short_description: "Protege la calidad operativa y la escala"
+  brand_color: "#6D20E5"
+  default_prompt: "Usa $researchhub-production-engineering para implementar este cambio con controles verificables de produccion."
+
+policy:
+  allow_implicit_invocation: true

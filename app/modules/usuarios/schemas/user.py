@@ -10,12 +10,13 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    password: str = Field(min_length=8)
+    password: str = Field(min_length=12, max_length=128)
+
 
 class UserRegister(BaseModel):
     name: str = Field(min_length=1, max_length=160)
     email: str = Field(min_length=3, max_length=255)
-    password: str = Field(min_length=8)
+    password: str = Field(min_length=12, max_length=128)
 
     @field_validator("email")
     @classmethod
@@ -31,7 +32,7 @@ class UserRegister(BaseModel):
 
 
 class UserUpdate(UserBase):
-    password: str | None = Field(default=None, min_length=8)
+    password: str | None = Field(default=None, min_length=12, max_length=128)
 
 
 class UserRead(UserBase):

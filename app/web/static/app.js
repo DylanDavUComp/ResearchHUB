@@ -8,36 +8,25 @@ const allPermissions = [
   "users:update",
   "users:delete",
   "settings:manage",
-];
-
-const seedUsers = [
-  {
-    id: "super-admin",
-    name: "Super Administrador",
-    email: "superadmin@researchhub-u.edu.co",
-    role: "Super administrador",
-    status: "Activo",
-    password: "ResearchHubU2026!",
-    permissions: [...allPermissions],
-  },
-  {
-    id: "student-1",
-    name: "Maria Gonzalez",
-    email: "maria.gonzalez@ucompensar.edu.co",
-    role: "Estudiante",
-    status: "Activo",
-    password: "Estudiante2026!",
-    permissions: [],
-  },
-  {
-    id: "coordinator-1",
-    name: "Carlos Ramirez",
-    email: "carlos.ramirez@ucompensar.edu.co",
-    role: "Coordinador de programa",
-    status: "Activo",
-    password: "Coordinador2026!",
-    permissions: ["users:read", "users:update"],
-  },
+  "degree_work:self:create",
+  "degree_work:self:read",
+  "degree_work:self:submit",
+  "degree_work:assigned:read",
+  "degree_work:assigned:review",
+  "degree_work:assigned:evaluate",
+  "degree_work:program:read",
+  "degree_work:program:decide",
+  "degree_work:program:assign",
+  "degree_work:program:report",
+  "degree_work:any:read",
+  "degree_work:any:support",
+  "modalities:read",
+  "modalities:create",
+  "modalities:update",
+  "modalities:delete",
+  "modalities:publish",
+  "modalities:retire",
+  "audit:any:read",
 ];
 
 let cachedUsers = [];
@@ -89,6 +78,23 @@ async function apiFetch(url, options = {}) {
 }
 
 const elements = {
+  appLauncher: document.querySelector("#app-launcher"),
+  openResearchHub: document.querySelector("#open-researchhub"),
+  openResearchOs: document.querySelector("#open-researchos"),
+  researchOsActionLabel: document.querySelector("#researchos-action-label"),
+  openCris: document.querySelector("#open-cris"),
+  crisActionLabel: document.querySelector("#cris-action-label"),
+  openCrai: document.querySelector("#open-crai"),
+  craiActionLabel: document.querySelector("#crai-action-label"),
+  opportunityCarousel: document.querySelector("#opportunity-carousel"),
+  opportunitySlides: document.querySelectorAll("[data-opportunity-slide]"),
+  opportunityDots: document.querySelectorAll("[data-opportunity-index]"),
+  opportunityPrev: document.querySelector("#opportunity-prev"),
+  opportunityNext: document.querySelector("#opportunity-next"),
+  opportunityCount: document.querySelector(".opportunity-count"),
+  opportunityStatus: document.querySelector("#opportunity-status"),
+  researchBlogLinks: document.querySelectorAll(".js-research-blog-link"),
+  launcherBack: document.querySelector("#back-to-apps"),
   loginView: document.querySelector("#login-view"),
   appView: document.querySelector("#app-view"),
   loginForm: document.querySelector("#login-form"),
@@ -97,6 +103,9 @@ const elements = {
   loginError: document.querySelector("#login-error"),
   togglePassword: document.querySelector("#toggle-password"),
   logoutButtons: document.querySelectorAll(".js-logout"),
+  sidebar: document.querySelector("#main-sidebar"),
+  mobileMenuButton: document.querySelector("#mobile-menu-button"),
+  sidebarBackdrop: document.querySelector("#sidebar-backdrop"),
 
   registerForm: document.querySelector("#register-form"),
   registerName: document.querySelector("#register-name"),
@@ -105,10 +114,12 @@ const elements = {
   registerPasswordConfirm: document.querySelector("#register-password-confirm"),
   registerError: document.querySelector("#register-error"),
   showRegister: document.querySelector("#show-register"),
+  registerAccess: document.querySelector("#register-access"),
   showLogin: document.querySelector("#show-login"),
 
   navItems: document.querySelectorAll("[data-view]"),
   homeSection: document.querySelector("#home-section"),
+  degreeWorkSection: document.querySelector("#degree-work-section"),
   settingsSection: document.querySelector("#settings-section"),
   profileName: document.querySelector("#profile-name"),
   profileRole: document.querySelector("#profile-role"),
@@ -134,6 +145,16 @@ const elements = {
   databaseDirectory: document.querySelector("#database-directory"),
   databaseTablesBody: document.querySelector("#database-tables-body"),
 };
+
+function setNavigationOpen(isOpen) {
+  document.body.classList.toggle("nav-open", isOpen);
+  elements.sidebar.classList.toggle("is-open", isOpen);
+  elements.mobileMenuButton.setAttribute("aria-expanded", String(isOpen));
+  elements.mobileMenuButton.setAttribute(
+    "aria-label",
+    isOpen ? "Cerrar menu de navegacion" : "Abrir menu de navegacion"
+  );
+}
 
 async function getUsers() {
   const response = await apiFetch(
@@ -189,22 +210,38 @@ function syncRoleVisibility(user) {
   elements.superadminOnlyItems.forEach((item) => {
     item.classList.toggle("is-hidden", !isSuperadmin(user));
   });
+  document.querySelectorAll(".student-only").forEach((item) => {
+    item.classList.toggle("is-hidden", user?.role !== "Estudiante");
+  });
 }
 
 function showAuthenticatedApp(user) {
+  elements.appLauncher.classList.add("is-hidden");
   elements.loginView.classList.add("is-hidden");
   elements.appView.classList.remove("is-hidden");
   elements.profileName.textContent = user.name;
   elements.profileRole.textContent = user.role;
   elements.welcomeText.textContent = `Bienvenida, ${user.name}`;
+  setNavigationOpen(false);
 
   syncRoleVisibility(user);
   showView("home");
 }
 
 function showLogin() {
+  stopOpportunityRotation();
+  setNavigationOpen(false);
+  elements.appLauncher.classList.add("is-hidden");
   elements.appView.classList.add("is-hidden");
   elements.loginView.classList.remove("is-hidden");
+}
+
+function showLauncher() {
+  setNavigationOpen(false);
+  elements.loginView.classList.add("is-hidden");
+  elements.appView.classList.add("is-hidden");
+  elements.appLauncher.classList.remove("is-hidden");
+  scheduleOpportunityRotation();
 }
 
 function showRegisterForm() {
@@ -251,6 +288,11 @@ async function showView(viewName, selectedItem = null) {
     viewName !== "home"
   );
 
+  elements.degreeWorkSection.classList.toggle(
+    "is-hidden",
+    viewName !== "degree-work"
+  );
+
   elements.settingsSection.classList.toggle(
     "is-hidden",
     viewName !== "settings"
@@ -278,6 +320,13 @@ async function showView(viewName, selectedItem = null) {
     await renderUsers();
     resetUserForm();
     await loadDatabaseCatalog(user);
+    if (typeof loadModalitySettings === "function") {
+      await loadModalitySettings(user);
+    }
+  }
+
+  if (viewName === "degree-work" && typeof loadDegreeWork === "function") {
+    await loadDegreeWork(user);
   }
 }
 
@@ -347,27 +396,59 @@ async function renderUsers() {
 
   try {
     const users = await getUsers();
-    elements.usersTableBody.innerHTML = users
-      .map((item) => {
-        const permissionCount = item.permissions?.length || 0;
-        const deleteDisabled = item.role === "Super administrador" ? "disabled" : "";
-        return `
-        <tr>
-          <td><strong>${item.name}</strong></td>
-          <td>${item.email}</td>
-          <td><span class="role-pill">${item.role}</span></td>
-          <td><span class="status-pill ${item.status === "Inactivo" ? "inactive" : ""}">${item.status}</span></td>
-          <td>${permissionCount === allPermissions.length ? "Todos" : `${permissionCount} permisos`}</td>
-          <td>
-            <div class="action-buttons">
-              <button class="table-button" type="button" data-edit="${item.id}" ${canUpdate ? "" : "disabled"}>Editar</button>
-              <button class="table-button danger" type="button" data-delete="${item.id}" ${canDelete ? deleteDisabled : "disabled"}>Eliminar</button>
-            </div>
-          </td>
-        </tr>
-      `;
-      })
-      .join("");
+    elements.usersTableBody.replaceChildren();
+    users.forEach((item) => {
+      const permissionCount = item.permissions?.length || 0;
+      const row = document.createElement("tr");
+      const nameCell = document.createElement("td");
+      const name = document.createElement("strong");
+      name.textContent = item.name;
+      nameCell.append(name);
+
+      const emailCell = document.createElement("td");
+      emailCell.textContent = item.email;
+      const roleCell = document.createElement("td");
+      const role = document.createElement("span");
+      role.className = "role-pill";
+      role.textContent = item.role;
+      roleCell.append(role);
+      const statusCell = document.createElement("td");
+      const userStatus = document.createElement("span");
+      userStatus.className = `status-pill ${item.status === "Inactivo" ? "inactive" : ""}`;
+      userStatus.textContent = item.status;
+      statusCell.append(userStatus);
+      const permissionsCell = document.createElement("td");
+      permissionsCell.textContent = permissionCount === allPermissions.length
+        ? "Todos"
+        : `${permissionCount} permisos`;
+
+      const actionsCell = document.createElement("td");
+      const actions = document.createElement("div");
+      actions.className = "action-buttons";
+      const edit = document.createElement("button");
+      edit.className = "table-button";
+      edit.type = "button";
+      edit.dataset.edit = item.id;
+      edit.disabled = !canUpdate;
+      edit.textContent = "Editar";
+      const remove = document.createElement("button");
+      remove.className = "table-button danger";
+      remove.type = "button";
+      remove.dataset.delete = item.id;
+      remove.disabled = !canDelete || item.role === "Super administrador";
+      remove.textContent = "Eliminar";
+      actions.append(edit, remove);
+      actionsCell.append(actions);
+      row.append(
+        nameCell,
+        emailCell,
+        roleCell,
+        statusCell,
+        permissionsCell,
+        actionsCell,
+      );
+      elements.usersTableBody.append(row);
+    });
   } catch (error) {
     elements.usersTableBody.innerHTML =
       '<tr><td colspan="6">No se pudieron consultar los usuarios en PostgreSQL.</td></tr>';
@@ -417,7 +498,9 @@ async function upsertUser(event) {
   };
 
   if (!editingId && !payload.password) {
-    payload.password = "ResearchHubTemp2026!";
+    alert("Define una contraseña inicial para crear el usuario.");
+    elements.userPassword.focus();
+    return;
   }
 
   try {
@@ -595,14 +678,149 @@ elements.logoutButtons.forEach((button) => {
   button.addEventListener("click", (event) => {
     event.preventDefault();
     clearSession();
-    showLogin();
+    showLauncher();
   });
 });
+
+elements.openResearchHub.addEventListener("click", async () => {
+  const currentUser = await getSessionUser();
+  if (currentUser) {
+    showAuthenticatedApp(currentUser);
+    return;
+  }
+  showLogin();
+});
+
+function preventDisabledApplicationNavigation(event) {
+  if (event.currentTarget.getAttribute("aria-disabled") === "true") {
+    event.preventDefault();
+  }
+}
+
+elements.openResearchOs.addEventListener(
+  "click",
+  preventDisabledApplicationNavigation,
+);
+elements.openCris.addEventListener("click", preventDisabledApplicationNavigation);
+elements.openCrai.addEventListener("click", preventDisabledApplicationNavigation);
+elements.researchBlogLinks.forEach((link) => {
+  link.addEventListener("click", preventDisabledApplicationNavigation);
+});
+
+let currentOpportunityIndex = 0;
+let opportunityTimer = null;
+const opportunityAutoplayMs = Number(
+  elements.opportunityCarousel.dataset.autoplayMs,
+);
+const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+function renderOpportunity(index, announce = false) {
+  const slideCount = elements.opportunitySlides.length;
+  currentOpportunityIndex = (index + slideCount) % slideCount;
+
+  elements.opportunitySlides.forEach((slide, slideIndex) => {
+    const isActive = slideIndex === currentOpportunityIndex;
+    const deferredImage = slide.querySelector("img[data-src]");
+    if (isActive && deferredImage) {
+      deferredImage.src = deferredImage.dataset.src;
+      deferredImage.removeAttribute("data-src");
+    }
+    slide.classList.toggle("is-active", isActive);
+    slide.setAttribute("aria-hidden", String(!isActive));
+    slide.querySelectorAll("a, button").forEach((control) => {
+      control.tabIndex = isActive ? 0 : -1;
+    });
+  });
+  elements.opportunityDots.forEach((dot, dotIndex) => {
+    const isActive = dotIndex === currentOpportunityIndex;
+    dot.classList.toggle("is-active", isActive);
+    if (isActive) dot.setAttribute("aria-current", "true");
+    else dot.removeAttribute("aria-current");
+  });
+
+  const visibleNumber = String(currentOpportunityIndex + 1).padStart(2, "0");
+  elements.opportunityCount.textContent = `${visibleNumber} / 03`;
+  if (announce) {
+    const heading = elements.opportunitySlides[
+      currentOpportunityIndex
+    ].querySelector("h3").textContent;
+    elements.opportunityStatus.textContent = `${currentOpportunityIndex + 1} de ${slideCount}: ${heading}`;
+  }
+}
+
+function stopOpportunityRotation() {
+  window.clearInterval(opportunityTimer);
+  opportunityTimer = null;
+}
+
+function scheduleOpportunityRotation() {
+  stopOpportunityRotation();
+  if (
+    reducedMotion.matches ||
+    document.hidden ||
+    elements.appLauncher.classList.contains("is-hidden")
+  ) {
+    return;
+  }
+  opportunityTimer = window.setInterval(() => {
+    renderOpportunity(currentOpportunityIndex + 1);
+  }, opportunityAutoplayMs);
+}
+
+function selectOpportunity(index) {
+  renderOpportunity(index, true);
+  scheduleOpportunityRotation();
+}
+
+elements.opportunityPrev.addEventListener("click", () => {
+  selectOpportunity(currentOpportunityIndex - 1);
+});
+elements.opportunityNext.addEventListener("click", () => {
+  selectOpportunity(currentOpportunityIndex + 1);
+});
+elements.opportunityDots.forEach((dot) => {
+  dot.addEventListener("click", () => {
+    selectOpportunity(Number(dot.dataset.opportunityIndex));
+  });
+});
+elements.opportunityCarousel.addEventListener("mouseenter", stopOpportunityRotation);
+elements.opportunityCarousel.addEventListener("mouseleave", scheduleOpportunityRotation);
+elements.opportunityCarousel.addEventListener("focusin", stopOpportunityRotation);
+elements.opportunityCarousel.addEventListener("focusout", (event) => {
+  if (!elements.opportunityCarousel.contains(event.relatedTarget)) {
+    scheduleOpportunityRotation();
+  }
+});
+document.addEventListener("visibilitychange", scheduleOpportunityRotation);
+reducedMotion.addEventListener("change", scheduleOpportunityRotation);
+renderOpportunity(0);
+
+elements.launcherBack.addEventListener("click", showLauncher);
 elements.navItems.forEach((item) => {
   item.addEventListener("click", (event) => {
     event.preventDefault();
     showView(item.dataset.view, item);
+    if (window.matchMedia("(max-width: 860px)").matches) {
+      setNavigationOpen(false);
+    }
   });
+});
+elements.mobileMenuButton.addEventListener("click", () => {
+  setNavigationOpen(!elements.sidebar.classList.contains("is-open"));
+});
+elements.sidebarBackdrop.addEventListener("click", () => {
+  setNavigationOpen(false);
+});
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && elements.sidebar.classList.contains("is-open")) {
+    setNavigationOpen(false);
+    elements.mobileMenuButton.focus();
+  }
+});
+window.addEventListener("resize", () => {
+  if (!window.matchMedia("(max-width: 860px)").matches) {
+    setNavigationOpen(false);
+  }
 });
 elements.newUserButton.addEventListener("click", resetUserForm);
 elements.cancelUserButton.addEventListener("click", resetUserForm);
@@ -635,16 +853,52 @@ elements.userRole.addEventListener("change", () => {
 });
 
 async function initializeApp() {
-  const currentUser =
-    await getSessionUser();
-
-  if (currentUser) {
-    showAuthenticatedApp(
-      currentUser
+  try {
+    const response = await fetch("/api/v1/meta");
+    const metadata = response.ok ? await response.json() : null;
+    elements.registerAccess.classList.toggle(
+      "is-hidden",
+      !metadata?.features?.self_registration,
     );
-  } else {
-    showLogin();
+    configureExternalApplication(
+      metadata?.applications?.research_os,
+      elements.openResearchOs,
+      elements.researchOsActionLabel,
+      "Ingresar a ResearchOS",
+    );
+    configureExternalApplication(
+      metadata?.applications?.cris,
+      elements.openCris,
+      elements.crisActionLabel,
+      "Ingresar a CRIS",
+    );
+    configureExternalApplication(
+      metadata?.applications?.crai,
+      elements.openCrai,
+      elements.craiActionLabel,
+      "Ingresar al CRAI",
+    );
+    elements.researchBlogLinks.forEach((link) => {
+      configureExternalApplication(
+        metadata?.links?.research_blog,
+        link,
+        link.querySelector(".opportunity-link-label"),
+        "Leer en el blog",
+      );
+    });
+  } catch (error) {
+    elements.registerAccess.classList.add("is-hidden");
   }
+  showLauncher();
+}
+
+function configureExternalApplication(application, link, label, enabledLabel) {
+  if (!application?.available || !application.url) return;
+
+  link.href = application.url;
+  link.setAttribute("aria-disabled", "false");
+  link.classList.remove("is-disabled");
+  label.textContent = enabledLabel;
 }
 
 initializeApp();

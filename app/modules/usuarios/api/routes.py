@@ -52,6 +52,7 @@ def login(
 ) -> LoginResponse:
     return service.authenticate(payload)
 
+
 @router.post(
     "/registro",
     response_model=UserRead,
@@ -62,6 +63,7 @@ def register(
     service: UserService = user_service_dependency,
 ) -> UserRead:
     return service.register(payload)
+
 
 @router.get(
     "/me",
