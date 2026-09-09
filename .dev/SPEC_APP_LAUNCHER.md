@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.3.0"
+version: "1.3.1"
 status: "Implementado"
 language: "es-CO"
 project: "ResarchHUB"
@@ -23,21 +23,23 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 ## Comportamiento
 
 1. La portada es la primera vista, exista o no una sesion de ResarchHUB.
-2. `Ingresar a ResarchHUB` abre el login o reutiliza una sesion valida.
+2. El control `Ingresar` de ResarchHUB abre el login o reutiliza una sesion
+   valida.
 3. `ResearchOS` y `CRIS` solo se habilitan cuando `RESEARCH_OS_URL` y `CRIS_URL`,
    respectivamente, contienen una URL absoluta.
 4. `CRAI_URL` tiene como valor institucional predeterminado
    `https://crai.ucompensar.edu.co/` y puede reemplazarse o deshabilitarse por
    ambiente.
 5. En produccion, todas las URL externas deben usar HTTPS o el servicio no arranca.
-6. Sin URL configurada, el control permanece deshabilitado y comunica
-   `No configurado`; no simula navegacion ni disponibilidad.
+6. Los controles disponibles comunican `Ingresar`. Sin URL configurada, el
+   control permanece deshabilitado y comunica `Próximamente`; no simula
+   navegacion ni disponibilidad.
 7. Cerrar sesion en ResarchHUB devuelve al selector de aplicaciones.
 8. Un carrusel de oportunidades se alinea, en escritorio, con la parte superior e
    inferior de la cuadricula de aplicaciones y muestra tres flyers institucionales.
 9. El carrusel permite navegacion anterior, siguiente y directa; rota cada 4
    segundos, se detiene con foco o puntero y respeta movimiento reducido.
-10. Los flyers usan `RESEARCH_BLOG_URL`. Sin URL, comunican `Proximamente` y no
+10. Los flyers usan `RESEARCH_BLOG_URL`. Sin URL, comunican `Próximamente` y no
     ejecutan navegacion.
 
 ## Criterios de aceptacion

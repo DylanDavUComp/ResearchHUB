@@ -864,26 +864,26 @@ async function initializeApp() {
       metadata?.applications?.research_os,
       elements.openResearchOs,
       elements.researchOsActionLabel,
-      "Ingresar a ResearchOS",
+      "ResearchOS",
     );
     configureExternalApplication(
       metadata?.applications?.cris,
       elements.openCris,
       elements.crisActionLabel,
-      "Ingresar a CRIS",
+      "CRIS",
     );
     configureExternalApplication(
       metadata?.applications?.crai,
       elements.openCrai,
       elements.craiActionLabel,
-      "Ingresar al CRAI",
+      "CRAI",
     );
     elements.researchBlogLinks.forEach((link) => {
       configureExternalApplication(
         metadata?.links?.research_blog,
         link,
         link.querySelector(".opportunity-link-label"),
-        "Leer en el blog",
+        "Blog de investigación",
       );
     });
   } catch (error) {
@@ -892,13 +892,24 @@ async function initializeApp() {
   showLauncher();
 }
 
-function configureExternalApplication(application, link, label, enabledLabel) {
-  if (!application?.available || !application.url) return;
+function configureExternalApplication(application, link, label, destinationName) {
+  const isAvailable = Boolean(application?.available && application.url);
+  label.textContent = isAvailable ? "Ingresar" : "Próximamente";
+  link.setAttribute(
+    "aria-label",
+    isAvailable ? `Ingresar a ${destinationName}` : `${destinationName}: Próximamente`,
+  );
+
+  if (!isAvailable) {
+    link.href = "#";
+    link.setAttribute("aria-disabled", "true");
+    link.classList.add("is-disabled");
+    return;
+  }
 
   link.href = application.url;
   link.setAttribute("aria-disabled", "false");
   link.classList.remove("is-disabled");
-  label.textContent = enabledLabel;
 }
 
 initializeApp();

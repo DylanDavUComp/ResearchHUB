@@ -139,8 +139,37 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
     assert "/static/styles.css?v=29" in response.text
-    assert "/static/app.js?v=15" in response.text
+    assert "/static/app.js?v=16" in response.text
     assert "/static/degree-work.js?v=2" in response.text
+
+
+def test_launcher_uses_consistent_action_labels(client: TestClient) -> None:
+    response = client.get("/")
+
+    assert response.status_code == 200
+    assert "Ingresar a ResarchHUB <span" not in response.text
+    assert 'Ingresar <span aria-hidden="true">&#8594;</span>' in response.text
+    assert "No configurado" not in response.text
+    assert '<span id="researchos-action-label">Próximamente</span>' in response.text
+    assert '<span id="cris-action-label">Próximamente</span>' in response.text
+    assert '<span id="crai-action-label">Próximamente</span>' in response.text
+    assert (
+        response.text.count(
+            '<span class="opportunity-link-label">Próximamente</span>'
+        )
+        == 3
+    )
+
+    script = client.get("/static/app.js")
+    assert script.status_code == 200
+    assert (
+        'label.textContent = isAvailable ? "Ingresar" : "Próximamente"'
+        in script.text
+    )
+    assert "Ingresar a ResearchOS" not in script.text
+    assert "Ingresar a CRIS" not in script.text
+    assert "Ingresar al CRAI" not in script.text
+    assert "Leer en el blog" not in script.text
 
 
 def test_home_uses_the_ucompensar_2026_visual_system(client: TestClient) -> None:
