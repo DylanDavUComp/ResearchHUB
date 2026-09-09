@@ -1,4 +1,4 @@
-# ResearchHub-U
+# ResarchHUB
 
 ## Producto operable
 

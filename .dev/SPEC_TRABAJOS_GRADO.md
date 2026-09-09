@@ -4,7 +4,7 @@ document_id: "SPEC-TG-001"
 version: "0.3.0"
 status: "Implementación incremental con estándar de producto"
 language: "es-CO"
-project: "ResearchHub-U"
+project: "ResarchHUB"
 capability_map: ".dev/CAPABILITY_MAP_TRABAJOS_GRADO.md"
 supersedes: "HOM-01_Etapas_Proceso_Estudiante.md v0.1.0"
 ---

@@ -1,4 +1,4 @@
-# ResearchHub-U
+# ResarchHUB
 
 Producto web institucional para gestionar procesos de investigacion y modalidades
 de trabajo de grado. La aplicacion es un monolito modular FastAPI, usa PostgreSQL y
@@ -23,8 +23,8 @@ docker compose up --build
 La interfaz queda en `http://localhost:8000`; salud en `/health/live` y
 `/health/ready`; OpenAPI local en `/docs`.
 
-La portada permite elegir entre ResearchHub-U, ResearchOS, CRIS y CRAI.
-ResearchHub-U abre el flujo local de autenticacion. Los accesos externos se
+La portada permite elegir entre ResarchHUB, ResearchOS, CRIS y CRAI.
+ResarchHUB abre el flujo local de autenticacion. Los accesos externos se
 configuran con URL absolutas y en produccion deben usar HTTPS. CRAI incluye su URL
 institucional como valor predeterminado:
 

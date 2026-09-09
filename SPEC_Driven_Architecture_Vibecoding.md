@@ -1,15 +1,15 @@
 ---
-title: "Spec-Driven Document - Arquitectura de ResearchHub-U"
+title: "Spec-Driven Document - Arquitectura de ResarchHUB"
 document_id: "SDD-ARQ-AUT-001"
 version: "0.1.0"
 status: "Draft for validation"
 language: "es-CO"
-project: "ResearchHub-U"
+project: "ResarchHUB"
 initial_mvp: "Proceso de homologaciones"
 architecture_style: "Monolito modular orientado a procesos de negocio"
 ---
 
-# Spec-Driven Architecture para ResearchHub-U
+# Spec-Driven Architecture para ResarchHUB
 
 Fuente de verdad tecnica del proyecto. El documento completo original esta en
 `docs/specs/SPEC_Driven_Architecture_Vibecoding.original.md`.

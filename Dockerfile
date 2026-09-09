@@ -1,6 +1,6 @@
 FROM python:3.12-slim AS runtime
 
-LABEL org.opencontainers.image.title="ResearchHub-U" \
+LABEL org.opencontainers.image.title="ResarchHUB" \
       org.opencontainers.image.description="Plataforma de gestion academica UCompensar"
 
 ENV PYTHONDONTWRITEBYTECODE=1

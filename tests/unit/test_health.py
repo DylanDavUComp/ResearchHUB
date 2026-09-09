@@ -112,7 +112,8 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     response = client.get("/")
 
     assert response.status_code == 200
-    assert "ResearchHub-U" in response.text
+    assert "ResarchHUB" in response.text
+    assert "ResearchHub" + "-U" not in response.text
     assert "login-view" in response.text
     assert 'id="app-launcher"' in response.text
     assert 'id="open-researchhub"' in response.text

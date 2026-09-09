@@ -1,8 +1,8 @@
-# Product Readiness - ResearchHub-U
+# Product Readiness - ResarchHUB
 
 ## Purpose
 
-ResearchHub-U is developed as an operational product, not as a disposable
+ResarchHUB is developed as an operational product, not as a disposable
 prototype. This file records the evidence required to promote a version. It does
 not assert that the current incomplete functional scope is already approved for
 institutional production.
