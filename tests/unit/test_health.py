@@ -137,7 +137,7 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=26" in response.text
+    assert "/static/styles.css?v=29" in response.text
     assert "/static/app.js?v=15" in response.text
     assert "/static/degree-work.js?v=2" in response.text
 
@@ -157,6 +157,18 @@ def test_home_uses_the_ucompensar_2026_visual_system(client: TestClient) -> None
     assert "#6d20e5" in stylesheet.text.lower()
     assert "#3b0970" in stylesheet.text.lower()
     assert "#ff7000" in stylesheet.text.lower()
+
+
+def test_launcher_fits_limited_height_desktops_without_scaling(
+    client: TestClient,
+) -> None:
+    stylesheet = client.get("/static/styles.css")
+
+    assert stylesheet.status_code == 200
+    assert "@media (min-width: 1181px) and (max-height: 1000px)" in stylesheet.text
+    assert "(max-width: 1300px) and (max-height: 1000px)" in stylesheet.text
+    assert "height: 100dvh" in stylesheet.text
+    assert "grid-template-rows: auto minmax(0, 1fr) auto" in stylesheet.text
 
 
 def test_home_exposes_responsive_navigation_and_brand_art(client: TestClient) -> None:
