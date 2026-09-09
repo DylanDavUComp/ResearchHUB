@@ -1,6 +1,6 @@
 from collections.abc import Callable
 from math import ceil
-from typing import Annotated, TypeVar
+from typing import Annotated
 
 from fastapi import APIRouter, Depends, Query, Response, status
 from sqlalchemy.orm import Session
@@ -22,7 +22,6 @@ from app.modules.trabajos_grado.services import DegreeWorkService
 from app.modules.usuarios.models import User
 
 router = APIRouter(tags=["trabajos de grado"])
-T = TypeVar("T")
 
 db_dependency = Annotated[Session, Depends(get_db)]
 current_user_dependency = Annotated[User, Depends(get_current_user)]
@@ -35,7 +34,7 @@ def get_service(db: db_dependency) -> DegreeWorkService:
 service_dependency = Annotated[DegreeWorkService, Depends(get_service)]
 
 
-def execute(operation: Callable[[], T]) -> T:
+def execute[T](operation: Callable[[], T]) -> T:
     try:
         return operation()
     except PermissionError as exc:
