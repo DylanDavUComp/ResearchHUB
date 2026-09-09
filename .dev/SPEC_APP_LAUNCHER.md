@@ -1,9 +1,9 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.3.1"
+version: "1.3.2"
 status: "Implementado"
 language: "es-CO"
-project: "ResarchHUB"
+project: "ResearchHUB"
 ---
 
 # Selector de aplicaciones de investigacion
@@ -12,7 +12,7 @@ project: "ResarchHUB"
 
 Ofrecer una entrada institucional unica y responsive para elegir entre:
 
-- `ResarchHUB`: investigacion formativa, semilleros, modalidades de trabajo de
+- `ResearchHUB`: investigacion formativa, semilleros, modalidades de trabajo de
   grado y procesos academicos de investigacion.
 - `ResearchOS`: investigacion aplicada, capacidades, resultados y transferencia.
 - `CRIS`: informacion cientifica institucional de investigadores, grupos,
@@ -22,8 +22,8 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 
 ## Comportamiento
 
-1. La portada es la primera vista, exista o no una sesion de ResarchHUB.
-2. El control `Ingresar` de ResarchHUB abre el login o reutiliza una sesion
+1. La portada es la primera vista, exista o no una sesion de ResearchHUB.
+2. El control `Ingresar` de ResearchHUB abre el login o reutiliza una sesion
    valida.
 3. `ResearchOS` y `CRIS` solo se habilitan cuando `RESEARCH_OS_URL` y `CRIS_URL`,
    respectivamente, contienen una URL absoluta.
@@ -34,7 +34,7 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 6. Los controles disponibles comunican `Ingresar`. Sin URL configurada, el
    control permanece deshabilitado y comunica `Próximamente`; no simula
    navegacion ni disponibilidad.
-7. Cerrar sesion en ResarchHUB devuelve al selector de aplicaciones.
+7. Cerrar sesion en ResearchHUB devuelve al selector de aplicaciones.
 8. Un carrusel de oportunidades se alinea, en escritorio, con la parte superior e
    inferior de la cuadricula de aplicaciones y muestra tres flyers institucionales.
 9. El carrusel permite navegacion anterior, siguiente y directa; rota cada 4
@@ -49,7 +49,7 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 - El layout no presenta desplazamiento horizontal a 320, 390, 768 o 1440 px.
 - Los controles tienen foco visible, nombres accesibles y estado deshabilitado
   semantico.
-- ResarchHUB mantiene su autenticacion, roles y navegacion existentes.
+- ResearchHUB mantiene su autenticacion, roles y navegacion existentes.
 - El endpoint `/api/v1/meta` publica disponibilidad y URL sin exponer secretos.
 - Las integraciones externas se configuran por ambiente, no editando JavaScript.
 - El carrusel es operable con teclado, anuncia cambios manuales y excluye del foco

@@ -112,7 +112,8 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     response = client.get("/")
 
     assert response.status_code == 200
-    assert "ResarchHUB" in response.text
+    assert "ResearchHUB" in response.text
+    assert "ResarchHUB" not in response.text
     assert "ResearchHub" + "-U" not in response.text
     assert "login-view" in response.text
     assert 'id="app-launcher"' in response.text
@@ -147,7 +148,7 @@ def test_launcher_uses_consistent_action_labels(client: TestClient) -> None:
     response = client.get("/")
 
     assert response.status_code == 200
-    assert "Ingresar a ResarchHUB <span" not in response.text
+    assert "Ingresar a ResearchHUB <span" not in response.text
     assert 'Ingresar <span aria-hidden="true">&#8594;</span>' in response.text
     assert "No configurado" not in response.text
     assert '<span id="researchos-action-label">Próximamente</span>' in response.text

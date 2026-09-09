@@ -1,9 +1,9 @@
 ---
 name: researchhub-production-engineering
-description: Aplica las condiciones de producto operable y escalable de ResarchHUB. Usar en todo cambio de codigo, API, datos, seguridad, infraestructura, observabilidad, pruebas o despliegue del proyecto.
+description: Aplica las condiciones de producto operable y escalable de ResearchHUB. Usar en todo cambio de codigo, API, datos, seguridad, infraestructura, observabilidad, pruebas o despliegue del proyecto.
 ---
 
-# ResarchHUB Production Engineering
+# ResearchHUB Production Engineering
 
 Trata cada iteracion como software institucional de larga vida. No introduzcas
 atajos de demostracion, datos ficticios en runtime ni afirmaciones de produccion sin

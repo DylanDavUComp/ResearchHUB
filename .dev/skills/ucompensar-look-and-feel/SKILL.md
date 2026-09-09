@@ -1,6 +1,6 @@
 ---
 name: ucompensar-look-and-feel
-description: Aplica y verifica la identidad UCompensar 2026 en interfaces, documentos, presentaciones, imágenes y comunicaciones. Usar al crear o modificar cualquier experiencia visual o texto visible de ResarchHUB y otras piezas institucionales UCompensar.
+description: Aplica y verifica la identidad UCompensar 2026 en interfaces, documentos, presentaciones, imágenes y comunicaciones. Usar al crear o modificar cualquier experiencia visual o texto visible de ResearchHUB y otras piezas institucionales UCompensar.
 ---
 
 # UCompensar Look & Feel

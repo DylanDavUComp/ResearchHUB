@@ -1,4 +1,4 @@
-# ResarchHUB Quality Contract
+# ResearchHUB Quality Contract
 
 This contract applies to every production-bound change. A constraint may only be
 weakened through an explicit product and engineering decision recorded in an ADR.
