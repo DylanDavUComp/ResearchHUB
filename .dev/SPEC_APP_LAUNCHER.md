@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.4.0"
+version: "1.4.1"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -47,6 +47,8 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
     oportunidades y usa `SERVICES_MARKETPLACE_URL` para habilitar su acceso.
 12. Sin URL de marketplace, el panel comunica `Próximamente` y no ejecuta
     navegacion.
+13. En pantallas anchas con menos de 700 px de alto, el selector conserva las
+    cuatro columnas y reduce su densidad sin recortar tarjetas, textos o acciones.
 
 ## Criterios de aceptacion
 
