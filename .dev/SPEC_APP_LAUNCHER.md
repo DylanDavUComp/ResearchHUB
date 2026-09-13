@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.4.4"
+version: "1.4.3"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -55,10 +55,6 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 15. ResearchHUB muestra estudiantes trabajando en un aula; ResearchOS muestra
     docentes investigadores en un laboratorio IoT; CRIS muestra un dashboard con
     informacion consolidada de la investigacion institucional.
-16. Todas las imagenes conservan su encuadre completo, centrado y sin recortes en
-    cualquier tamano de pantalla. Cuando cambia la proporcion del contenedor, el
-    espacio sobrante usa un fondo neutro de marca y los textos permanecen fuera
-    del plano de la imagen.
 
 ## Criterios de aceptacion
 
@@ -72,5 +68,3 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 - Las integraciones externas se configuran por ambiente, no editando JavaScript.
 - El carrusel es operable con teclado, anuncia cambios manuales y excluye del foco
   los controles de diapositivas no visibles.
-- La totalidad de cada imagen es visible a 320, 390, 768, 1366 y 1920 px, sin que
-  los textos o controles se superpongan sobre ella.

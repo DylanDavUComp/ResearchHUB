@@ -178,7 +178,7 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=32" in response.text
+    assert "/static/styles.css?v=31" in response.text
     assert "/static/app.js?v=17" in response.text
     assert "/static/degree-work.js?v=2" in response.text
 
@@ -223,19 +223,6 @@ def test_launcher_has_compact_layout_for_short_laptop_viewports(
     assert "@media (min-width: 1181px) and (max-height: 600px)" in response.text
     assert "grid-template-rows: repeat(2, minmax(0, 1fr));" in response.text
     assert "font-size: 32px;" in response.text
-
-
-def test_brand_images_keep_the_complete_frame_at_every_viewport(
-    client: TestClient,
-) -> None:
-    response = client.get("/static/styles.css")
-
-    assert response.status_code == 200
-    assert response.text.count("object-fit: contain;") >= 4
-    assert ".opportunity-slide {" in response.text
-    assert "grid-template-rows: minmax(0, 1fr) auto;" in response.text
-    assert ".marketplace-viewport {" in response.text
-    assert "position: static;" in response.text
 
 
 def test_home_uses_the_ucompensar_2026_visual_system(client: TestClient) -> None:

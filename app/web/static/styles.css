@@ -408,9 +408,8 @@ button {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
-  background: var(--brand-gray);
 }
 
 .hero-art::before {
@@ -1167,9 +1166,8 @@ button {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
-  background: var(--brand-gray);
 }
 
 .researchos-visual {
@@ -1440,8 +1438,6 @@ button {
 .opportunity-slide {
   position: absolute;
   inset: 0;
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
   visibility: hidden;
   opacity: 0;
   transition: opacity 240ms ease;
@@ -1456,28 +1452,24 @@ button {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
-  background: var(--brand-gray);
-}
-
-.marketplace-viewport {
-  display: grid;
-  grid-template-rows: minmax(0, 1fr) auto;
 }
 
 .marketplace-viewport > img {
   width: 100%;
   height: 100%;
   display: block;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
-  background: var(--brand-gray);
 }
 
 .opportunity-copy,
 .marketplace-copy {
-  position: static;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
   padding: 18px;
   border-top: 4px solid var(--orange-600);
   background: rgba(255, 255, 255, 0.96);
@@ -2183,9 +2175,8 @@ button {
   height: 230px;
   display: block;
   border-radius: 8px;
-  object-fit: contain;
+  object-fit: cover;
   object-position: center;
-  background: var(--brand-gray);
   pointer-events: none;
 }
 
