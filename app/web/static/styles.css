@@ -408,8 +408,8 @@ button {
   width: 100%;
   height: 100%;
   display: block;
-  padding: 14px;
-  object-fit: contain;
+  object-fit: cover;
+  object-position: center;
 }
 
 .hero-art::before {
@@ -1162,12 +1162,12 @@ button {
   background: #fff7f1;
 }
 
-.researchhub-visual img {
+.application-visual > img {
   width: 100%;
   height: 100%;
-  padding: 24px;
-  object-fit: contain;
-  mix-blend-mode: multiply;
+  display: block;
+  object-fit: cover;
+  object-position: center;
 }
 
 .researchos-visual {
@@ -1725,10 +1725,6 @@ button {
 }
 
 @media (min-width: 1181px) and (max-width: 1300px) and (max-height: 1000px) {
-  .researchhub-visual img {
-    padding: 16px;
-  }
-
   .cris-emblem {
     transform: scale(0.68);
   }
@@ -1815,10 +1811,6 @@ button {
     gap: 6px;
     padding-inline: 10px;
     font-size: 12px;
-  }
-
-  .researchhub-visual img {
-    padding: 12px;
   }
 
   .researchos-mark {
@@ -2182,7 +2174,9 @@ button {
   width: min(340px, 38vw);
   height: 230px;
   display: block;
-  object-fit: contain;
+  border-radius: 8px;
+  object-fit: cover;
+  object-position: center;
   pointer-events: none;
 }
 

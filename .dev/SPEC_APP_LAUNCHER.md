@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.4.1"
+version: "1.4.2"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -49,6 +49,9 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
     navegacion.
 13. En pantallas anchas con menos de 700 px de alto, el selector conserva las
     cuatro columnas y reduce su densidad sin recortar tarjetas, textos o acciones.
+14. Las imagenes de los espacios de trabajo, oportunidades y marketplace siguen
+    la direccion fotografica UCompensar 2026: personas reales en accion, practica,
+    colaboracion y un maximo de tres colores de marca dominantes por pieza.
 
 ## Criterios de aceptacion
 

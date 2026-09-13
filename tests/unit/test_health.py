@@ -151,7 +151,19 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'id="services-marketplace"' in response.text
     assert 'id="open-services-marketplace"' in response.text
     assert "Servicios y marketplace" in response.text
-    assert "/static/brand/services-marketplace-flyer-v1.png" in response.text
+    brand_images = (
+        "researchhub-workspace-v2.webp",
+        "researchos-workspace-v2.webp",
+        "cris-workspace-v2.webp",
+        "crai-workspace-v2.webp",
+        "research-blog-flyer-v2.webp",
+        "research-opportunities-flyer-v2.webp",
+        "research-agenda-flyer-v2.webp",
+        "services-marketplace-flyer-v2.webp",
+    )
+    for image_name in brand_images:
+        assert f"/static/brand/{image_name}" in response.text
+    assert "/static/brand/degree-work-journey-v1.png" not in response.text
     assert 'data-autoplay-ms="4000"' in response.text
     assert response.text.count("data-opportunity-slide") == 3
     assert "Investigacion formativa" in response.text
@@ -166,7 +178,7 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=30" in response.text
+    assert "/static/styles.css?v=31" in response.text
     assert "/static/app.js?v=17" in response.text
     assert "/static/degree-work.js?v=2" in response.text
 
@@ -244,23 +256,27 @@ def test_launcher_fits_limited_height_desktops_without_scaling(
 
 def test_home_exposes_responsive_navigation_and_brand_art(client: TestClient) -> None:
     home = client.get("/")
-    illustration = client.get("/static/brand/degree-work-journey-v1.png")
     brand_logo = client.get("/static/brand/ucompensar-hacer-para-saber.png")
-    blog_flyer = client.get("/static/brand/research-blog-flyer-v1.png")
-    opportunities_flyer = client.get(
-        "/static/brand/research-opportunities-flyer-v1.png"
+    generated_images = (
+        "researchhub-workspace-v2.webp",
+        "researchos-workspace-v2.webp",
+        "cris-workspace-v2.webp",
+        "crai-workspace-v2.webp",
+        "research-blog-flyer-v2.webp",
+        "research-opportunities-flyer-v2.webp",
+        "research-agenda-flyer-v2.webp",
+        "services-marketplace-flyer-v2.webp",
     )
-    agenda_flyer = client.get("/static/brand/research-agenda-flyer-v1.png")
 
     assert home.status_code == 200
-    assert illustration.status_code == 200
     assert brand_logo.status_code == 200
-    assert blog_flyer.status_code == 200
-    assert opportunities_flyer.status_code == 200
-    assert agenda_flyer.status_code == 200
+    for image_name in generated_images:
+        image = client.get(f"/static/brand/{image_name}")
+        assert image.status_code == 200
+        assert image.headers["content-type"] == "image/webp"
     assert 'id="mobile-menu-button"' in home.text
     assert 'aria-controls="main-sidebar"' in home.text
     assert 'id="sidebar-backdrop"' in home.text
-    assert 'src="/static/brand/degree-work-journey-v1.png"' in home.text
+    assert "/static/brand/degree-work-journey-v1.png" not in home.text
     assert 'class="brand-logo"' in home.text
     assert 'src="/static/brand/ucompensar-hacer-para-saber.png"' in home.text

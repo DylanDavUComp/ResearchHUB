@@ -1,3 +1,4 @@
+import mimetypes
 from pathlib import Path
 
 from fastapi import FastAPI
@@ -44,6 +45,7 @@ def create_app() -> FastAPI:
     register_exception_handlers(app)
     app.include_router(api_router)
 
+    mimetypes.add_type("image/webp", ".webp")
     web_dir = Path(__file__).parent / "web"
     app.mount("/static", StaticFiles(directory=web_dir / "static"), name="static")
 
