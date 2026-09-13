@@ -152,9 +152,9 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'id="open-services-marketplace"' in response.text
     assert "Servicios y marketplace" in response.text
     brand_images = (
-        "researchhub-workspace-v2.webp",
-        "researchos-workspace-v2.webp",
-        "cris-workspace-v2.webp",
+        "researchhub-workspace-v3.webp",
+        "researchos-workspace-v3.webp",
+        "cris-workspace-v3.webp",
         "crai-workspace-v2.webp",
         "research-blog-flyer-v2.webp",
         "research-opportunities-flyer-v2.webp",
@@ -258,9 +258,9 @@ def test_home_exposes_responsive_navigation_and_brand_art(client: TestClient) ->
     home = client.get("/")
     brand_logo = client.get("/static/brand/ucompensar-hacer-para-saber.png")
     generated_images = (
-        "researchhub-workspace-v2.webp",
-        "researchos-workspace-v2.webp",
-        "cris-workspace-v2.webp",
+        "researchhub-workspace-v3.webp",
+        "researchos-workspace-v3.webp",
+        "cris-workspace-v3.webp",
         "crai-workspace-v2.webp",
         "research-blog-flyer-v2.webp",
         "research-opportunities-flyer-v2.webp",

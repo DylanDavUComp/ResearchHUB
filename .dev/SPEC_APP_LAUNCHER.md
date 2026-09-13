@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.4.2"
+version: "1.4.3"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -52,6 +52,9 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 14. Las imagenes de los espacios de trabajo, oportunidades y marketplace siguen
     la direccion fotografica UCompensar 2026: personas reales en accion, practica,
     colaboracion y un maximo de tres colores de marca dominantes por pieza.
+15. ResearchHUB muestra estudiantes trabajando en un aula; ResearchOS muestra
+    docentes investigadores en un laboratorio IoT; CRIS muestra un dashboard con
+    informacion consolidada de la investigacion institucional.
 
 ## Criterios de aceptacion
 
