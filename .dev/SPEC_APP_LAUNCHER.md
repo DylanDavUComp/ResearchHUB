@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.4.6"
+version: "1.4.7"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -64,6 +64,10 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 18. `Espacios de trabajo` presenta sus cuatro aplicaciones como una lista vertical
     continua. Cada fila alinea miniatura, informacion y accion en columnas estables;
     no usa una matriz de paneles ni contenedores visualmente independientes.
+19. El directorio adopta una composicion editorial de alto contraste: los cuatro
+    espacios comparten una superficie morada continua, numeracion secuencial y
+    ventanas fotograficas de practica real. El naranja conduce la accion principal
+    y la actualidad permanece en una columna blanca diferenciada.
 
 ## Criterios de aceptacion
 
