@@ -166,10 +166,11 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert "/static/brand/degree-work-journey-v1.png" not in response.text
     assert 'data-autoplay-ms="4000"' in response.text
     assert response.text.count("data-opportunity-slide") == 3
-    assert "Investigacion formativa" in response.text
-    assert "Investigacion aplicada y transferencia" in response.text
-    assert "Informacion cientifica institucional" in response.text
-    assert "Recursos para el aprendizaje y la investigacion" in response.text
+    html = response.content.decode("utf-8")
+    assert "Investigación formativa" in html
+    assert "Investigación aplicada y transferencia" in html
+    assert "Información científica institucional" in html
+    assert "Recursos para el aprendizaje y la investigación" in html
     assert "settings-section" in response.text
     assert "degree-work-section" in response.text
     assert "degree-work-case-form" in response.text
@@ -178,7 +179,7 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=31" in response.text
+    assert "/static/styles.css?v=32" in response.text
     assert "/static/app.js?v=17" in response.text
     assert "/static/degree-work.js?v=2" in response.text
 
@@ -223,6 +224,19 @@ def test_launcher_has_compact_layout_for_short_laptop_viewports(
     assert "@media (min-width: 1181px) and (max-height: 600px)" in response.text
     assert "grid-template-rows: repeat(2, minmax(0, 1fr));" in response.text
     assert "font-size: 32px;" in response.text
+
+
+def test_launcher_uses_the_corporate_portal_header(client: TestClient) -> None:
+    home = client.get("/")
+    stylesheet = client.get("/static/styles.css")
+
+    assert home.status_code == 200
+    assert stylesheet.status_code == 200
+    assert 'class="launcher-header-shell"' in home.text
+    assert 'class="launcher-context-kicker"' in home.text
+    assert "Portal institucional" in home.text
+    assert "border-top: 6px solid var(--purple-700);" in stylesheet.text
+    assert "box-shadow: 0 1px 0 rgba(59, 9, 112, 0.06);" in stylesheet.text
 
 
 def test_home_uses_the_ucompensar_2026_visual_system(client: TestClient) -> None:

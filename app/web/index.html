@@ -4,24 +4,29 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Investigacion UCompensar</title>
+  <title>Investigación UCompensar</title>
   <link rel="icon" href="/static/avatar.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/styles.css?v=31" />
+  <link rel="stylesheet" href="/static/styles.css?v=32" />
 </head>
 
 <body>
   <section class="app-launcher" id="app-launcher">
-    <header class="launcher-header">
-      <img class="launcher-logo" src="/static/brand/ucompensar-hacer-para-saber.png"
-        alt="UCompensar, Hacer para saber" />
-      <span class="launcher-context">Ecosistema de investigacion</span>
-    </header>
+    <div class="launcher-header-shell">
+      <header class="launcher-header">
+        <img class="launcher-logo" src="/static/brand/ucompensar-hacer-para-saber.png"
+          alt="UCompensar, Hacer para saber" />
+        <div class="launcher-context">
+          <span class="launcher-context-kicker">Portal institucional</span>
+          <strong>Ecosistema de investigación</strong>
+        </div>
+      </header>
+    </div>
 
     <div class="launcher-main" role="main">
       <div class="launcher-heading">
         <p class="launcher-eyebrow">Elige tu espacio de trabajo</p>
-        <h1>Investigacion que conecta conocimiento y accion</h1>
-        <p>Accede a la plataforma que corresponde al tipo de investigacion que vas a gestionar.</p>
+        <h1>Investigación que conecta conocimiento y acción</h1>
+        <p>Accede a la plataforma que corresponde al tipo de investigación que vas a gestionar.</p>
       </div>
 
       <div class="launcher-experience">
@@ -31,9 +36,9 @@
             <img src="/static/brand/researchhub-workspace-v3.webp" alt="" />
           </div>
           <div class="application-content">
-            <span class="application-type">Investigacion formativa</span>
+            <span class="application-type">Investigación formativa</span>
             <h2>ResearchHUB</h2>
-            <p>Semilleros, modalidades de trabajo de grado y procesos academicos de investigacion.</p>
+            <p>Semilleros, modalidades de trabajo de grado y procesos académicos de investigación.</p>
             <button class="application-action primary" id="open-researchhub" type="button"
               aria-label="Ingresar a ResearchHUB">
               Ingresar <span aria-hidden="true">&#8594;</span>
@@ -46,9 +51,9 @@
             <img src="/static/brand/researchos-workspace-v3.webp" alt="" />
           </div>
           <div class="application-content">
-            <span class="application-type">Investigacion aplicada y transferencia</span>
+            <span class="application-type">Investigación aplicada y transferencia</span>
             <h2>ResearchOS</h2>
-            <p>Proyectos aplicados, capacidades, resultados de investigacion y transferencia.</p>
+            <p>Proyectos aplicados, capacidades, resultados de investigación y transferencia.</p>
             <a class="application-action secondary is-disabled" id="open-researchos" href="#"
               aria-disabled="true" aria-label="ResearchOS: Próximamente">
               <span id="researchos-action-label">Próximamente</span>
@@ -62,7 +67,7 @@
             <img src="/static/brand/cris-workspace-v3.webp" alt="" />
           </div>
           <div class="application-content">
-            <span class="application-type">Informacion cientifica institucional</span>
+            <span class="application-type">Información científica institucional</span>
             <h2>CRIS</h2>
             <p>Investigadores, grupos, proyectos, productos, capacidades e indicadores en una fuente institucional.</p>
             <a class="application-action secondary is-disabled" id="open-cris" href="#"
@@ -78,7 +83,7 @@
             <img src="/static/brand/crai-workspace-v2.webp" alt="" />
           </div>
           <div class="application-content">
-            <span class="application-type">Recursos para el aprendizaje y la investigacion</span>
+            <span class="application-type">Recursos para el aprendizaje y la investigación</span>
             <h2>CRAI</h2>
             <p>Biblioteca, recursos digitales, servicios de consulta y apoyo para aprender e investigar.</p>
             <a class="application-action secondary is-disabled" id="open-crai" href="#"
@@ -104,9 +109,9 @@
             <article class="opportunity-slide is-active" data-opportunity-slide
               aria-roledescription="diapositiva" aria-label="1 de 3">
               <img src="/static/brand/research-blog-flyer-v2.webp" width="1024" height="1536"
-                alt="Equipo universitario leyendo y analizando resultados de investigacion" fetchpriority="high" />
+                alt="Equipo universitario leyendo y analizando resultados de investigación" fetchpriority="high" />
               <div class="opportunity-copy">
-                <span>Blog de investigacion</span>
+                <span>Blog de investigación</span>
                 <h3>Ideas para investigar y transformar</h3>
                 <p>Historias, hallazgos y conversaciones del ecosistema UCompensar.</p>
                 <a class="opportunity-link is-disabled js-research-blog-link" id="open-research-blog"
@@ -120,10 +125,10 @@
             <article class="opportunity-slide" data-opportunity-slide aria-hidden="true"
               aria-roledescription="diapositiva" aria-label="2 de 3">
               <img data-src="/static/brand/research-opportunities-flyer-v2.webp" width="1024" height="1536"
-                alt="Equipo preparando una propuesta para una convocatoria de investigacion" />
+                alt="Equipo preparando una propuesta para una convocatoria de investigación" />
               <div class="opportunity-copy">
                 <span>Convocatorias</span>
-                <h3>Encuentra tu proxima oportunidad</h3>
+                <h3>Encuentra tu próxima oportunidad</h3>
                 <p>Recursos para convertir una buena pregunta en un proyecto con impacto.</p>
                 <a class="opportunity-link is-disabled js-research-blog-link" href="#" aria-disabled="true"
                   aria-label="Blog de investigación: Próximamente">

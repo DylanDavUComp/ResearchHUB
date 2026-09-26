@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.4.3"
+version: "1.4.4"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -55,6 +55,9 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 15. ResearchHUB muestra estudiantes trabajando en un aula; ResearchOS muestra
     docentes investigadores en un laboratorio IoT; CRIS muestra un dashboard con
     informacion consolidada de la investigacion institucional.
+16. La portada se presenta como un portal institucional corporativo: cabecera de
+    marca en una superficie blanca, identificacion explicita del portal, jerarquia
+    contenida, superficies planas y naranja reservado para la accion principal.
 
 ## Criterios de aceptacion
 
@@ -68,3 +71,5 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 - Las integraciones externas se configuran por ambiente, no editando JavaScript.
 - El carrusel es operable con teclado, anuncia cambios manuales y excluye del foco
   los controles de diapositivas no visibles.
+- La portada aplica los colores, tipografias y jerarquia del Brandbook UCompensar
+  2026 sin sombras decorativas, gradientes ni alteraciones del logo maestro.
