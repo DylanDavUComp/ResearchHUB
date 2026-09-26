@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.4.7"
+version: "1.4.8"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -68,6 +68,9 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
     espacios comparten una superficie morada continua, numeracion secuencial y
     ventanas fotograficas de practica real. El naranja conduce la accion principal
     y la actualidad permanece en una columna blanca diferenciada.
+20. La numeracion `01` a `04` ocupa una franja propia a la izquierda de cada
+    fotografia. Nunca se superpone al contenido ni compite visualmente con la
+    accion de ingreso o disponibilidad.
 
 ## Criterios de aceptacion
 

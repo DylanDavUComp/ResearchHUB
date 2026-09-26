@@ -179,7 +179,7 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=35" in response.text
+    assert "/static/styles.css?v=36" in response.text
     assert "/static/app.js?v=17" in response.text
     assert "/static/degree-work.js?v=2" in response.text
 
@@ -257,7 +257,10 @@ def test_launcher_uses_a_directory_layout_instead_of_cards(
     assert 'class="heading-accent"' in home.text
     assert "counter-reset: workspace;" in stylesheet.text
     assert "counter-increment: workspace;" in stylesheet.text
-    assert "grid-template-columns: 156px minmax(0, 1fr);" in stylesheet.text
+    assert "grid-template-columns: 58px 156px minmax(0, 1fr);" in stylesheet.text
+    assert "grid-column: 1;" in stylesheet.text
+    assert "grid-column: 2;" in stylesheet.text
+    assert "grid-column: 3;" in stylesheet.text
     assert "grid-template-columns: minmax(0, 1fr) auto;" in stylesheet.text
     assert "border-left: 6px solid var(--orange-600);" in stylesheet.text
 

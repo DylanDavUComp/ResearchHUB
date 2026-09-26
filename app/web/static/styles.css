@@ -1268,7 +1268,7 @@ button {
   position: relative;
   min-width: 0;
   display: grid;
-  grid-template-columns: 156px minmax(0, 1fr);
+  grid-template-columns: 58px 156px minmax(0, 1fr);
   overflow: hidden;
   border: 0;
   border-bottom: 1px solid rgba(255, 255, 255, 0.24);
@@ -1293,16 +1293,22 @@ button {
 
 .application-card::before {
   content: "0" counter(workspace);
-  position: absolute;
-  z-index: 0;
-  right: 146px;
-  top: 50%;
-  color: rgba(255, 255, 255, 0.08);
+  grid-column: 1;
+  grid-row: 1;
+  display: grid;
+  place-items: center;
+  border-right: 1px solid rgba(255, 255, 255, 0.2);
+  background: #2d0557;
+  color: var(--brand-pink);
   font-family: var(--font-display);
-  font-size: 82px;
-  line-height: 0.8;
-  transform: translateY(-50%);
+  font-size: 27px;
+  line-height: 1;
   pointer-events: none;
+}
+
+.researchhub-card::before {
+  background: var(--orange-600);
+  color: #fff;
 }
 
 .application-card:last-child {
@@ -1310,6 +1316,8 @@ button {
 }
 
 .application-visual {
+  grid-column: 2;
+  grid-row: 1;
   min-height: 0;
   display: grid;
   place-items: center;
@@ -1487,6 +1495,8 @@ button {
 .application-content {
   position: relative;
   z-index: 1;
+  grid-column: 3;
+  grid-row: 1;
   min-width: 0;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
@@ -1544,6 +1554,28 @@ button {
   border-color: rgba(255, 255, 255, 0.76);
   background: transparent;
   color: #fff;
+}
+
+.researchhub-card,
+.crai-card {
+  transition: background-color 220ms ease;
+}
+
+.researchhub-card {
+  background: #440b7d;
+}
+
+.researchhub-card:hover,
+.crai-card:hover {
+  background: #4b0d88;
+}
+
+.application-action span:last-child {
+  transition: transform 180ms ease;
+}
+
+.application-action:not(.is-disabled):hover span:last-child {
+  transform: translateX(4px);
 }
 
 .application-action.is-disabled {
@@ -1809,7 +1841,7 @@ button {
 
 @container (max-width: 920px) {
   .application-card {
-    grid-template-columns: 136px minmax(0, 1fr);
+    grid-template-columns: 48px 136px minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr);
   }
 
@@ -1874,7 +1906,7 @@ button {
   }
 
   .application-card {
-    grid-template-columns: 136px minmax(0, 1fr);
+    grid-template-columns: 48px 136px minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr);
   }
 
@@ -2220,7 +2252,7 @@ button {
   }
 
   .application-card {
-    grid-template-columns: 136px minmax(0, 1fr);
+    grid-template-columns: 48px 136px minmax(0, 1fr);
     grid-template-rows: minmax(0, 1fr);
   }
 
@@ -2268,11 +2300,12 @@ button {
 
   .application-card {
     min-height: 220px;
-    grid-template-columns: 112px minmax(0, 1fr);
+    grid-template-columns: 36px 104px minmax(0, 1fr);
   }
 
   .application-card::before {
-    display: none;
+    display: grid;
+    font-size: 19px;
   }
 
   .application-card:nth-child(odd) {
