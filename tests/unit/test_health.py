@@ -179,7 +179,7 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=33" in response.text
+    assert "/static/styles.css?v=34" in response.text
     assert "/static/app.js?v=17" in response.text
     assert "/static/degree-work.js?v=2" in response.text
 
@@ -222,7 +222,7 @@ def test_launcher_has_compact_layout_for_short_laptop_viewports(
     assert response.status_code == 200
     assert "@media (min-width: 1181px) and (max-height: 700px)" in response.text
     assert "@media (min-width: 1181px) and (max-height: 600px)" in response.text
-    assert "grid-template-rows: repeat(2, minmax(0, 1fr));" in response.text
+    assert "grid-template-rows: repeat(4, minmax(0, 1fr));" in response.text
     assert "font-size: 32px;" in response.text
 
 
@@ -254,6 +254,8 @@ def test_launcher_uses_a_directory_layout_instead_of_cards(
     assert "Actualidad y conexiones" in home.text
     assert ".directory-header {" in stylesheet.text
     assert "border-radius: 0;" in stylesheet.text
+    assert "grid-template-columns: 136px minmax(0, 1fr);" in stylesheet.text
+    assert "grid-template-columns: minmax(0, 1fr) auto;" in stylesheet.text
 
 
 def test_home_uses_the_ucompensar_2026_visual_system(client: TestClient) -> None:

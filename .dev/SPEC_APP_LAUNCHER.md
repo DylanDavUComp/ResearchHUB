@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.4.5"
+version: "1.4.6"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -47,8 +47,8 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
     oportunidades y usa `SERVICES_MARKETPLACE_URL` para habilitar su acceso.
 12. Sin URL de marketplace, el panel comunica `Próximamente` y no ejecuta
     navegacion.
-13. En pantallas anchas con menos de 700 px de alto, el selector conserva las
-    cuatro columnas y reduce su densidad sin recortar tarjetas, textos o acciones.
+13. En pantallas anchas con menos de 700 px de alto, el selector reduce su
+    densidad sin recortar filas, textos o acciones.
 14. Las imagenes de los espacios de trabajo, oportunidades y marketplace siguen
     la direccion fotografica UCompensar 2026: personas reales en accion, practica,
     colaboracion y un maximo de tres colores de marca dominantes por pieza.
@@ -61,6 +61,9 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 17. Los accesos se organizan como un directorio editorial continuo, agrupado en
     `Espacios de trabajo` y `Actualidad y conexiones`. Las divisiones se expresan
     mediante ritmo, alineacion y separadores, no mediante tarjetas independientes.
+18. `Espacios de trabajo` presenta sus cuatro aplicaciones como una lista vertical
+    continua. Cada fila alinea miniatura, informacion y accion en columnas estables;
+    no usa una matriz de paneles ni contenedores visualmente independientes.
 
 ## Criterios de aceptacion
 
