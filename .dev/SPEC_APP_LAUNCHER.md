@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.4.4"
+version: "1.4.5"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -58,6 +58,9 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 16. La portada se presenta como un portal institucional corporativo: cabecera de
     marca en una superficie blanca, identificacion explicita del portal, jerarquia
     contenida, superficies planas y naranja reservado para la accion principal.
+17. Los accesos se organizan como un directorio editorial continuo, agrupado en
+    `Espacios de trabajo` y `Actualidad y conexiones`. Las divisiones se expresan
+    mediante ritmo, alineacion y separadores, no mediante tarjetas independientes.
 
 ## Criterios de aceptacion
 
@@ -73,3 +76,5 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
   los controles de diapositivas no visibles.
 - La portada aplica los colores, tipografias y jerarquia del Brandbook UCompensar
   2026 sin sombras decorativas, gradientes ni alteraciones del logo maestro.
+- Los espacios de trabajo y contenidos del ecosistema se leen como secciones
+  continuas, sin contenedores flotantes ni apariencia de mosaico de tarjetas.

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Investigación UCompensar</title>
   <link rel="icon" href="/static/avatar.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/styles.css?v=32" />
+  <link rel="stylesheet" href="/static/styles.css?v=33" />
 </head>
 
 <body>
@@ -30,14 +30,23 @@
       </div>
 
       <div class="launcher-experience">
-        <div class="application-grid" aria-label="Aplicaciones disponibles">
+        <section class="workspace-directory" aria-labelledby="workspace-directory-title">
+          <header class="directory-header">
+            <span class="directory-index" aria-hidden="true">01</span>
+            <div>
+              <span class="launcher-eyebrow">Plataformas institucionales</span>
+              <h2 id="workspace-directory-title">Espacios de trabajo</h2>
+            </div>
+          </header>
+
+          <div class="application-grid" aria-label="Aplicaciones disponibles">
         <article class="application-card researchhub-card">
           <div class="application-visual researchhub-visual">
             <img src="/static/brand/researchhub-workspace-v3.webp" alt="" />
           </div>
           <div class="application-content">
             <span class="application-type">Investigación formativa</span>
-            <h2>ResearchHUB</h2>
+            <h3>ResearchHUB</h3>
             <p>Semilleros, modalidades de trabajo de grado y procesos académicos de investigación.</p>
             <button class="application-action primary" id="open-researchhub" type="button"
               aria-label="Ingresar a ResearchHUB">
@@ -52,7 +61,7 @@
           </div>
           <div class="application-content">
             <span class="application-type">Investigación aplicada y transferencia</span>
-            <h2>ResearchOS</h2>
+            <h3>ResearchOS</h3>
             <p>Proyectos aplicados, capacidades, resultados de investigación y transferencia.</p>
             <a class="application-action secondary is-disabled" id="open-researchos" href="#"
               aria-disabled="true" aria-label="ResearchOS: Próximamente">
@@ -68,7 +77,7 @@
           </div>
           <div class="application-content">
             <span class="application-type">Información científica institucional</span>
-            <h2>CRIS</h2>
+            <h3>CRIS</h3>
             <p>Investigadores, grupos, proyectos, productos, capacidades e indicadores en una fuente institucional.</p>
             <a class="application-action secondary is-disabled" id="open-cris" href="#"
               aria-disabled="true" aria-label="CRIS: Próximamente">
@@ -84,7 +93,7 @@
           </div>
           <div class="application-content">
             <span class="application-type">Recursos para el aprendizaje y la investigación</span>
-            <h2>CRAI</h2>
+            <h3>CRAI</h3>
             <p>Biblioteca, recursos digitales, servicios de consulta y apoyo para aprender e investigar.</p>
             <a class="application-action secondary is-disabled" id="open-crai" href="#"
               aria-disabled="true" aria-label="CRAI: Próximamente">
@@ -93,14 +102,26 @@
             </a>
           </div>
           </article>
-        </div>
+          </div>
+        </section>
+
+        <section class="ecosystem-directory" aria-labelledby="ecosystem-directory-title">
+          <header class="directory-header">
+            <span class="directory-index" aria-hidden="true">02</span>
+            <div>
+              <span class="launcher-eyebrow">Ecosistema en movimiento</span>
+              <h2 id="ecosystem-directory-title">Actualidad y conexiones</h2>
+            </div>
+          </header>
+
+          <div class="ecosystem-grid">
 
         <aside class="opportunity-carousel" id="opportunity-carousel"
           aria-labelledby="opportunity-title" aria-roledescription="carrusel" data-autoplay-ms="4000">
           <header class="opportunity-header">
             <div>
               <span class="launcher-eyebrow">Ecosistema en movimiento</span>
-              <h2 id="opportunity-title">Oportunidades</h2>
+              <h3 id="opportunity-title">Oportunidades</h3>
             </div>
             <span class="opportunity-count" aria-hidden="true">01 / 03</span>
           </header>
@@ -112,7 +133,7 @@
                 alt="Equipo universitario leyendo y analizando resultados de investigación" fetchpriority="high" />
               <div class="opportunity-copy">
                 <span>Blog de investigación</span>
-                <h3>Ideas para investigar y transformar</h3>
+                <h4>Ideas para investigar y transformar</h4>
                 <p>Historias, hallazgos y conversaciones del ecosistema UCompensar.</p>
                 <a class="opportunity-link is-disabled js-research-blog-link" id="open-research-blog"
                   href="#" aria-disabled="true" aria-label="Blog de investigación: Próximamente">
@@ -128,7 +149,7 @@
                 alt="Equipo preparando una propuesta para una convocatoria de investigación" />
               <div class="opportunity-copy">
                 <span>Convocatorias</span>
-                <h3>Encuentra tu próxima oportunidad</h3>
+                <h4>Encuentra tu próxima oportunidad</h4>
                 <p>Recursos para convertir una buena pregunta en un proyecto con impacto.</p>
                 <a class="opportunity-link is-disabled js-research-blog-link" href="#" aria-disabled="true"
                   aria-label="Blog de investigación: Próximamente">
@@ -144,7 +165,7 @@
                 alt="Investigadores compartiendo ideas en un encuentro colaborativo" />
               <div class="opportunity-copy">
                 <span>Agenda del ecosistema</span>
-                <h3>Conocimiento que crea conexiones</h3>
+                <h4>Conocimiento que crea conexiones</h4>
                 <p>Encuentros, talleres y conversaciones para aprender haciendo.</p>
                 <a class="opportunity-link is-disabled js-research-blog-link" href="#" aria-disabled="true"
                   aria-label="Blog de investigación: Próximamente">
@@ -175,7 +196,7 @@
           <header class="marketplace-header">
             <div>
               <span class="launcher-eyebrow">Capacidades que conectan</span>
-              <h2 id="services-marketplace-title">Servicios y marketplace</h2>
+              <h3 id="services-marketplace-title">Servicios y marketplace</h3>
             </div>
           </header>
 
@@ -184,7 +205,7 @@
               alt="Equipo universitario y empresarial explorando servicios de investigación" />
             <div class="marketplace-copy">
               <span>Ecosistema de servicios</span>
-              <h3>Conecta capacidades con soluciones</h3>
+              <h4>Conecta capacidades con soluciones</h4>
               <p>Descubre laboratorios, asesorías y conocimiento especializado para impulsar tus proyectos.</p>
               <a class="opportunity-link is-disabled" id="open-services-marketplace" href="#"
                 aria-disabled="true" aria-label="Servicios y marketplace: Próximamente">
@@ -194,6 +215,8 @@
             </div>
           </div>
         </article>
+          </div>
+        </section>
       </div>
     </div>
 

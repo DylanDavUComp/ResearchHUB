@@ -179,7 +179,7 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=32" in response.text
+    assert "/static/styles.css?v=33" in response.text
     assert "/static/app.js?v=17" in response.text
     assert "/static/degree-work.js?v=2" in response.text
 
@@ -237,6 +237,23 @@ def test_launcher_uses_the_corporate_portal_header(client: TestClient) -> None:
     assert "Portal institucional" in home.text
     assert "border-top: 6px solid var(--purple-700);" in stylesheet.text
     assert "box-shadow: 0 1px 0 rgba(59, 9, 112, 0.06);" in stylesheet.text
+
+
+def test_launcher_uses_a_directory_layout_instead_of_cards(
+    client: TestClient,
+) -> None:
+    home = client.get("/")
+    stylesheet = client.get("/static/styles.css")
+
+    assert home.status_code == 200
+    assert stylesheet.status_code == 200
+    assert 'class="workspace-directory"' in home.text
+    assert 'class="ecosystem-directory"' in home.text
+    assert 'class="ecosystem-grid"' in home.text
+    assert "Espacios de trabajo" in home.text
+    assert "Actualidad y conexiones" in home.text
+    assert ".directory-header {" in stylesheet.text
+    assert "border-radius: 0;" in stylesheet.text
 
 
 def test_home_uses_the_ucompensar_2026_visual_system(client: TestClient) -> None:

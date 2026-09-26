@@ -1149,16 +1149,56 @@ button {
 
 .launcher-experience {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) repeat(2, clamp(260px, 17vw, 300px));
-  gap: 16px;
+  grid-template-columns: minmax(0, 1.65fr) minmax(520px, 1fr);
+  gap: 32px;
   align-items: stretch;
+}
+
+.workspace-directory,
+.ecosystem-directory {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+}
+
+.directory-header {
+  min-height: 66px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  border-top: 2px solid var(--purple-900);
+  border-bottom: 1px solid #cbc7d1;
+}
+
+.directory-index {
+  min-width: 42px;
+  color: var(--orange-600);
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.directory-header h2 {
+  margin: 2px 0 0;
+  color: var(--purple-900);
+  font-family: var(--font-display);
+  font-size: 27px;
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.directory-header .launcher-eyebrow {
+  font-size: 10px;
 }
 
 .application-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-template-rows: repeat(2, minmax(0, 1fr));
-  gap: 16px;
+  gap: 0;
+  background: #fff;
   container-type: inline-size;
 }
 
@@ -1167,15 +1207,19 @@ button {
   display: grid;
   grid-template-columns: minmax(180px, 42%) minmax(0, 1fr);
   overflow: hidden;
-  border: 1px solid #d5d2da;
-  border-top: 3px solid var(--purple-900);
-  border-radius: 4px;
-  background: #fff;
+  border: 0;
+  border-bottom: 1px solid #d5d2da;
+  border-radius: 0;
+  background: transparent;
   box-shadow: none;
 }
 
-.researchhub-card {
-  border-top-color: var(--orange-600);
+.application-card:nth-child(odd) {
+  border-right: 1px solid #d5d2da;
+}
+
+.application-card:nth-last-child(-n + 2) {
+  border-bottom: 0;
 }
 
 .application-visual {
@@ -1355,7 +1399,7 @@ button {
   padding: 22px 20px 20px;
 }
 
-.application-content h2 {
+.application-content h3 {
   margin: 5px 0 8px;
   color: var(--purple-900);
   font-family: var(--font-display);
@@ -1410,11 +1454,22 @@ button {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
   overflow: hidden;
-  border: 1px solid #d5d2da;
-  border-top: 3px solid var(--purple-900);
-  border-radius: 4px;
+  border: 0;
+  border-radius: 0;
   background: #fff;
   box-shadow: none;
+}
+
+.ecosystem-grid {
+  min-width: 0;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  background: #fff;
+}
+
+.opportunity-carousel {
+  border-right: 1px solid #d5d2da;
 }
 
 .marketplace-workspace {
@@ -1433,8 +1488,8 @@ button {
   background: #fbfafc;
 }
 
-.opportunity-header h2,
-.marketplace-header h2 {
+.opportunity-header h3,
+.marketplace-header h3 {
   margin: 3px 0 0;
   color: var(--purple-900);
   font-family: var(--font-display);
@@ -1512,8 +1567,8 @@ button {
   text-transform: uppercase;
 }
 
-.opportunity-copy h3,
-.marketplace-copy h3 {
+.opportunity-copy h4,
+.marketplace-copy h4 {
   margin: 5px 0 7px;
   color: var(--purple-900);
   font-family: var(--font-display);
@@ -1634,12 +1689,12 @@ button {
 
 @container (max-width: 920px) {
   .application-card {
-    grid-template-columns: 1fr;
-    grid-template-rows: 170px minmax(0, 1fr);
+    grid-template-columns: minmax(130px, 36%) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
   }
 
   .application-visual {
-    min-height: 170px;
+    min-height: 0;
   }
 }
 
@@ -1681,9 +1736,21 @@ button {
   }
 
   .launcher-experience,
+  .workspace-directory,
+  .ecosystem-directory,
+  .ecosystem-grid,
   .application-grid,
   .application-card {
     min-height: 0;
+  }
+
+  .directory-header {
+    min-height: 54px;
+    padding-block: 7px;
+  }
+
+  .directory-header h2 {
+    font-size: 24px;
   }
 
   .application-card {
@@ -1696,22 +1763,27 @@ button {
   }
 
   .application-content {
-    padding: 12px 16px;
+    padding: 10px 14px;
   }
 
-  .application-content h2 {
-    margin: 4px 0 6px;
-    font-size: 29px;
+  .application-type {
+    font-size: 11px;
+    line-height: 1.2;
+  }
+
+  .application-content h3 {
+    margin: 3px 0 5px;
+    font-size: 26px;
   }
 
   .application-content p {
-    margin-bottom: 12px;
-    font-size: 14px;
-    line-height: 1.35;
+    margin-bottom: 8px;
+    font-size: 13px;
+    line-height: 1.25;
   }
 
   .application-action {
-    min-height: 42px;
+    min-height: 36px;
     gap: 8px;
     padding-inline: 12px;
     font-size: 14px;
@@ -1728,8 +1800,8 @@ button {
     padding: 14px;
   }
 
-  .opportunity-copy h3,
-  .marketplace-copy h3 {
+  .opportunity-copy h4,
+  .marketplace-copy h4 {
     font-size: 24px;
   }
 
@@ -1805,9 +1877,31 @@ button {
     line-height: 1.25;
   }
 
-  .launcher-experience,
-  .application-grid {
+  .launcher-experience {
     gap: 12px;
+  }
+
+  .application-grid {
+    gap: 0;
+  }
+
+  .directory-header {
+    min-height: 42px;
+    gap: 10px;
+    padding-block: 4px;
+  }
+
+  .directory-index {
+    min-width: 30px;
+    font-size: 11px;
+  }
+
+  .directory-header h2 {
+    font-size: 20px;
+  }
+
+  .directory-header .launcher-eyebrow {
+    font-size: 8px;
   }
 
   .application-grid {
@@ -1823,7 +1917,7 @@ button {
     line-height: 1.1;
   }
 
-  .application-content h2 {
+  .application-content h3 {
     margin: 2px 0 4px;
     font-size: 24px;
     line-height: 1;
@@ -1862,8 +1956,8 @@ button {
     padding: 6px 10px;
   }
 
-  .opportunity-header h2,
-  .marketplace-header h2 {
+  .opportunity-header h3,
+  .marketplace-header h3 {
     font-size: 21px;
     line-height: 0.98;
   }
@@ -1878,8 +1972,8 @@ button {
     padding: 9px 10px;
   }
 
-  .opportunity-copy h3,
-  .marketplace-copy h3 {
+  .opportunity-copy h4,
+  .marketplace-copy h4 {
     margin: 3px 0 4px;
     font-size: 19px;
     line-height: 1;
@@ -1925,7 +2019,7 @@ button {
     padding: 6px 10px;
   }
 
-  .application-content h2 {
+  .application-content h3 {
     font-size: 22px;
   }
 
@@ -1945,8 +2039,8 @@ button {
     padding: 7px 9px;
   }
 
-  .opportunity-copy h3,
-  .marketplace-copy h3 {
+  .opportunity-copy h4,
+  .marketplace-copy h4 {
     font-size: 17px;
   }
 }
@@ -1989,12 +2083,12 @@ button {
 
 @media (max-width: 980px) {
   .application-card {
-    grid-template-columns: 1fr;
-    grid-template-rows: 170px 1fr;
+    grid-template-columns: minmax(130px, 36%) minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
   }
 
   .application-visual {
-    min-height: 170px;
+    min-height: 0;
   }
 }
 
@@ -2033,12 +2127,38 @@ button {
     grid-template-columns: 1fr;
   }
 
+  .application-card {
+    min-height: 220px;
+    grid-template-columns: 112px minmax(0, 1fr);
+  }
+
+  .application-card:nth-child(odd) {
+    border-right: 0;
+  }
+
+  .application-card:nth-last-child(-n + 2) {
+    border-bottom: 1px solid #d5d2da;
+  }
+
+  .application-card:last-child {
+    border-bottom: 0;
+  }
+
   .application-content {
-    padding: 22px;
+    padding: 20px;
   }
 
   .application-action {
-    width: 100%;
+    width: auto;
+  }
+
+  .ecosystem-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .opportunity-carousel {
+    border-right: 0;
+    border-bottom: 1px solid #d5d2da;
   }
 
   .opportunity-carousel,
@@ -2073,7 +2193,7 @@ button {
     height: 520px;
   }
 
-  .opportunity-copy h3 {
+  .opportunity-copy h4 {
     font-size: 24px;
   }
 }
