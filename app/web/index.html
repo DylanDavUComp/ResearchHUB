@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Investigación UCompensar</title>
   <link rel="icon" href="/static/avatar.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/styles.css?v=36" />
+  <link rel="stylesheet" href="/static/styles.css?v=37" />
 </head>
 
 <body>
@@ -43,10 +43,11 @@
           </header>
 
           <div class="application-grid" aria-label="Aplicaciones disponibles">
-        <article class="application-card researchhub-card">
-          <div class="application-visual researchhub-visual">
+        <article class="application-card researchhub-card is-selected">
+          <button class="application-visual researchhub-visual" type="button" data-workspace-select
+            aria-label="Seleccionar ResearchHUB" aria-pressed="true">
             <img src="/static/brand/researchhub-workspace-v3.webp" alt="" />
-          </div>
+          </button>
           <div class="application-content">
             <span class="application-type">Investigación formativa</span>
             <h3>ResearchHUB</h3>
@@ -59,9 +60,10 @@
         </article>
 
         <article class="application-card researchos-card">
-          <div class="application-visual researchos-visual">
+          <button class="application-visual researchos-visual" type="button" data-workspace-select
+            aria-label="Seleccionar ResearchOS" aria-pressed="false">
             <img src="/static/brand/researchos-workspace-v3.webp" alt="" />
-          </div>
+          </button>
           <div class="application-content">
             <span class="application-type">Investigación aplicada y transferencia</span>
             <h3>ResearchOS</h3>
@@ -75,9 +77,10 @@
         </article>
 
         <article class="application-card cris-card">
-          <div class="application-visual cris-visual">
+          <button class="application-visual cris-visual" type="button" data-workspace-select
+            aria-label="Seleccionar CRIS" aria-pressed="false">
             <img src="/static/brand/cris-workspace-v3.webp" alt="" />
-          </div>
+          </button>
           <div class="application-content">
             <span class="application-type">Información científica institucional</span>
             <h3>CRIS</h3>
@@ -91,9 +94,10 @@
         </article>
 
           <article class="application-card crai-card">
-          <div class="application-visual crai-visual">
+          <button class="application-visual crai-visual" type="button" data-workspace-select
+            aria-label="Seleccionar CRAI" aria-pressed="false">
             <img src="/static/brand/crai-workspace-v2.webp" alt="" />
-          </div>
+          </button>
           <div class="application-content">
             <span class="application-type">Recursos para el aprendizaje y la investigación</span>
             <h3>CRAI</h3>
@@ -883,7 +887,7 @@
     </main>
   </div>
 
-  <script src="/static/app.js?v=17"></script>
+  <script src="/static/app.js?v=18"></script>
   <script src="/static/degree-work.js?v=2"></script>
 </body>
 

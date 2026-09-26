@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.4.8"
+version: "1.4.9"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -71,6 +71,9 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 20. La numeracion `01` a `04` ocupa una franja propia a la izquierda de cada
     fotografia. Nunca se superpone al contenido ni compite visualmente con la
     accion de ingreso o disponibilidad.
+21. Las fotografias de los espacios son circulares y operan como controles de
+    seleccion accesibles. Seleccionar la imagen o la accion marca toda la fila en
+    naranja, mantiene texto morado de alto contraste y desmarca las demas filas.
 
 ## Criterios de aceptacion
 

@@ -1306,11 +1306,6 @@ button {
   pointer-events: none;
 }
 
-.researchhub-card::before {
-  background: var(--orange-600);
-  color: #fff;
-}
-
 .application-card:last-child {
   border-bottom: 0;
 }
@@ -1322,6 +1317,9 @@ button {
   display: grid;
   place-items: center;
   overflow: hidden;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
 }
 
 .researchhub-visual {
@@ -1329,11 +1327,14 @@ button {
 }
 
 .application-visual > img {
-  width: 100%;
-  height: 100%;
+  width: 66%;
+  height: auto;
+  aspect-ratio: 1;
   display: block;
   object-fit: cover;
   object-position: center;
+  border: 3px solid rgba(255, 255, 255, 0.82);
+  border-radius: 50%;
   transition: transform 320ms ease, filter 320ms ease;
 }
 
@@ -1568,6 +1569,42 @@ button {
 .researchhub-card:hover,
 .crai-card:hover {
   background: #4b0d88;
+}
+
+.application-card.is-selected,
+.application-card.is-selected:hover {
+  background: var(--orange-600);
+}
+
+.application-card.is-selected::before {
+  background: #fff;
+  color: var(--purple-900);
+}
+
+.application-card.is-selected .application-type,
+.application-card.is-selected .application-content h3,
+.application-card.is-selected .application-content p {
+  color: var(--purple-900);
+}
+
+.application-card.is-selected .application-visual > img {
+  border-color: #fff;
+  box-shadow: 0 0 0 3px var(--purple-900);
+}
+
+.application-card.is-selected .application-action {
+  border-color: var(--purple-900);
+  background: var(--purple-900);
+  color: #fff;
+}
+
+.application-card.is-selected .application-action.is-disabled {
+  background: rgba(59, 9, 112, 0.12);
+  color: var(--purple-900);
+}
+
+.workspace-directory .application-visual {
+  background: transparent;
 }
 
 .application-action span:last-child {
@@ -2306,6 +2343,10 @@ button {
   .application-card::before {
     display: grid;
     font-size: 19px;
+  }
+
+  .application-visual > img {
+    width: 78%;
   }
 
   .application-card:nth-child(odd) {

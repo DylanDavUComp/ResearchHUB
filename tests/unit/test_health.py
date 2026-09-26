@@ -179,8 +179,8 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=36" in response.text
-    assert "/static/app.js?v=17" in response.text
+    assert "/static/styles.css?v=37" in response.text
+    assert "/static/app.js?v=18" in response.text
     assert "/static/degree-work.js?v=2" in response.text
 
 
@@ -212,6 +212,20 @@ def test_launcher_uses_consistent_action_labels(client: TestClient) -> None:
     assert "Ingresar al CRAI" not in script.text
     assert "Leer en el blog" not in script.text
     assert "elements.openServicesMarketplace.addEventListener" in script.text
+
+
+def test_workspace_can_be_selected_from_image_or_action(client: TestClient) -> None:
+    home = client.get("/")
+    script = client.get("/static/app.js")
+    stylesheet = client.get("/static/styles.css")
+
+    assert home.text.count("data-workspace-select") == 4
+    assert 'aria-pressed="true"' in home.text
+    assert "function selectWorkspace(card)" in script.text
+    assert "elements.workspaceSelectors.forEach" in script.text
+    assert "elements.workspaceActions.forEach" in script.text
+    assert ".application-card.is-selected" in stylesheet.text
+    assert "border-radius: 50%;" in stylesheet.text
 
 
 def test_launcher_has_compact_layout_for_short_laptop_viewports(

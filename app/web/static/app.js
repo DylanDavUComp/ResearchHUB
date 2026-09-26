@@ -79,6 +79,9 @@ async function apiFetch(url, options = {}) {
 
 const elements = {
   appLauncher: document.querySelector("#app-launcher"),
+  workspaceCards: document.querySelectorAll(".application-card"),
+  workspaceSelectors: document.querySelectorAll("[data-workspace-select]"),
+  workspaceActions: document.querySelectorAll(".application-action"),
   openResearchHub: document.querySelector("#open-researchhub"),
   openResearchOs: document.querySelector("#open-researchos"),
   researchOsActionLabel: document.querySelector("#researchos-action-label"),
@@ -683,6 +686,32 @@ elements.logoutButtons.forEach((button) => {
     event.preventDefault();
     clearSession();
     showLauncher();
+  });
+});
+
+function selectWorkspace(card) {
+  if (!card) {
+    return;
+  }
+
+  elements.workspaceCards.forEach((workspaceCard) => {
+    const isSelected = workspaceCard === card;
+    workspaceCard.classList.toggle("is-selected", isSelected);
+    workspaceCard
+      .querySelector("[data-workspace-select]")
+      ?.setAttribute("aria-pressed", String(isSelected));
+  });
+}
+
+elements.workspaceSelectors.forEach((selector) => {
+  selector.addEventListener("click", () => {
+    selectWorkspace(selector.closest(".application-card"));
+  });
+});
+
+elements.workspaceActions.forEach((action) => {
+  action.addEventListener("click", () => {
+    selectWorkspace(action.closest(".application-card"));
   });
 });
 
