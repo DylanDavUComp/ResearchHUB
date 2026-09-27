@@ -90,8 +90,10 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
     el primer saludo `Hola.` en una burbuja de dialogo.
 26. Mientras no existe interaccion, R2C2 elige aleatoriamente entre patrullar,
     descansar, jugar, investigar, estudiar, prototipar, experimentar en laboratorio,
-    programar, analizar datos, crear, innovar, emprender, colaborar y presentar
-    resultados. Cada seleccion del asistente interrumpe su actividad, presenta una
+    programar, analizar datos, crear, innovar, emprender, colaborar, presentar
+    resultados, jugar futbol, graduarse, entrar a la Matrix, construir robots e
+    idear soluciones. Una burbuja visible describe cada actividad en lenguaje
+    explicito. Cada seleccion del asistente interrumpe su actividad, presenta una
     respuesta breve y reinicia una espera de 60 segundos; al cumplirse ese periodo
     sin nuevas interacciones, retoma su rutina autonoma.
 

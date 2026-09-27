@@ -82,6 +82,7 @@ const elements = {
   r2c2Assistant: document.querySelector("#r2c2-assistant"),
   r2c2Robot: document.querySelector("#r2c2-robot"),
   r2c2Speech: document.querySelector("#r2c2-speech"),
+  r2c2ActivitySpeech: document.querySelector("#r2c2-activity-speech"),
   workspaceCards: document.querySelectorAll(".application-card"),
   workspaceSelectors: document.querySelectorAll("[data-workspace-select]"),
   workspaceActions: document.querySelectorAll(".application-action"),
@@ -741,6 +742,11 @@ const researchAssistantActivities = [
   "entrepreneurship",
   "collaborate",
   "present",
+  "football",
+  "graduate",
+  "matrix",
+  "buildRobot",
+  "brainstorm",
 ];
 
 const researchAssistantActivityLabels = {
@@ -758,6 +764,33 @@ const researchAssistantActivityLabels = {
   entrepreneurship: "impulsando un emprendimiento",
   collaborate: "colaborando con su equipo",
   present: "presentando resultados",
+  football: "jugando fútbol",
+  graduate: "graduándose de la universidad",
+  matrix: "entrando a la Matrix",
+  buildRobot: "construyendo un robot",
+  brainstorm: "ideando nuevas soluciones",
+};
+
+const researchAssistantActivityMessages = {
+  patrol: "Estoy explorando el ecosistema.",
+  rest: "Estoy tomando una pausa.",
+  play: "Estoy jugando un momento.",
+  research: "Estoy investigando.",
+  study: "Estoy estudiando.",
+  prototype: "Estoy creando un prototipo.",
+  experiment: "Estoy experimentando en el laboratorio.",
+  code: "Estoy programando una solución.",
+  analyze: "Estoy analizando datos.",
+  create: "Estoy creando una solución.",
+  innovate: "Estoy desarrollando una innovación.",
+  entrepreneurship: "Estoy impulsando un emprendimiento.",
+  collaborate: "Estoy colaborando con mi equipo.",
+  present: "Estoy presentando resultados.",
+  football: "¡Estoy jugando fútbol!",
+  graduate: "¡Me estoy graduando de la universidad!",
+  matrix: "Estoy entrando a la Matrix.",
+  buildRobot: "Estoy construyendo un robot.",
+  brainstorm: "Estoy ideando nuevas soluciones.",
 };
 
 const researchAssistantActivityIcons = {
@@ -775,6 +808,11 @@ const researchAssistantActivityIcons = {
   entrepreneurship: "↗",
   collaborate: "∞",
   present: "▤",
+  football: "⚽",
+  graduate: "🎓",
+  matrix: "01",
+  buildRobot: "⚙",
+  brainstorm: "✦",
 };
 
 const researchAssistantReplies = [
@@ -822,9 +860,9 @@ function findAssistantPatrolArea() {
 
   const headingRect = heading.getBoundingClientRect();
   const descriptionRect = description.getBoundingClientRect();
-  const assistantWidth = 78;
+  const assistantWidth = 92;
   const assistantHeight = 104;
-  const speechClearance = 76;
+  const speechClearance = 112;
   const left = Math.ceil(getTextRightEdge(title) + speechClearance);
   const right = Math.floor(
     descriptionRect.left - speechClearance - assistantWidth,
@@ -874,6 +912,9 @@ function setResearchAssistantActivity(activity) {
     "is-visible",
     Boolean(researchAssistantActivityIcons[activity]),
   );
+  elements.r2c2ActivitySpeech.querySelector("span").textContent =
+    researchAssistantActivityMessages[activity];
+  elements.r2c2ActivitySpeech.hidden = researchAssistantState.stopped;
   elements.r2c2Robot.setAttribute(
     "aria-label",
     `Interactuar con R2C2. Está ${researchAssistantActivityLabels[activity]}.`,
@@ -926,7 +967,11 @@ function stopResearchAssistant() {
   researchAssistantActivities.forEach((activity) => {
     elements.r2c2Assistant.classList.remove(`activity-${activity}`);
   });
+  elements.r2c2Assistant
+    .querySelector(".r2c2-activity-icon")
+    .classList.remove("is-visible");
   elements.r2c2Assistant.classList.add("is-stopped");
+  elements.r2c2ActivitySpeech.hidden = true;
   elements.r2c2Speech.hidden = false;
   const reply = researchAssistantReplies[
     researchAssistantState.interactionCount % researchAssistantReplies.length
