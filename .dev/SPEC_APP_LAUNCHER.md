@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.4.12"
+version: "1.4.13"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -84,6 +84,10 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
     recorte circular: prototipado estudiantil para ResearchHUB, laboratorio IoT
     para ResearchOS, red consolidada de investigadores y resultados para CRIS, y
     biblioteca fisica-digital con acompanamiento experto para CRAI.
+25. R2C2, asistente visual de investigacion, patrulla unicamente el corredor blanco
+    disponible entre el titular y el texto de apoyo. Se oculta si no existe espacio
+    seguro, respeta movimiento reducido y, al seleccionarlo, se detiene y presenta
+    el primer saludo `Hola.` en una burbuja de dialogo.
 
 ## Criterios de aceptacion
 

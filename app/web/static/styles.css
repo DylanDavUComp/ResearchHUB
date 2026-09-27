@@ -1920,6 +1920,224 @@ button {
   background: var(--purple-700);
 }
 
+.research-assistant {
+  position: fixed;
+  z-index: 40;
+  width: 78px;
+  height: 104px;
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    left 3200ms linear,
+    top 3200ms ease-in-out,
+    opacity 180ms ease;
+}
+
+.research-assistant.is-ready {
+  opacity: 1;
+}
+
+.research-assistant.is-stopped {
+  transition: opacity 180ms ease;
+}
+
+.r2c2-robot {
+  position: relative;
+  width: 72px;
+  height: 96px;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.research-assistant.is-ready:not(.is-stopped) .r2c2-robot {
+  animation: r2c2-bob 760ms ease-in-out infinite alternate;
+}
+
+.r2c2-antenna {
+  position: absolute;
+  top: 0;
+  left: 35px;
+  width: 3px;
+  height: 16px;
+  border-radius: 2px;
+  background: var(--purple-900);
+}
+
+.r2c2-antenna::after {
+  content: "";
+  position: absolute;
+  top: -3px;
+  left: -3px;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--orange-600);
+}
+
+.r2c2-head {
+  position: absolute;
+  z-index: 2;
+  top: 12px;
+  left: 8px;
+  width: 56px;
+  height: 30px;
+  border: 3px solid var(--purple-900);
+  border-radius: 28px 28px 7px 7px;
+  background: #fff;
+}
+
+.research-assistant.is-ready:not(.is-stopped) .r2c2-head {
+  animation: r2c2-look 2100ms ease-in-out infinite alternate;
+  transform-origin: 50% 100%;
+}
+
+.r2c2-eye {
+  position: absolute;
+  top: 8px;
+  left: 20px;
+  width: 12px;
+  height: 12px;
+  border: 3px solid var(--purple-900);
+  border-radius: 50%;
+  background: var(--orange-600);
+}
+
+.r2c2-signal {
+  position: absolute;
+  top: 10px;
+  right: 6px;
+  width: 5px;
+  height: 9px;
+  background: var(--brand-green);
+}
+
+.r2c2-body {
+  position: absolute;
+  z-index: 1;
+  top: 38px;
+  left: 7px;
+  width: 58px;
+  height: 48px;
+  overflow: hidden;
+  border: 3px solid var(--purple-900);
+  border-radius: 7px 7px 20px 20px;
+  background: #fff;
+}
+
+.r2c2-name {
+  position: absolute;
+  top: 7px;
+  left: 10px;
+  color: var(--purple-900);
+  font-size: 10px;
+  font-weight: 900;
+  letter-spacing: 0;
+}
+
+.r2c2-panel {
+  position: absolute;
+  right: 0;
+  bottom: 8px;
+  left: 0;
+  height: 13px;
+  border-block: 3px solid var(--purple-900);
+  background: var(--orange-600);
+}
+
+.r2c2-light {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--brand-green);
+}
+
+.r2c2-foot {
+  position: absolute;
+  bottom: 2px;
+  width: 24px;
+  height: 14px;
+  border: 3px solid var(--purple-900);
+  border-radius: 4px 4px 10px 10px;
+  background: #fff;
+}
+
+.r2c2-foot-left {
+  left: 5px;
+  transform: rotate(-8deg);
+}
+
+.r2c2-foot-right {
+  right: 5px;
+  transform: rotate(8deg);
+}
+
+.r2c2-speech {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  left: 50%;
+  width: 116px;
+  padding: 9px 12px;
+  border: 2px solid var(--purple-900);
+  border-radius: 4px;
+  background: #fff;
+  color: var(--ink);
+  box-shadow: 5px 5px 0 rgba(59, 9, 112, 0.18);
+  font-size: 14px;
+  line-height: 1.15;
+  text-align: left;
+  transform: translateX(-50%);
+}
+
+.r2c2-speech::after {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: calc(50% - 7px);
+  width: 12px;
+  height: 12px;
+  border-right: 2px solid var(--purple-900);
+  border-bottom: 2px solid var(--purple-900);
+  background: #fff;
+  transform: translateY(-6px) rotate(45deg);
+}
+
+.r2c2-speech strong,
+.r2c2-speech span {
+  display: block;
+}
+
+.r2c2-speech strong {
+  color: var(--purple-900);
+  font-size: 11px;
+}
+
+@keyframes r2c2-bob {
+  from {
+    transform: translateY(0) rotate(-1deg);
+  }
+
+  to {
+    transform: translateY(-4px) rotate(1deg);
+  }
+}
+
+@keyframes r2c2-look {
+  from {
+    transform: rotate(-5deg);
+  }
+
+  to {
+    transform: rotate(5deg);
+  }
+}
+
 .launcher-footer {
   min-height: 68px;
   display: flex;
@@ -2355,6 +2573,10 @@ button {
 }
 
 @media (max-width: 980px) {
+  .research-assistant {
+    display: none;
+  }
+
   .launcher-heading {
     grid-template-columns: minmax(0, 1fr);
     row-gap: 12px;

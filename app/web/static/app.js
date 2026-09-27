@@ -79,6 +79,9 @@ async function apiFetch(url, options = {}) {
 
 const elements = {
   appLauncher: document.querySelector("#app-launcher"),
+  r2c2Assistant: document.querySelector("#r2c2-assistant"),
+  r2c2Robot: document.querySelector("#r2c2-robot"),
+  r2c2Speech: document.querySelector("#r2c2-speech"),
   workspaceCards: document.querySelectorAll(".application-card"),
   workspaceSelectors: document.querySelectorAll("[data-workspace-select]"),
   workspaceActions: document.querySelectorAll(".application-action"),
@@ -715,6 +718,133 @@ elements.workspaceActions.forEach((action) => {
   });
 });
 
+const researchAssistantState = {
+  timer: null,
+  stopped: false,
+  moveRight: true,
+};
+
+function getTextRightEdge(element) {
+  const walker = document.createTreeWalker(
+    element,
+    NodeFilter.SHOW_TEXT,
+  );
+  const rightEdges = [];
+  let textNode = walker.nextNode();
+
+  while (textNode) {
+    if (textNode.textContent.trim()) {
+      const range = document.createRange();
+      range.selectNodeContents(textNode);
+      Array.from(range.getClientRects()).forEach((rect) => {
+        rightEdges.push(rect.right);
+      });
+    }
+    textNode = walker.nextNode();
+  }
+
+  return rightEdges.length
+    ? Math.max(...rightEdges)
+    : element.getBoundingClientRect().right;
+}
+
+function findAssistantPatrolArea() {
+  if (window.innerWidth <= 980 || elements.appLauncher.classList.contains("is-hidden")) {
+    return null;
+  }
+
+  const heading = document.querySelector(".launcher-heading");
+  const title = heading?.querySelector("h1");
+  const description = heading?.querySelector("p:last-child");
+  if (!heading || !title || !description) {
+    return null;
+  }
+
+  const headingRect = heading.getBoundingClientRect();
+  const descriptionRect = description.getBoundingClientRect();
+  const assistantWidth = 78;
+  const assistantHeight = 104;
+  const speechClearance = 76;
+  const left = Math.ceil(getTextRightEdge(title) + speechClearance);
+  const right = Math.floor(
+    descriptionRect.left - speechClearance - assistantWidth,
+  );
+  const top = Math.ceil(headingRect.top + 54);
+  const bottom = Math.max(top, Math.floor(headingRect.bottom - assistantHeight));
+
+  if (right - left < 72) {
+    return null;
+  }
+
+  return { left, right, top, bottom };
+}
+
+function moveResearchAssistant() {
+  if (researchAssistantState.stopped) {
+    return;
+  }
+
+  const area = findAssistantPatrolArea();
+  if (!area) {
+    elements.r2c2Assistant.hidden = true;
+    return;
+  }
+
+  const targetX = researchAssistantState.moveRight ? area.right : area.left;
+  const verticalRange = Math.max(0, area.bottom - area.top);
+  const targetY = area.top + Math.round(Math.random() * verticalRange);
+  researchAssistantState.moveRight = !researchAssistantState.moveRight;
+
+  elements.r2c2Assistant.hidden = false;
+  elements.r2c2Assistant.style.left = `${targetX}px`;
+  elements.r2c2Assistant.style.top = `${targetY}px`;
+  elements.r2c2Assistant.classList.add("is-ready");
+  researchAssistantState.timer = window.setTimeout(
+    moveResearchAssistant,
+    3600,
+  );
+}
+
+function stopResearchAssistant() {
+  researchAssistantState.stopped = true;
+  window.clearTimeout(researchAssistantState.timer);
+  elements.r2c2Assistant.classList.add("is-stopped");
+  elements.r2c2Speech.hidden = false;
+  elements.r2c2Robot.setAttribute("aria-label", "R2C2 detenido. Hola.");
+}
+
+function initializeResearchAssistant() {
+  const area = findAssistantPatrolArea();
+  if (!area) {
+    elements.r2c2Assistant.hidden = true;
+    return;
+  }
+
+  elements.r2c2Assistant.hidden = false;
+  elements.r2c2Assistant.style.left = `${area.left}px`;
+  elements.r2c2Assistant.style.top = `${area.top}px`;
+  elements.r2c2Assistant.classList.add("is-ready");
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    elements.r2c2Assistant.classList.add("is-stopped");
+    return;
+  }
+
+  researchAssistantState.timer = window.setTimeout(
+    moveResearchAssistant,
+    700,
+  );
+}
+
+elements.r2c2Robot.addEventListener("click", stopResearchAssistant);
+window.addEventListener("resize", () => {
+  if (researchAssistantState.stopped) {
+    return;
+  }
+  window.clearTimeout(researchAssistantState.timer);
+  initializeResearchAssistant();
+});
+
 elements.openResearchHub.addEventListener("click", async () => {
   const currentUser = await getSessionUser();
   if (currentUser) {
@@ -956,3 +1086,4 @@ function configureExternalApplication(application, link, label, destinationName)
 }
 
 initializeApp();
+window.setTimeout(initializeResearchAssistant, 500);

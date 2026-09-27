@@ -179,8 +179,8 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=39" in response.text
-    assert "/static/app.js?v=18" in response.text
+    assert "/static/styles.css?v=40" in response.text
+    assert "/static/app.js?v=20" in response.text
     assert "/static/degree-work.js?v=2" in response.text
 
 
@@ -229,6 +229,24 @@ def test_workspace_can_be_selected_from_image_or_action(client: TestClient) -> N
     assert ".application-card:focus-within," in stylesheet.text
     assert ".application-grid:has(.application-card:hover)" in stylesheet.text
     assert "border-radius: 50%;" in stylesheet.text
+
+
+def test_r2c2_patrols_safe_whitespace_and_greets_on_click(
+    client: TestClient,
+) -> None:
+    home = client.get("/")
+    script = client.get("/static/app.js")
+    stylesheet = client.get("/static/styles.css")
+
+    assert 'id="r2c2-assistant"' in home.text
+    assert 'id="r2c2-robot"' in home.text
+    assert 'aria-live="polite"' in home.text
+    assert "Hola." in home.text
+    assert "function findAssistantPatrolArea()" in script.text
+    assert "function stopResearchAssistant()" in script.text
+    assert 'elements.r2c2Robot.addEventListener("click"' in script.text
+    assert ".r2c2-speech" in stylesheet.text
+    assert ".research-assistant.is-stopped" in stylesheet.text
 
 
 def test_launcher_has_compact_layout_for_short_laptop_viewports(
