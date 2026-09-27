@@ -719,10 +719,35 @@ elements.workspaceActions.forEach((action) => {
 });
 
 const researchAssistantState = {
-  timer: null,
+  activityTimer: null,
+  interactionTimer: null,
   stopped: false,
   moveRight: true,
+  interactionCount: 0,
 };
+
+const researchAssistantActivities = [
+  "patrol",
+  "rest",
+  "play",
+  "research",
+  "study",
+];
+
+const researchAssistantActivityLabels = {
+  patrol: "recorriendo el espacio",
+  rest: "descansando",
+  play: "jugando",
+  research: "investigando",
+  study: "estudiando",
+};
+
+const researchAssistantReplies = [
+  "Hola.",
+  "¿Qué quieres investigar?",
+  "Estoy listo para ayudarte.",
+  "Podemos aprenderlo juntos.",
+];
 
 function getTextRightEdge(element) {
   const walker = document.createTreeWalker(
@@ -799,18 +824,77 @@ function moveResearchAssistant() {
   elements.r2c2Assistant.style.left = `${targetX}px`;
   elements.r2c2Assistant.style.top = `${targetY}px`;
   elements.r2c2Assistant.classList.add("is-ready");
-  researchAssistantState.timer = window.setTimeout(
-    moveResearchAssistant,
-    3600,
+}
+
+function setResearchAssistantActivity(activity) {
+  researchAssistantActivities.forEach((name) => {
+    elements.r2c2Assistant.classList.remove(`activity-${name}`);
+  });
+  elements.r2c2Assistant.classList.add(`activity-${activity}`);
+  elements.r2c2Robot.setAttribute(
+    "aria-label",
+    `Interactuar con R2C2. Está ${researchAssistantActivityLabels[activity]}.`,
   );
+}
+
+function scheduleResearchAssistantActivity(delay = 700) {
+  window.clearTimeout(researchAssistantState.activityTimer);
+  researchAssistantState.activityTimer = window.setTimeout(
+    runRandomResearchAssistantActivity,
+    delay,
+  );
+}
+
+function runRandomResearchAssistantActivity() {
+  if (researchAssistantState.stopped) {
+    return;
+  }
+
+  const activity = researchAssistantActivities[
+    Math.floor(Math.random() * researchAssistantActivities.length)
+  ];
+  setResearchAssistantActivity(activity);
+
+  if (activity === "patrol") {
+    moveResearchAssistant();
+  }
+
+  const duration = 3000 + Math.round(Math.random() * 3500);
+  scheduleResearchAssistantActivity(duration);
+}
+
+function resumeResearchAssistant() {
+  researchAssistantState.stopped = false;
+  elements.r2c2Speech.hidden = true;
+  elements.r2c2Assistant.classList.remove("is-stopped");
+
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    setResearchAssistantActivity("rest");
+    return;
+  }
+
+  scheduleResearchAssistantActivity(300);
 }
 
 function stopResearchAssistant() {
   researchAssistantState.stopped = true;
-  window.clearTimeout(researchAssistantState.timer);
+  window.clearTimeout(researchAssistantState.activityTimer);
+  window.clearTimeout(researchAssistantState.interactionTimer);
+  researchAssistantActivities.forEach((activity) => {
+    elements.r2c2Assistant.classList.remove(`activity-${activity}`);
+  });
   elements.r2c2Assistant.classList.add("is-stopped");
   elements.r2c2Speech.hidden = false;
-  elements.r2c2Robot.setAttribute("aria-label", "R2C2 detenido. Hola.");
+  const reply = researchAssistantReplies[
+    researchAssistantState.interactionCount % researchAssistantReplies.length
+  ];
+  elements.r2c2Speech.querySelector("span").textContent = reply;
+  researchAssistantState.interactionCount += 1;
+  elements.r2c2Robot.setAttribute("aria-label", `R2C2 responde: ${reply}`);
+  researchAssistantState.interactionTimer = window.setTimeout(
+    resumeResearchAssistant,
+    60000,
+  );
 }
 
 function initializeResearchAssistant() {
@@ -826,14 +910,11 @@ function initializeResearchAssistant() {
   elements.r2c2Assistant.classList.add("is-ready");
 
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-    elements.r2c2Assistant.classList.add("is-stopped");
+    setResearchAssistantActivity("rest");
     return;
   }
 
-  researchAssistantState.timer = window.setTimeout(
-    moveResearchAssistant,
-    700,
-  );
+  scheduleResearchAssistantActivity();
 }
 
 elements.r2c2Robot.addEventListener("click", stopResearchAssistant);
@@ -841,7 +922,7 @@ window.addEventListener("resize", () => {
   if (researchAssistantState.stopped) {
     return;
   }
-  window.clearTimeout(researchAssistantState.timer);
+  window.clearTimeout(researchAssistantState.activityTimer);
   initializeResearchAssistant();
 });
 

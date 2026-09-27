@@ -88,6 +88,10 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
     disponible entre el titular y el texto de apoyo. Se oculta si no existe espacio
     seguro, respeta movimiento reducido y, al seleccionarlo, se detiene y presenta
     el primer saludo `Hola.` en una burbuja de dialogo.
+26. Mientras no existe interaccion, R2C2 elige aleatoriamente entre patrullar,
+    descansar, jugar, investigar y estudiar. Cada seleccion del asistente interrumpe
+    su actividad, presenta una respuesta breve y reinicia una espera de 60 segundos;
+    al cumplirse ese periodo sin nuevas interacciones, retoma su rutina autonoma.
 
 ## Criterios de aceptacion
 
