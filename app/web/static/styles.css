@@ -2072,6 +2072,55 @@ button {
   background: var(--brand-green);
 }
 
+.r2c2-activity-icon {
+  position: absolute;
+  z-index: 2;
+  right: 7px;
+  bottom: 9px;
+  min-width: 20px;
+  height: 12px;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: "Arial", sans-serif;
+  font-size: 10px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0;
+}
+
+.r2c2-activity-icon.is-visible {
+  display: inline-flex;
+}
+
+.research-assistant.activity-prototype .r2c2-activity-icon {
+  animation: r2c2-prototype 900ms ease-in-out infinite alternate;
+}
+
+.research-assistant.activity-experiment .r2c2-activity-icon,
+.research-assistant.activity-analyze .r2c2-activity-icon {
+  animation: r2c2-measure 800ms ease-in-out infinite alternate;
+}
+
+.research-assistant.activity-code .r2c2-activity-icon {
+  animation: r2c2-code 650ms steps(2, end) infinite;
+}
+
+.research-assistant.activity-create .r2c2-activity-icon,
+.research-assistant.activity-innovate .r2c2-activity-icon {
+  animation: r2c2-idea 900ms ease-in-out infinite alternate;
+}
+
+.research-assistant.activity-entrepreneurship .r2c2-activity-icon,
+.research-assistant.activity-present .r2c2-activity-icon {
+  animation: r2c2-rise 850ms ease-in-out infinite alternate;
+}
+
+.research-assistant.activity-collaborate .r2c2-activity-icon {
+  animation: r2c2-collaborate 1100ms ease-in-out infinite alternate;
+}
+
 .r2c2-prop {
   position: absolute;
   z-index: 4;
@@ -2245,6 +2294,64 @@ button {
 
   to {
     transform: translateY(-3px);
+  }
+}
+
+@keyframes r2c2-prototype {
+  from {
+    transform: rotate(-12deg) scale(0.9);
+  }
+
+  to {
+    transform: rotate(12deg) scale(1.08);
+  }
+}
+
+@keyframes r2c2-measure {
+  from {
+    transform: translateY(1px);
+  }
+
+  to {
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes r2c2-code {
+  50% {
+    opacity: 0.4;
+  }
+}
+
+@keyframes r2c2-idea {
+  from {
+    opacity: 0.65;
+    transform: scale(0.9);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.18);
+  }
+}
+
+@keyframes r2c2-rise {
+  from {
+    transform: translate(-2px, 2px);
+  }
+
+  to {
+    transform: translate(2px, -2px);
+  }
+}
+
+@keyframes r2c2-collaborate {
+  from {
+    transform: scaleX(0.82);
+  }
+
+  to {
+    transform: scaleX(1.15);
   }
 }
 

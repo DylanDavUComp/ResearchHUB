@@ -732,6 +732,15 @@ const researchAssistantActivities = [
   "play",
   "research",
   "study",
+  "prototype",
+  "experiment",
+  "code",
+  "analyze",
+  "create",
+  "innovate",
+  "entrepreneurship",
+  "collaborate",
+  "present",
 ];
 
 const researchAssistantActivityLabels = {
@@ -740,6 +749,32 @@ const researchAssistantActivityLabels = {
   play: "jugando",
   research: "investigando",
   study: "estudiando",
+  prototype: "construyendo un prototipo",
+  experiment: "haciendo un experimento de laboratorio",
+  code: "programando",
+  analyze: "analizando datos",
+  create: "creando una solución",
+  innovate: "desarrollando una innovación",
+  entrepreneurship: "impulsando un emprendimiento",
+  collaborate: "colaborando con su equipo",
+  present: "presentando resultados",
+};
+
+const researchAssistantActivityIcons = {
+  patrol: "",
+  rest: "",
+  play: "•",
+  research: "",
+  study: "",
+  prototype: "◇",
+  experiment: "⚗",
+  code: "</>",
+  analyze: "▥",
+  create: "+",
+  innovate: "☼",
+  entrepreneurship: "↗",
+  collaborate: "∞",
+  present: "▤",
 };
 
 const researchAssistantReplies = [
@@ -831,6 +866,14 @@ function setResearchAssistantActivity(activity) {
     elements.r2c2Assistant.classList.remove(`activity-${name}`);
   });
   elements.r2c2Assistant.classList.add(`activity-${activity}`);
+  const activityIcon = elements.r2c2Assistant.querySelector(
+    ".r2c2-activity-icon",
+  );
+  activityIcon.textContent = researchAssistantActivityIcons[activity];
+  activityIcon.classList.toggle(
+    "is-visible",
+    Boolean(researchAssistantActivityIcons[activity]),
+  );
   elements.r2c2Robot.setAttribute(
     "aria-label",
     `Interactuar con R2C2. Está ${researchAssistantActivityLabels[activity]}.`,
