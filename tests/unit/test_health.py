@@ -152,10 +152,10 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'id="open-services-marketplace"' in response.text
     assert "Servicios y marketplace" in response.text
     brand_images = (
-        "researchhub-workspace-v3.webp",
-        "researchos-workspace-v3.webp",
-        "cris-workspace-v3.webp",
-        "crai-workspace-v2.webp",
+        "researchhub-workspace-v4.webp",
+        "researchos-workspace-v4.webp",
+        "cris-workspace-v4.webp",
+        "crai-workspace-v4.webp",
         "research-blog-flyer-v2.webp",
         "research-opportunities-flyer-v2.webp",
         "research-agenda-flyer-v2.webp",

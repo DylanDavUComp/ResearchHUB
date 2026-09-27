@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.4.11"
+version: "1.4.12"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -80,6 +80,10 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 23. Mientras una fila distinta esta en hover o foco, la seleccion persistente se
     muestra temporalmente en morado. Solo una fila puede actuar como protagonista
     naranja durante la exploracion.
+24. Cada espacio usa una fotografia semanticamente exclusiva y legible dentro del
+    recorte circular: prototipado estudiantil para ResearchHUB, laboratorio IoT
+    para ResearchOS, red consolidada de investigadores y resultados para CRIS, y
+    biblioteca fisica-digital con acompanamiento experto para CRAI.
 
 ## Criterios de aceptacion
 
