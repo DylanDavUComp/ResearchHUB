@@ -179,7 +179,7 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=37" in response.text
+    assert "/static/styles.css?v=38" in response.text
     assert "/static/app.js?v=18" in response.text
     assert "/static/degree-work.js?v=2" in response.text
 
@@ -225,6 +225,8 @@ def test_workspace_can_be_selected_from_image_or_action(client: TestClient) -> N
     assert "elements.workspaceSelectors.forEach" in script.text
     assert "elements.workspaceActions.forEach" in script.text
     assert ".application-card.is-selected" in stylesheet.text
+    assert ".application-card:hover," in stylesheet.text
+    assert ".application-card:focus-within," in stylesheet.text
     assert "border-radius: 50%;" in stylesheet.text
 
 

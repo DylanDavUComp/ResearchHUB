@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.4.9"
+version: "1.4.10"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -74,6 +74,9 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 21. Las fotografias de los espacios son circulares y operan como controles de
     seleccion accesibles. Seleccionar la imagen o la accion marca toda la fila en
     naranja, mantiene texto morado de alto contraste y desmarca las demas filas.
+22. Al pasar el puntero por cualquier parte de una fila, o al enfocar uno de sus
+    controles con teclado, toda la superficie adopta temporalmente el mismo estado
+    naranja. Al retirar el puntero o foco recupera el estado seleccionado vigente.
 
 ## Criterios de aceptacion
 
