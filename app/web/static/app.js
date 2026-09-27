@@ -771,28 +771,6 @@ const researchAssistantActivityLabels = {
   brainstorm: "ideando nuevas soluciones",
 };
 
-const researchAssistantActivityIcons = {
-  patrol: "",
-  rest: "",
-  play: "•",
-  research: "",
-  study: "",
-  prototype: "◇",
-  experiment: "⚗",
-  code: "</>",
-  analyze: "▥",
-  create: "+",
-  innovate: "☼",
-  entrepreneurship: "↗",
-  collaborate: "∞",
-  present: "▤",
-  football: "⚽",
-  graduate: "🎓",
-  matrix: "01",
-  buildRobot: "⚙",
-  brainstorm: "✦",
-};
-
 const researchAssistantReplies = [
   "Hola.",
   "¿Qué quieres investigar?",
@@ -840,10 +818,10 @@ function findAssistantPatrolArea() {
   const descriptionRect = description.getBoundingClientRect();
   const assistantWidth = 220;
   const assistantHeight = 128;
-  const sceneClearance = 24;
-  const left = Math.ceil(getTextRightEdge(title) + sceneClearance);
+  const objectClearance = 24;
+  const left = Math.ceil(getTextRightEdge(title) + objectClearance);
   const right = Math.floor(
-    descriptionRect.left - sceneClearance - assistantWidth,
+    descriptionRect.left - objectClearance - assistantWidth,
   );
   const top = Math.ceil(headingRect.top + 8);
   const bottom = Math.max(top, Math.floor(headingRect.bottom - assistantHeight));
@@ -882,16 +860,8 @@ function setResearchAssistantActivity(activity) {
     elements.r2c2Assistant.classList.remove(`activity-${name}`);
   });
   elements.r2c2Assistant.classList.add(`activity-${activity}`);
-  elements.r2c2Assistant.querySelector("#r2c2-scene").hidden = false;
+  elements.r2c2Assistant.querySelector("#r2c2-accessories").hidden = false;
   researchAssistantState.currentActivity = activity;
-  const activityIcon = elements.r2c2Assistant.querySelector(
-    ".r2c2-activity-icon",
-  );
-  activityIcon.textContent = researchAssistantActivityIcons[activity];
-  activityIcon.classList.toggle(
-    "is-visible",
-    Boolean(researchAssistantActivityIcons[activity]),
-  );
   elements.r2c2Robot.setAttribute(
     "aria-label",
     `Interactuar con R2C2. Está ${researchAssistantActivityLabels[activity]}.`,
@@ -947,10 +917,7 @@ function stopResearchAssistant() {
   researchAssistantActivities.forEach((activity) => {
     elements.r2c2Assistant.classList.remove(`activity-${activity}`);
   });
-  elements.r2c2Assistant
-    .querySelector(".r2c2-activity-icon")
-    .classList.remove("is-visible");
-  elements.r2c2Assistant.querySelector("#r2c2-scene").hidden = true;
+  elements.r2c2Assistant.querySelector("#r2c2-accessories").hidden = true;
   elements.r2c2Assistant.classList.add("is-stopped");
   elements.r2c2Speech.hidden = false;
   const reply = researchAssistantReplies[

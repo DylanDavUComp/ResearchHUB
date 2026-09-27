@@ -2309,6 +2309,266 @@ button {
   color: var(--orange-600);
 }
 
+.r2c2-accessories {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: block;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.r2c2-accessory {
+  position: absolute;
+  display: block;
+  color: var(--purple-900);
+  font-family: "Arial", sans-serif;
+  font-size: 42px;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: 0;
+  filter: drop-shadow(2px 3px 0 rgba(59, 9, 112, 0.13));
+}
+
+.r2c2-accessory-one {
+  bottom: 13px;
+  left: 7px;
+}
+
+.r2c2-accessory-two {
+  right: 7px;
+  bottom: 13px;
+}
+
+.r2c2-accessory-three {
+  top: 3px;
+  left: 20px;
+}
+
+.r2c2-accessory-four {
+  top: 3px;
+  right: 20px;
+}
+
+.research-assistant.activity-patrol .r2c2-accessory-one::before {
+  content: "←";
+}
+
+.research-assistant.activity-patrol .r2c2-accessory-two::before {
+  content: "→";
+}
+
+.research-assistant.activity-rest .r2c2-accessory-one::before {
+  content: "Zzz";
+  font-size: 34px;
+}
+
+.research-assistant.activity-rest .r2c2-accessory-two::before {
+  content: "☕";
+}
+
+.research-assistant.activity-play .r2c2-accessory-one::before {
+  content: "★";
+  color: var(--orange-600);
+}
+
+.research-assistant.activity-play .r2c2-accessory-two::before {
+  content: "◆";
+  color: var(--brand-green);
+}
+
+.research-assistant.activity-play .r2c2-accessory-three::before {
+  content: "●";
+}
+
+.research-assistant.activity-research .r2c2-accessory-one::before {
+  content: "🔎";
+}
+
+.research-assistant.activity-research .r2c2-accessory-two::before {
+  content: "▤";
+}
+
+.research-assistant.activity-study .r2c2-accessory-one::before {
+  content: "📚";
+}
+
+.research-assistant.activity-study .r2c2-accessory-two::before {
+  content: "✏";
+  color: var(--orange-600);
+}
+
+.research-assistant.activity-prototype .r2c2-accessory-one::before {
+  content: "⚙";
+}
+
+.research-assistant.activity-prototype .r2c2-accessory-two::before {
+  content: "◇";
+  color: var(--brand-green);
+  font-size: 52px;
+}
+
+.research-assistant.activity-experiment .r2c2-accessory-one::before {
+  content: "⚗";
+  font-size: 50px;
+}
+
+.research-assistant.activity-experiment .r2c2-accessory-two::before {
+  content: "🧪";
+}
+
+.research-assistant.activity-code .r2c2-accessory-one::before {
+  content: "</>";
+  font-size: 34px;
+}
+
+.research-assistant.activity-code .r2c2-accessory-two::before {
+  content: "▮";
+  color: var(--brand-green);
+}
+
+.research-assistant.activity-analyze .r2c2-accessory-one::before {
+  content: "▥";
+  font-size: 50px;
+}
+
+.research-assistant.activity-analyze .r2c2-accessory-two::before {
+  content: "↗";
+  color: var(--brand-green);
+  font-size: 50px;
+}
+
+.research-assistant.activity-create .r2c2-accessory-one::before {
+  content: "✎";
+  font-size: 50px;
+}
+
+.research-assistant.activity-create .r2c2-accessory-two::before {
+  content: "✦";
+  color: var(--orange-600);
+}
+
+.research-assistant.activity-innovate .r2c2-accessory-one::before,
+.research-assistant.activity-brainstorm .r2c2-accessory-one::before {
+  content: "💡";
+}
+
+.research-assistant.activity-innovate .r2c2-accessory-two::before {
+  content: "⚙";
+  color: var(--brand-green);
+}
+
+.research-assistant.activity-entrepreneurship .r2c2-accessory-one::before {
+  content: "💼";
+}
+
+.research-assistant.activity-entrepreneurship .r2c2-accessory-two::before {
+  content: "$";
+  color: var(--brand-green);
+  font-size: 50px;
+}
+
+.research-assistant.activity-entrepreneurship .r2c2-accessory-three::before {
+  content: "↗";
+  color: var(--orange-600);
+}
+
+.research-assistant.activity-collaborate .r2c2-accessory-one::before {
+  content: "👥";
+  font-size: 48px;
+}
+
+.research-assistant.activity-collaborate .r2c2-accessory-two::before {
+  content: "∞";
+  color: var(--brand-green);
+  font-size: 50px;
+}
+
+.research-assistant.activity-present .r2c2-accessory-one::before {
+  content: "▥";
+  font-size: 50px;
+}
+
+.research-assistant.activity-present .r2c2-accessory-two::before {
+  content: "↗";
+  color: var(--orange-600);
+  font-size: 50px;
+}
+
+.research-assistant.activity-football .r2c2-accessory-one {
+  z-index: 4;
+  bottom: 10px;
+  left: 16px;
+  animation: r2c2-football 1500ms ease-in-out infinite;
+}
+
+.research-assistant.activity-football .r2c2-accessory-one::before {
+  content: "⚽";
+  font-size: 48px;
+}
+
+.research-assistant.activity-graduate .r2c2-accessory-one::before {
+  content: "🎓";
+  font-size: 48px;
+}
+
+.research-assistant.activity-graduate .r2c2-accessory-two::before {
+  content: "▱";
+  color: var(--orange-600);
+  font-size: 52px;
+}
+
+.research-assistant.activity-matrix .r2c2-accessory-one::before {
+  content: "0101";
+  color: var(--brand-green);
+  font-size: 32px;
+  writing-mode: vertical-rl;
+}
+
+.research-assistant.activity-matrix .r2c2-accessory-two::before {
+  content: "1010";
+  color: var(--brand-green);
+  font-size: 32px;
+  writing-mode: vertical-rl;
+}
+
+.research-assistant.activity-buildRobot .r2c2-accessory-one::before {
+  content: "⚙";
+  font-size: 50px;
+}
+
+.research-assistant.activity-buildRobot .r2c2-accessory-two::before {
+  content: "🔧";
+}
+
+.research-assistant.activity-brainstorm .r2c2-accessory-two::before {
+  content: "✦";
+  color: var(--brand-green);
+}
+
+.research-assistant.activity-brainstorm .r2c2-accessory-three::before,
+.research-assistant.activity-brainstorm .r2c2-accessory-four::before {
+  content: "■";
+  color: var(--orange-600);
+  font-size: 34px;
+}
+
+.research-assistant.activity-prototype .r2c2-accessory-one,
+.research-assistant.activity-buildRobot .r2c2-accessory-one {
+  animation: r2c2-accessory-spin 2400ms linear infinite;
+}
+
+.research-assistant.activity-experiment .r2c2-accessory-two,
+.research-assistant.activity-analyze .r2c2-accessory-two,
+.research-assistant.activity-present .r2c2-accessory-two {
+  animation: r2c2-accessory-float 950ms ease-in-out infinite alternate;
+}
+
+.research-assistant.activity-innovate .r2c2-accessory-one,
+.research-assistant.activity-brainstorm .r2c2-accessory-one {
+  animation: r2c2-accessory-pulse 850ms ease-in-out infinite alternate;
+}
+
 .research-assistant.activity-patrol .r2c2-robot {
   animation: r2c2-bob 760ms ease-in-out infinite alternate;
 }
@@ -2752,6 +3012,47 @@ button {
 
   50% {
     box-shadow: inset 0 0 0 3px var(--brand-green);
+  }
+}
+
+@keyframes r2c2-football {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0);
+  }
+
+  35% {
+    transform: translate(55px, -38px) rotate(180deg);
+  }
+
+  70% {
+    transform: translate(140px, -5px) rotate(360deg);
+  }
+}
+
+@keyframes r2c2-accessory-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes r2c2-accessory-float {
+  from {
+    transform: translateY(4px);
+  }
+
+  to {
+    transform: translateY(-8px);
+  }
+}
+
+@keyframes r2c2-accessory-pulse {
+  from {
+    transform: scale(0.9);
+  }
+
+  to {
+    transform: scale(1.16);
   }
 }
 

@@ -179,8 +179,8 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=44" in response.text
-    assert "/static/app.js?v=24" in response.text
+    assert "/static/styles.css?v=45" in response.text
+    assert "/static/app.js?v=25" in response.text
     assert "/static/degree-work.js?v=2" in response.text
 
 
@@ -248,8 +248,9 @@ def test_r2c2_patrols_safe_whitespace_and_greets_on_click(
     assert "function runRandomResearchAssistantActivity()" in script.text
     assert "function resumeResearchAssistant()" in script.text
     assert "60000" in script.text
-    assert 'class="r2c2-activity-icon"' in home.text
-    assert 'id="r2c2-scene"' in home.text
+    assert 'id="r2c2-accessories"' in home.text
+    assert 'r2c2-scene-backdrop' not in home.text
+    assert 'r2c2-activity-icon' not in home.text
     assert 'id="r2c2-activity-speech"' not in home.text
     assert "10000" in script.text
     for activity in (
@@ -275,17 +276,14 @@ def test_r2c2_patrols_safe_whitespace_and_greets_on_click(
     assert ".research-assistant.activity-play" in stylesheet.text
     assert ".research-assistant.activity-research" in stylesheet.text
     assert ".research-assistant.activity-study" in stylesheet.text
-    assert ".r2c2-activity-icon" in stylesheet.text
-    assert ".r2c2-scene" in stylesheet.text
+    assert ".r2c2-accessories" in stylesheet.text
+    assert ".r2c2-accessory" in stylesheet.text
     assert (
-        ".research-assistant.activity-football .r2c2-scene-backdrop"
+        ".research-assistant.activity-football .r2c2-accessory-one"
         in stylesheet.text
     )
-    assert (
-        ".research-assistant.activity-entrepreneurship .r2c2-scene-backdrop"
-        in stylesheet.text
-    )
-    assert ".research-assistant.activity-matrix .r2c2-scene-backdrop" in stylesheet.text
+    assert "animation: r2c2-football" in stylesheet.text
+    assert "@keyframes r2c2-football" in stylesheet.text
 
 
 def test_launcher_has_compact_layout_for_short_laptop_viewports(
