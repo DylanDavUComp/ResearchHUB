@@ -88,17 +88,13 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
     disponible entre el titular y el texto de apoyo. Se oculta si no existe espacio
     seguro, respeta movimiento reducido y, al seleccionarlo, se detiene y presenta
     el primer saludo `Hola.` en una burbuja de dialogo.
-26. Mientras no existe interaccion, R2C2 elige aleatoriamente entre patrullar,
-    descansar, jugar, investigar, estudiar, prototipar, experimentar en laboratorio,
-    programar, analizar datos, crear, innovar, emprender, colaborar, presentar
-    resultados, jugar futbol, graduarse, entrar a la Matrix, construir robots e
-    idear soluciones. Cada actividad se representa sin texto ni escenografia,
-    mediante objetos contextuales grandes y reconocibles que acompanian al robot.
-    En futbol aparece un balon animado; laboratorio usa instrumental, graduacion
-    usa birrete y diploma, y las demas acciones emplean objetos equivalentes. Cada
-    actividad dura entre 10 y 15 segundos. Seleccionar el asistente interrumpe su
-    actividad, presenta una respuesta breve y reinicia una espera de 60 segundos;
-    al cumplirse ese periodo sin nuevas interacciones, retoma su rutina autonoma.
+26. Mientras no existe interaccion, R2C2 alterna aleatoriamente estados expresados
+    solo mediante su propio movimiento: patrullar, descansar, inactivarse,
+    activarse, escanear, observar, pensar, jugar, celebrar y recargar energia. No
+    usa objetos, fondos ni escenografia. Cada estado dura entre 10 y 15 segundos.
+    Seleccionar el asistente interrumpe su actividad, presenta una respuesta breve
+    y reinicia una espera de 60 segundos; al cumplirse ese periodo sin nuevas
+    interacciones, retoma su rutina autonoma.
 
 ## Criterios de aceptacion
 

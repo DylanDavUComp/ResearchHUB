@@ -179,8 +179,8 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=45" in response.text
-    assert "/static/app.js?v=25" in response.text
+    assert "/static/styles.css?v=46" in response.text
+    assert "/static/app.js?v=26" in response.text
     assert "/static/degree-work.js?v=2" in response.text
 
 
@@ -248,42 +248,35 @@ def test_r2c2_patrols_safe_whitespace_and_greets_on_click(
     assert "function runRandomResearchAssistantActivity()" in script.text
     assert "function resumeResearchAssistant()" in script.text
     assert "60000" in script.text
-    assert 'id="r2c2-accessories"' in home.text
+    assert 'id="r2c2-accessories"' not in home.text
     assert 'r2c2-scene-backdrop' not in home.text
     assert 'r2c2-activity-icon' not in home.text
     assert 'id="r2c2-activity-speech"' not in home.text
     assert "10000" in script.text
     for activity in (
-        "prototype",
-        "experiment",
-        "code",
-        "analyze",
-        "create",
-        "innovate",
-        "entrepreneurship",
-        "collaborate",
-        "present",
-        "football",
-        "graduate",
-        "matrix",
-        "buildRobot",
-        "brainstorm",
+        "patrol",
+        "rest",
+        "inactive",
+        "activate",
+        "scan",
+        "observe",
+        "think",
+        "play",
+        "celebrate",
+        "recharge",
     ):
         assert f'"{activity}"' in script.text
     assert 'elements.r2c2Robot.addEventListener("click"' in script.text
     assert ".r2c2-speech" in stylesheet.text
     assert ".research-assistant.is-stopped" in stylesheet.text
     assert ".research-assistant.activity-play" in stylesheet.text
-    assert ".research-assistant.activity-research" in stylesheet.text
-    assert ".research-assistant.activity-study" in stylesheet.text
-    assert ".r2c2-accessories" in stylesheet.text
-    assert ".r2c2-accessory" in stylesheet.text
-    assert (
-        ".research-assistant.activity-football .r2c2-accessory-one"
-        in stylesheet.text
-    )
-    assert "animation: r2c2-football" in stylesheet.text
-    assert "@keyframes r2c2-football" in stylesheet.text
+    assert ".research-assistant.activity-inactive" in stylesheet.text
+    assert ".research-assistant.activity-activate" in stylesheet.text
+    assert ".research-assistant.activity-scan" in stylesheet.text
+    assert ".research-assistant.activity-celebrate" in stylesheet.text
+    assert ".research-assistant.activity-recharge" in stylesheet.text
+    assert "@keyframes r2c2-activate" in stylesheet.text
+    assert "@keyframes r2c2-celebrate" in stylesheet.text
 
 
 def test_launcher_has_compact_layout_for_short_laptop_viewports(

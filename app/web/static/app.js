@@ -730,45 +730,27 @@ const researchAssistantState = {
 const researchAssistantActivities = [
   "patrol",
   "rest",
+  "inactive",
+  "activate",
+  "scan",
+  "observe",
+  "think",
   "play",
-  "research",
-  "study",
-  "prototype",
-  "experiment",
-  "code",
-  "analyze",
-  "create",
-  "innovate",
-  "entrepreneurship",
-  "collaborate",
-  "present",
-  "football",
-  "graduate",
-  "matrix",
-  "buildRobot",
-  "brainstorm",
+  "celebrate",
+  "recharge",
 ];
 
 const researchAssistantActivityLabels = {
   patrol: "recorriendo el espacio",
   rest: "descansando",
+  inactive: "inactivo",
+  activate: "activándose",
+  scan: "escaneando el entorno",
+  observe: "observando el espacio",
+  think: "pensando",
   play: "jugando",
-  research: "investigando",
-  study: "estudiando",
-  prototype: "construyendo un prototipo",
-  experiment: "haciendo un experimento de laboratorio",
-  code: "programando",
-  analyze: "analizando datos",
-  create: "creando una solución",
-  innovate: "desarrollando una innovación",
-  entrepreneurship: "impulsando un emprendimiento",
-  collaborate: "colaborando con su equipo",
-  present: "presentando resultados",
-  football: "jugando fútbol",
-  graduate: "graduándose de la universidad",
-  matrix: "entrando a la Matrix",
-  buildRobot: "construyendo un robot",
-  brainstorm: "ideando nuevas soluciones",
+  celebrate: "celebrando",
+  recharge: "recargando energía",
 };
 
 const researchAssistantReplies = [
@@ -860,7 +842,6 @@ function setResearchAssistantActivity(activity) {
     elements.r2c2Assistant.classList.remove(`activity-${name}`);
   });
   elements.r2c2Assistant.classList.add(`activity-${activity}`);
-  elements.r2c2Assistant.querySelector("#r2c2-accessories").hidden = false;
   researchAssistantState.currentActivity = activity;
   elements.r2c2Robot.setAttribute(
     "aria-label",
@@ -917,7 +898,6 @@ function stopResearchAssistant() {
   researchAssistantActivities.forEach((activity) => {
     elements.r2c2Assistant.classList.remove(`activity-${activity}`);
   });
-  elements.r2c2Assistant.querySelector("#r2c2-accessories").hidden = true;
   elements.r2c2Assistant.classList.add("is-stopped");
   elements.r2c2Speech.hidden = false;
   const reply = researchAssistantReplies[

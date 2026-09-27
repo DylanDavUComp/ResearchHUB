@@ -2625,6 +2625,62 @@ button {
   animation: r2c2-play 720ms ease-in-out 3;
 }
 
+.research-assistant.activity-inactive .r2c2-robot {
+  animation: r2c2-inactive 2200ms ease-in-out infinite alternate;
+}
+
+.research-assistant.activity-inactive .r2c2-eye,
+.research-assistant.activity-inactive .r2c2-light,
+.research-assistant.activity-inactive .r2c2-signal {
+  opacity: 0.18;
+}
+
+.research-assistant.activity-activate .r2c2-robot {
+  animation: r2c2-activate 2400ms ease-in-out infinite;
+}
+
+.research-assistant.activity-activate .r2c2-light,
+.research-assistant.activity-activate .r2c2-signal {
+  animation: r2c2-power-light 600ms ease-in-out infinite alternate;
+}
+
+.research-assistant.activity-scan .r2c2-head {
+  animation: r2c2-scan 1500ms ease-in-out infinite alternate;
+  transform-origin: 50% 100%;
+}
+
+.research-assistant.activity-scan .r2c2-eye {
+  animation: r2c2-eye-scan 750ms ease-in-out infinite alternate;
+}
+
+.research-assistant.activity-observe .r2c2-head {
+  animation: r2c2-look 3200ms ease-in-out infinite alternate;
+  transform-origin: 50% 100%;
+}
+
+.research-assistant.activity-think .r2c2-head {
+  animation: r2c2-think 1800ms ease-in-out infinite alternate;
+  transform-origin: 50% 100%;
+}
+
+.research-assistant.activity-think .r2c2-antenna::after {
+  animation: r2c2-power-light 700ms ease-in-out infinite alternate;
+}
+
+.research-assistant.activity-celebrate .r2c2-robot {
+  animation: r2c2-celebrate 1200ms ease-in-out infinite;
+}
+
+.research-assistant.activity-recharge .r2c2-robot {
+  animation: r2c2-recharge 1800ms ease-in-out infinite alternate;
+}
+
+.research-assistant.activity-recharge .r2c2-panel,
+.research-assistant.activity-recharge .r2c2-light,
+.research-assistant.activity-recharge .r2c2-signal {
+  animation: r2c2-power-light 800ms ease-in-out infinite alternate;
+}
+
 .r2c2-eye {
   position: absolute;
   top: 8px;
@@ -2913,6 +2969,100 @@ button {
 
   70% {
     transform: translateY(-5px) rotate(8deg);
+  }
+}
+
+@keyframes r2c2-inactive {
+  from {
+    opacity: 0.62;
+    transform: translateY(5px) scaleY(0.94);
+  }
+
+  to {
+    opacity: 0.42;
+    transform: translateY(9px) scaleY(0.88);
+  }
+}
+
+@keyframes r2c2-activate {
+  0%,
+  100% {
+    transform: translateY(7px) scale(0.9);
+  }
+
+  35% {
+    transform: translateY(-8px) scale(1.08);
+  }
+
+  55% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes r2c2-power-light {
+  from {
+    opacity: 0.35;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes r2c2-scan {
+  from {
+    transform: translateX(-7px) rotate(-8deg);
+  }
+
+  to {
+    transform: translateX(7px) rotate(8deg);
+  }
+}
+
+@keyframes r2c2-eye-scan {
+  from {
+    box-shadow: -8px 0 0 -4px var(--brand-green);
+  }
+
+  to {
+    box-shadow: 8px 0 0 -4px var(--brand-green);
+  }
+}
+
+@keyframes r2c2-think {
+  from {
+    transform: rotate(-2deg) translateY(0);
+  }
+
+  to {
+    transform: rotate(12deg) translateY(-3px);
+  }
+}
+
+@keyframes r2c2-celebrate {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0);
+  }
+
+  35% {
+    transform: translateY(-16px) rotate(-10deg);
+  }
+
+  70% {
+    transform: translateY(-8px) rotate(10deg);
+  }
+}
+
+@keyframes r2c2-recharge {
+  from {
+    opacity: 0.72;
+    transform: scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1.04);
   }
 }
 
