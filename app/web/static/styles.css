@@ -1629,6 +1629,78 @@ button {
   cursor: not-allowed;
 }
 
+.application-grid:has(.application-card:hover)
+  .application-card.is-selected:not(:hover),
+.application-grid:has(.application-card:focus-within)
+  .application-card.is-selected:not(:focus-within) {
+  background: var(--purple-900);
+}
+
+.application-grid:has(.application-card:hover)
+  .application-card.is-selected:not(:hover)::before,
+.application-grid:has(.application-card:focus-within)
+  .application-card.is-selected:not(:focus-within)::before {
+  background: #2d0557;
+  color: var(--brand-pink);
+}
+
+.application-grid:has(.application-card:hover)
+  .application-card.is-selected:not(:hover) .application-type,
+.application-grid:has(.application-card:hover)
+  .application-card.is-selected:not(:hover) .application-content h3,
+.application-grid:has(.application-card:hover)
+  .application-card.is-selected:not(:hover) .application-content p,
+.application-grid:has(.application-card:focus-within)
+  .application-card.is-selected:not(:focus-within) .application-type,
+.application-grid:has(.application-card:focus-within)
+  .application-card.is-selected:not(:focus-within) .application-content h3,
+.application-grid:has(.application-card:focus-within)
+  .application-card.is-selected:not(:focus-within) .application-content p {
+  color: #fff;
+}
+
+.application-grid:has(.application-card:hover)
+  .application-card.is-selected:not(:hover) .application-type,
+.application-grid:has(.application-card:focus-within)
+  .application-card.is-selected:not(:focus-within) .application-type {
+  color: var(--orange-600);
+}
+
+.application-grid:has(.application-card:hover)
+  .application-card.is-selected:not(:hover) .application-visual > img,
+.application-grid:has(.application-card:focus-within)
+  .application-card.is-selected:not(:focus-within) .application-visual > img {
+  border-color: rgba(255, 255, 255, 0.82);
+  box-shadow: none;
+}
+
+.application-grid:has(.application-card:hover)
+  .application-card.is-selected:not(:hover) .application-action.primary,
+.application-grid:has(.application-card:focus-within)
+  .application-card.is-selected:not(:focus-within) .application-action.primary {
+  border-color: var(--orange-600);
+  background: var(--orange-600);
+  color: #fff;
+}
+
+.application-grid:has(.application-card:hover)
+  .application-card.is-selected:not(:hover) .application-action.secondary,
+.application-grid:has(.application-card:focus-within)
+  .application-card.is-selected:not(:focus-within) .application-action.secondary {
+  border-color: rgba(255, 255, 255, 0.76);
+  background: transparent;
+  color: #fff;
+}
+
+.application-grid:has(.application-card:hover)
+  .application-card.is-selected:not(:hover) .application-action.is-disabled,
+.application-grid:has(.application-card:focus-within)
+  .application-card.is-selected:not(:focus-within) .application-action.is-disabled {
+  border-color: rgba(255, 255, 255, 0.38);
+  background: rgba(255, 255, 255, 0.08);
+  color: rgba(255, 255, 255, 0.74);
+}
+
 .opportunity-carousel,
 .marketplace-workspace {
   min-width: 0;
