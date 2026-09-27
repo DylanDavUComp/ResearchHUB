@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Investigación UCompensar</title>
   <link rel="icon" href="/static/avatar.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/styles.css?v=43" />
+  <link rel="stylesheet" href="/static/styles.css?v=44" />
 </head>
 
 <body>
@@ -228,6 +228,13 @@
     </div>
 
     <div class="research-assistant" id="r2c2-assistant" aria-label="Asistente de investigaciÃ³n R2C2" hidden>
+      <span class="r2c2-scene" id="r2c2-scene" aria-hidden="true" hidden>
+        <span class="r2c2-scene-backdrop"></span>
+        <span class="r2c2-scene-prop r2c2-scene-prop-one"></span>
+        <span class="r2c2-scene-prop r2c2-scene-prop-two"></span>
+        <span class="r2c2-scene-prop r2c2-scene-prop-three"></span>
+        <span class="r2c2-scene-prop r2c2-scene-prop-four"></span>
+      </span>
       <button class="r2c2-robot" id="r2c2-robot" type="button"
         aria-label="Detener a R2C2 y abrir su saludo">
         <span class="r2c2-antenna" aria-hidden="true"></span>
@@ -246,9 +253,6 @@
         <span class="r2c2-foot r2c2-foot-left" aria-hidden="true"></span>
         <span class="r2c2-foot r2c2-foot-right" aria-hidden="true"></span>
       </button>
-      <div class="r2c2-activity-speech" id="r2c2-activity-speech" aria-hidden="true" hidden>
-        <span>Estoy explorando.</span>
-      </div>
       <div class="r2c2-speech" id="r2c2-speech" role="status" aria-live="polite" hidden>
         <strong>R2C2</strong>
         <span>Hola.</span>
@@ -915,7 +919,7 @@
     </main>
   </div>
 
-  <script src="/static/app.js?v=23"></script>
+  <script src="/static/app.js?v=24"></script>
   <script src="/static/degree-work.js?v=2"></script>
 </body>
 

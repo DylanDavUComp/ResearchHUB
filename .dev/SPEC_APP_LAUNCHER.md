@@ -92,10 +92,13 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
     descansar, jugar, investigar, estudiar, prototipar, experimentar en laboratorio,
     programar, analizar datos, crear, innovar, emprender, colaborar, presentar
     resultados, jugar futbol, graduarse, entrar a la Matrix, construir robots e
-    idear soluciones. Una burbuja visible describe cada actividad en lenguaje
-    explicito. Cada seleccion del asistente interrumpe su actividad, presenta una
-    respuesta breve y reinicia una espera de 60 segundos; al cumplirse ese periodo
-    sin nuevas interacciones, retoma su rutina autonoma.
+    idear soluciones. Cada actividad se representa sin texto mediante una
+    escenografia contextual: cancha y arco para futbol, panel de inversionistas
+    para emprendimiento, instrumental para laboratorio y recursos equivalentes
+    para las demas acciones. Cada escena dura entre 10 y 15 segundos. Seleccionar
+    el asistente interrumpe su actividad, presenta una respuesta breve y reinicia
+    una espera de 60 segundos; al cumplirse ese periodo sin nuevas interacciones,
+    retoma su rutina autonoma.
 
 ## Criterios de aceptacion
 
