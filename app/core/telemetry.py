@@ -38,9 +38,12 @@ class TraceIdMiddleware(BaseHTTPMiddleware):
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):
-    def __init__(self, app, hsts_enabled: bool = False) -> None:  # type: ignore[no-untyped-def]
+    def __init__(  # type: ignore[no-untyped-def]
+        self, app, hsts_enabled: bool = False, image_origins: list[str] | None = None
+    ) -> None:
         super().__init__(app)
         self.hsts_enabled = hsts_enabled
+        self.img_src = " ".join(["'self'", "data:", *(image_origins or [])])
 
     async def dispatch(self, request: Request, call_next) -> Response:  # type: ignore[no-untyped-def]
         response = await call_next(request)
@@ -52,7 +55,7 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         )
         response.headers["content-security-policy"] = (
             "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; "
-            "object-src 'none'; img-src 'self' data:; script-src 'self'; "
+            f"object-src 'none'; img-src {self.img_src}; script-src 'self'; "
             "style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'"
         )
         if request.url.path.startswith("/api/"):

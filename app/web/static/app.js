@@ -333,6 +333,9 @@ async function showView(viewName, selectedItem = null) {
     if (typeof loadModalitySettings === "function") {
       await loadModalitySettings(user);
     }
+    if (typeof loadAnnouncementSettings === "function") {
+      await loadAnnouncementSettings(user);
+    }
   }
 
   if (viewName === "degree-work" && typeof loadDegreeWork === "function") {
@@ -801,12 +804,15 @@ function findAssistantPatrolArea() {
   const assistantWidth = 220;
   const assistantHeight = 128;
   const objectClearance = 24;
-  const left = Math.ceil(getTextRightEdge(title) + objectClearance);
+  const left = Math.ceil(getTextRightEdge(title) + objectClearance + window.scrollX);
   const right = Math.floor(
-    descriptionRect.left - objectClearance - assistantWidth,
+    descriptionRect.left - objectClearance - assistantWidth + window.scrollX,
   );
-  const top = Math.ceil(headingRect.top + 8);
-  const bottom = Math.max(top, Math.floor(headingRect.bottom - assistantHeight));
+  const top = Math.ceil(headingRect.top + 8 + window.scrollY);
+  const bottom = Math.max(
+    top,
+    Math.floor(headingRect.bottom - assistantHeight + window.scrollY),
+  );
 
   if (right - left < 48) {
     return null;

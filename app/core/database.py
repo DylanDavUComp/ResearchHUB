@@ -50,6 +50,7 @@ def database_is_ready() -> bool:
 
 def initialize_database_schema() -> None:
     try:
+        import app.modules.comunicados.models  # noqa: F401
         import app.modules.trabajos_grado.models  # noqa: F401
         import app.modules.usuarios.models  # noqa: F401
 

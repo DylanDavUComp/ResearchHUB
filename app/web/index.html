@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Investigación UCompensar</title>
   <link rel="icon" href="/static/avatar.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/styles.css?v=46" />
+  <link rel="stylesheet" href="/static/styles.css?v=49" />
 </head>
 
 <body>
@@ -249,11 +249,55 @@
       </div>
     </div>
 
-    <footer class="launcher-footer">
-      <span>UCompensar</span>
-      <span>Practica, aprende y conecta</span>
-    </footer>
+    <div class="news-teaser">
+      <span class="directory-index" aria-hidden="true">03</span>
+      <span class="launcher-eyebrow">Comunicados</span>
+      <button class="news-teaser-title" id="news-teaser-title" type="button" disabled>Cargando comunicados...</button>
+      <button class="news-teaser-cta" id="news-teaser" type="button" aria-haspopup="dialog" aria-controls="news-drawer">
+        Ver comunicados <span aria-hidden="true">&#8594;</span>
+      </button>
+    </div>
   </section>
+
+  <dialog class="news-window" id="news-window" aria-labelledby="news-title" aria-busy="true">
+    <header class="news-window-bar">
+      <span class="directory-index" aria-hidden="true">03</span>
+      <div>
+        <span class="launcher-eyebrow">Bitácora del ecosistema</span>
+        <h2 id="news-title">Comunicados y noticias</h2>
+      </div>
+      <div class="news-window-actions">
+        <button class="news-back is-hidden" id="news-back" type="button">
+          <span aria-hidden="true">&#8592;</span> Titulares
+        </button>
+        <button class="icon-action" id="news-window-close" type="button" aria-label="Cerrar comunicados">&times;</button>
+      </div>
+    </header>
+    <div class="news-window-content">
+      <div id="news-headlines">
+        <div class="news-layout" id="news-layout">
+          <div class="news-placeholder" aria-hidden="true"></div>
+        </div>
+        <p class="news-state is-hidden" id="news-state" role="status"></p>
+        <div class="news-more">
+          <button class="opportunity-link is-hidden" id="news-more" type="button">
+            Ver más titulares <span aria-hidden="true">&#8595;</span>
+          </button>
+        </div>
+      </div>
+      <article class="news-article is-hidden" id="news-article">
+        <div class="news-article-media" id="news-article-media"></div>
+        <span class="launcher-eyebrow" id="news-article-meta"></span>
+        <h3 id="news-article-title" tabindex="-1"></h3>
+        <p class="news-article-summary" id="news-article-summary"></p>
+        <div class="news-article-body" id="news-article-body"></div>
+        <a class="opportunity-link is-hidden" id="news-article-link" href="#" target="_blank" rel="noopener noreferrer">
+          Más información <span aria-hidden="true">&#8599;</span>
+        </a>
+      </article>
+    </div>
+  </dialog>
+
 
   <section class="login-view is-hidden" id="login-view">
     <div class="login-brand-panel">
@@ -839,6 +883,19 @@
             </div>
           </section>
 
+          <section class="settings-card announcement-settings-card admin-only" id="announcement-settings-card">
+            <div class="section-heading">
+              <div><h3>Comunicados de la portada</h3><p>Redacta en borrador y publica cuando esté listo. Para editar algo publicado, retíralo primero.</p></div>
+              <button class="button primary" id="new-announcement-button" type="button">Nuevo comunicado</button>
+            </div>
+            <div class="degree-work-table-wrap">
+              <table class="degree-work-table">
+                <thead><tr><th>Comunicado</th><th>Tipo</th><th>Estado</th><th>Publicado</th><th>Acciones</th></tr></thead>
+                <tbody id="announcement-settings-body"><tr><td colspan="5">Cargando comunicados...</td></tr></tbody>
+              </table>
+            </div>
+          </section>
+
           <section class="settings-card database-card superadmin-only is-hidden" id="database-settings-card">
             <div class="section-heading">
               <h3>Bases de datos del proyecto</h3>
@@ -906,11 +963,38 @@
           <div class="form-actions"><button class="button secondary" type="button" id="cancel-modality-form">Cancelar</button><button class="button primary" type="submit">Guardar borrador</button></div>
         </form>
       </dialog>
+
+      <dialog class="degree-work-dialog" id="announcement-dialog">
+        <form id="announcement-form">
+          <input id="announcement-id" type="hidden" />
+          <input id="announcement-version" type="hidden" />
+          <div class="dialog-heading"><div><span class="page-eyebrow">Portada</span><h3 id="announcement-form-title">Nuevo comunicado</h3></div><button class="icon-action" type="button" id="close-announcement-form" aria-label="Cerrar">&times;</button></div>
+          <div class="modality-form-grid">
+            <label>Tipo
+              <select id="announcement-category" required>
+                <option value="NOTICIA">Noticia</option>
+                <option value="COMUNICADO">Comunicado</option>
+                <option value="EVENTO">Evento</option>
+                <option value="CONVOCATORIA">Convocatoria</option>
+              </select>
+            </label>
+            <label>Enlace opcional (HTTPS)<input id="announcement-link" type="url" maxlength="500" placeholder="https://" /></label>
+            <label>Imagen (ruta /static/ o URL HTTPS autorizada)<input id="announcement-image-url" maxlength="500" placeholder="https://" /></label>
+            <label>Descripción de la imagen<input id="announcement-image-alt" maxlength="200" placeholder="Qué muestra la imagen" /></label>
+            <label class="wide-field">Título<input id="announcement-title" minlength="5" maxlength="160" required /></label>
+            <label class="wide-field">Resumen para la portada<textarea id="announcement-summary" minlength="10" maxlength="280" rows="2" required></textarea></label>
+            <label class="wide-field">Contenido completo<textarea id="announcement-body" maxlength="6000" rows="7"></textarea></label>
+          </div>
+          <p class="form-message" id="announcement-form-message" role="alert"></p>
+          <div class="form-actions"><button class="button secondary" type="button" id="cancel-announcement-form">Cancelar</button><button class="button primary" type="submit">Guardar borrador</button></div>
+        </form>
+      </dialog>
     </main>
   </div>
 
-  <script src="/static/app.js?v=26"></script>
+  <script src="/static/app.js?v=27"></script>
   <script src="/static/degree-work.js?v=2"></script>
+  <script src="/static/announcements.js?v=3"></script>
 </body>
 
 </html>

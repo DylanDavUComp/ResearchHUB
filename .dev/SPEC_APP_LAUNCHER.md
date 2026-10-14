@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.4.13"
+version: "1.5.0"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -95,6 +95,25 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
     Seleccionar el asistente interrumpe su actividad, presenta una respuesta breve
     y reinicia una espera de 60 segundos; al cumplirse ese periodo sin nuevas
     interacciones, retoma su rutina autonoma.
+
+27. La portada no crece: la franja inferior de la primera pantalla presenta
+    `03 Comunicados` con el titular publicado mas reciente, que abre su lectura, y
+    la accion `Ver comunicados`, que abre una ventana flotante modal centrada.
+28. La ventana se organiza como portada de noticias: titular principal con imagen
+    16:9 y resumen, y una columna `Mas titulares` con miniaturas. Carga 5 por
+    pagina desde `GET /api/v1/announcements`. La lectura completa ocurre en la
+    misma ventana con retorno a `Titulares`. Sin imagen se usa una superficie
+    morada con el tipo de comunicado. Sin publicaciones muestra un estado vacio
+    real; ante un error ofrece reintentar.
+29. Las imagenes se referencian por URL: rutas `/static/` o HTTPS de los origenes
+    declarados en `ANNOUNCEMENT_IMAGE_ORIGINS`, que tambien se agregan a la CSP
+    `img-src`. Toda imagen exige texto alternativo. El enlace opcional solo acepta
+    URL absolutas HTTPS y abre en una pestana nueva.
+30. Administrador y Super administrador gestionan comunicados en `Configuracion`:
+    crean borradores, editan, publican, retiran y eliminan borradores nunca
+    publicados. Un comunicado publicado no se edita sin retirarlo. Las escrituras
+    usan control de version optimista y quedan en
+    `announcement_audit_events`.
 
 ## Criterios de aceptacion
 

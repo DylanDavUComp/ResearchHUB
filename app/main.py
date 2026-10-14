@@ -40,6 +40,7 @@ def create_app() -> FastAPI:
     app.add_middleware(
         SecurityHeadersMiddleware,
         hsts_enabled=settings.security_hsts_enabled,
+        image_origins=settings.announcement_image_origin_list,
     )
     app.add_middleware(TraceIdMiddleware)
     register_exception_handlers(app)

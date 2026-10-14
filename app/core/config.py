@@ -42,6 +42,7 @@ class Settings(BaseSettings):
     self_registration_enabled: bool = False
     allowed_hosts: str = "localhost,127.0.0.1,testserver"
     cors_origins: str = ""
+    announcement_image_origins: str = ""
     security_hsts_enabled: bool = False
     bootstrap_superadmin_enabled: bool = False
     bootstrap_superadmin_name: str | None = None
@@ -68,6 +69,14 @@ class Settings(BaseSettings):
     def cors_origin_list(self) -> list[str]:
         return [
             value.strip() for value in self.cors_origins.split(",") if value.strip()
+        ]
+
+    @property
+    def announcement_image_origin_list(self) -> list[str]:
+        return [
+            value.strip().rstrip("/")
+            for value in self.announcement_image_origins.split(",")
+            if value.strip()
         ]
 
     @field_validator(
@@ -132,6 +141,9 @@ class Settings(BaseSettings):
         for setting_name, application_url in application_urls.items():
             if application_url and not application_url.startswith("https://"):
                 unsafe_reasons.append(f"{setting_name} must use HTTPS")
+        for image_origin in self.announcement_image_origin_list:
+            if not image_origin.startswith("https://"):
+                unsafe_reasons.append("ANNOUNCEMENT_IMAGE_ORIGINS must use HTTPS")
         if len(self.secret_key) < 32 or self.secret_key.lower().startswith("replace_"):
             unsafe_reasons.append(
                 "SECRET_KEY must be a non-default 32+ character value"

@@ -179,9 +179,10 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=46" in response.text
-    assert "/static/app.js?v=26" in response.text
+    assert "/static/styles.css?v=49" in response.text
+    assert "/static/app.js?v=27" in response.text
     assert "/static/degree-work.js?v=2" in response.text
+    assert "/static/announcements.js?v=3" in response.text
 
 
 def test_launcher_uses_consistent_action_labels(client: TestClient) -> None:
