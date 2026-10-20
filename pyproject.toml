@@ -14,7 +14,6 @@ dependencies = [
   "pg8000==1.31.2",
   "pydantic-settings==2.10.1",
   "alembic==1.16.4",
-  "PyJWT>=2.10,<3",
 ]
 
 [project.optional-dependencies]

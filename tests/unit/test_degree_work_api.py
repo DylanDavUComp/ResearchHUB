@@ -3,12 +3,15 @@ from collections.abc import Generator
 import pytest
 from app.core.database import Base, get_db
 from app.core.security import get_current_user
+from app.core.telemetry import CSRF_HEADER, CSRF_HEADER_VALUE
 from app.main import app
-from app.modules.usuarios.models import User
+from app.modules.usuarios.models import User, UserApplication
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import Session
 from sqlalchemy.pool import StaticPool
+
+APP_HEADERS = {CSRF_HEADER: CSRF_HEADER_VALUE}
 
 
 @pytest.fixture
@@ -28,6 +31,17 @@ def degree_work_client() -> Generator[tuple[TestClient, dict[str, User]], None, 
             status="Activo",
             password_hash="not-used",
             permissions=[],
+            application_grants=[UserApplication(application="research_hub")],
+        ),
+        "research_os_only": User(
+            id="ros-1",
+            name="Investigador ResearchOS",
+            email="ros-1@ucompensar.edu.co",
+            role="Docente",
+            status="Activo",
+            password_hash="not-used",
+            permissions=[],
+            application_grants=[UserApplication(application="research_os")],
         ),
         "superadmin": User(
             id="super-1",
@@ -45,7 +59,7 @@ def degree_work_client() -> Generator[tuple[TestClient, dict[str, User]], None, 
             yield db
 
     app.dependency_overrides[get_db] = override_db
-    with TestClient(app) as client:
+    with TestClient(app, headers=APP_HEADERS) as client:
         yield client, users
     app.dependency_overrides.clear()
 
@@ -56,6 +70,16 @@ def test_modalities_require_authentication(degree_work_client) -> None:
     response = client.get("/api/v1/degree-work-modalities")
 
     assert response.status_code == 401
+
+
+def test_degree_work_requires_research_hub_access(degree_work_client) -> None:
+    client, users = degree_work_client
+    app.dependency_overrides[get_current_user] = lambda: users["research_os_only"]
+
+    response = client.get("/api/v1/degree-work-modalities")
+
+    assert response.status_code == 403
+    assert response.json()["error"]["code"] == "auth.application_forbidden"
 
 
 def test_student_sees_only_active_modalities(degree_work_client) -> None:

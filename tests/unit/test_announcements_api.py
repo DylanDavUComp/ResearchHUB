@@ -3,6 +3,7 @@ from collections.abc import Generator
 import pytest
 from app.core.database import Base, get_db
 from app.core.security import get_current_user
+from app.core.telemetry import CSRF_HEADER, CSRF_HEADER_VALUE
 from app.main import app
 from app.modules.comunicados.models import AnnouncementAuditEvent
 from app.modules.usuarios.models import User
@@ -18,6 +19,8 @@ PAYLOAD = {
     "body": "Consulta los términos de referencia y prepara tu propuesta con tu tutor.",
     "link_url": "https://www.ucompensar.edu.co/investigacion",
 }
+
+APP_HEADERS = {CSRF_HEADER: CSRF_HEADER_VALUE}
 
 
 def build_user(user_id: str, role: str) -> User:
@@ -55,7 +58,7 @@ def announcements_client() -> Generator[
             yield db
 
     app.dependency_overrides[get_db] = override_db
-    with TestClient(app) as client, Session(engine) as inspector:
+    with TestClient(app, headers=APP_HEADERS) as client, Session(engine) as inspector:
         yield client, users, inspector
     app.dependency_overrides.clear()
 

@@ -1,73 +1,59 @@
 from collections.abc import Callable
-from datetime import UTC, datetime, timedelta
 from typing import Annotated
-from uuid import uuid4
 
-import jwt
-from fastapi import Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordBearer
-from jwt.exceptions import InvalidTokenError
+from fastapi import Depends, HTTPException, Request, Response, status
 from sqlalchemy.orm import Session
 
 from app.core.config import settings
 from app.core.database import get_db
-from app.modules.usuarios.models import User
+from app.core.exceptions import AppError
+from app.modules.usuarios.models import APPLICATION_NAMES, ApplicationCode, User
+from app.modules.usuarios.services.session_service import SessionService
 
-ALGORITHM = "HS256"
-
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/v1/usuarios/login")
-token_dependency = Annotated[str, Depends(oauth2_scheme)]
 db_dependency = Annotated[Session, Depends(get_db)]
 
 
-def create_access_token(user_id: str) -> str:
-    issued_at = datetime.now(UTC)
-    expire = issued_at + timedelta(minutes=settings.access_token_expire_minutes)
+def read_session_token(request: Request) -> str | None:
+    token = request.cookies.get(settings.session_cookie_name)
+    # Los tokens emitidos tienen 43 caracteres; se descarta cualquier valor anomalo.
+    if not token or len(token) > 128:
+        return None
+    return token
 
-    payload = {
-        "sub": user_id,
-        "exp": expire,
-        "iat": issued_at,
-        "jti": str(uuid4()),
-        "iss": settings.jwt_issuer,
-        "aud": settings.jwt_audience,
-    }
 
-    return jwt.encode(
-        payload,
-        settings.secret_key,
-        algorithm=ALGORITHM,
+def set_session_cookie(response: Response, token: str) -> None:
+    response.set_cookie(
+        key=settings.session_cookie_name,
+        value=token,
+        max_age=settings.session_max_hours * 3600,
+        path="/",
+        secure=settings.session_cookie_secure,
+        httponly=True,
+        samesite="strict",
     )
 
 
-def get_current_user(
-    token: token_dependency,
-    db: db_dependency,
-) -> User:
+def clear_session_cookie(response: Response) -> None:
+    response.delete_cookie(
+        key=settings.session_cookie_name,
+        path="/",
+        secure=settings.session_cookie_secure,
+        httponly=True,
+        samesite="strict",
+    )
+
+
+def get_current_user(request: Request, db: db_dependency) -> User:
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="No se pudo validar la autenticación.",
-        headers={"WWW-Authenticate": "Bearer"},
+        detail="La sesión no es válida o expiró. Inicia sesión de nuevo.",
     )
 
-    try:
-        payload = jwt.decode(
-            token,
-            settings.secret_key,
-            algorithms=[ALGORITHM],
-            issuer=settings.jwt_issuer,
-            audience=settings.jwt_audience,
-        )
+    token = read_session_token(request)
+    if token is None:
+        raise credentials_exception
 
-        user_id = payload.get("sub")
-
-        if not user_id:
-            raise credentials_exception
-
-    except InvalidTokenError:
-        raise credentials_exception from None
-
-    user = db.get(User, user_id)
+    user = SessionService(db).resolve(token)
 
     if user is None:
         raise credentials_exception
@@ -97,6 +83,31 @@ def require_permission(permission: str) -> Callable[[User], User]:
         return current_user
 
     return permission_dependency
+
+
+def require_application(application: ApplicationCode) -> Callable[[User], User]:
+    """Exige que el usuario autenticado tenga acceso a la aplicacion indicada.
+
+    El login es compartido entre aplicaciones; el token no concede acceso por si
+    mismo a ninguna de ellas.
+    """
+
+    def application_dependency(
+        current_user: Annotated[User, Depends(get_current_user)],
+    ) -> User:
+        if not current_user.has_application(application):
+            raise AppError(
+                code="auth.application_forbidden",
+                message=(
+                    f"Tu cuenta no tiene acceso a {APPLICATION_NAMES[application]}."
+                ),
+                status_code=status.HTTP_403_FORBIDDEN,
+                details={"application": application},
+            )
+
+        return current_user
+
+    return application_dependency
 
 
 def require_superadmin(

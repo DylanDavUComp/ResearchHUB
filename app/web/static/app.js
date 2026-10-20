@@ -1,6 +1,8 @@
-const storageKeys = {
-  token: "researchhub.access_token",
-};
+// La sesion vive en PostgreSQL y viaja en una cookie HttpOnly que el JavaScript no
+// puede leer. Se comparte con ResearchOS; el backend decide el acceso por aplicacion.
+const csrfHeader = { name: "X-Requested-With", value: "ResearchHUB" };
+
+const applicationCode = "research_hub";
 
 const allPermissions = [
   "users:create",
@@ -29,23 +31,32 @@ const allPermissions = [
   "audit:any:read",
 ];
 
+const applicationNames = {
+  research_hub: "ResearchHUB",
+  research_os: "ResearchOS",
+};
+
 let cachedUsers = [];
-function getAccessToken() {
-  return localStorage.getItem(storageKeys.token);
-}
 
-
-function clearSession() {
-  localStorage.removeItem(storageKeys.token);
+async function endSession() {
+  try {
+    await fetch("/api/v1/usuarios/logout", {
+      method: "POST",
+      credentials: "same-origin",
+      headers: { [csrfHeader.name]: csrfHeader.value },
+    });
+  } catch (error) {
+    // La sesion expira sola en el servidor si no hay conexion.
+  }
 }
 
 
 async function apiFetch(url, options = {}) {
-  const token = getAccessToken();
-
   const headers = new Headers(
     options.headers || {}
   );
+
+  headers.set(csrfHeader.name, csrfHeader.value);
 
   if (options.body && !headers.has("Content-Type")) {
     headers.set(
@@ -54,23 +65,16 @@ async function apiFetch(url, options = {}) {
     );
   }
 
-  if (token) {
-    headers.set(
-      "Authorization",
-      `Bearer ${token}`
-    );
-  }
-
   const response = await fetch(
     url,
     {
       ...options,
+      credentials: "same-origin",
       headers,
     }
   );
 
   if (response.status === 401) {
-    clearSession();
     showLogin();
   }
 
@@ -183,12 +187,6 @@ async function getUsers() {
 }
 
 async function getSessionUser() {
-  const token = getAccessToken();
-
-  if (!token) {
-    return null;
-  }
-
   try {
     const response = await apiFetch(
       "/api/v1/usuarios/me"
@@ -405,7 +403,7 @@ async function renderUsers() {
   const canUpdate = hasPermission(user, "users:update");
   const canDelete = hasPermission(user, "users:delete");
 
-  elements.usersTableBody.innerHTML = '<tr><td colspan="6">Cargando usuarios...</td></tr>';
+  elements.usersTableBody.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
 
   try {
     const users = await getUsers();
@@ -434,6 +432,10 @@ async function renderUsers() {
       permissionsCell.textContent = permissionCount === allPermissions.length
         ? "Todos"
         : `${permissionCount} permisos`;
+      const applicationsCell = document.createElement("td");
+      applicationsCell.textContent = (item.applications || [])
+        .map((code) => applicationNames[code] || code)
+        .join(", ") || "Sin acceso";
 
       const actionsCell = document.createElement("td");
       const actions = document.createElement("div");
@@ -457,6 +459,7 @@ async function renderUsers() {
         emailCell,
         roleCell,
         statusCell,
+        applicationsCell,
         permissionsCell,
         actionsCell,
       );
@@ -464,7 +467,7 @@ async function renderUsers() {
     });
   } catch (error) {
     elements.usersTableBody.innerHTML =
-      '<tr><td colspan="6">No se pudieron consultar los usuarios en PostgreSQL.</td></tr>';
+      '<tr><td colspan="7">No se pudieron consultar los usuarios en PostgreSQL.</td></tr>';
   }
 }
 
@@ -484,7 +487,16 @@ function fillUserForm(user) {
   document.querySelectorAll('input[name="permission"]').forEach((checkbox) => {
     checkbox.checked = user.permissions.includes(checkbox.value);
   });
+  document.querySelectorAll('input[name="application"]').forEach((checkbox) => {
+    checkbox.checked = (user.applications || []).includes(checkbox.value);
+  });
   elements.userFormTitle.textContent = "Editar usuario";
+}
+
+function collectSelectedApplications() {
+  return Array.from(document.querySelectorAll('input[name="application"]:checked')).map(
+    (checkbox) => checkbox.value,
+  );
 }
 
 function collectSelectedPermissions() {
@@ -508,6 +520,7 @@ async function upsertUser(event) {
     status: elements.userStatus.value,
     password: elements.userPassword.value || null,
     permissions,
+    applications: collectSelectedApplications(),
   };
 
   if (!editingId && !payload.password) {
@@ -554,12 +567,15 @@ async function login(event) {
       "/api/v1/usuarios/login",
       {
         method: "POST",
+        credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
+          [csrfHeader.name]: csrfHeader.value,
         },
         body: JSON.stringify({
           email,
           password,
+          application: applicationCode,
         }),
       }
     );
@@ -570,18 +586,13 @@ async function login(event) {
 
       elements.loginError.textContent =
         errorPayload.error?.message ||
-        "Credenciales invalidas.";
+        "Credenciales inválidas.";
 
       return;
     }
 
     const payload =
       await response.json();
-
-    localStorage.setItem(
-      storageKeys.token,
-      payload.access_token
-    );
 
     elements.loginError.textContent = "";
 
@@ -626,8 +637,10 @@ async function register(event) {
       "/api/v1/usuarios/registro",
       {
         method: "POST",
+        credentials: "same-origin",
         headers: {
           "Content-Type": "application/json",
+          [csrfHeader.name]: csrfHeader.value,
         },
         body: JSON.stringify({
           name,
@@ -690,8 +703,7 @@ elements.togglePassword.addEventListener("click", () => {
 elements.logoutButtons.forEach((button) => {
   button.addEventListener("click", (event) => {
     event.preventDefault();
-    clearSession();
-    showLauncher();
+    endSession().finally(showLauncher);
   });
 });
 
@@ -947,12 +959,20 @@ window.addEventListener("resize", () => {
   initializeResearchAssistant();
 });
 
+function hasApplicationAccess(user) {
+  return Boolean(user?.applications?.includes(applicationCode));
+}
+
 elements.openResearchHub.addEventListener("click", async () => {
   const currentUser = await getSessionUser();
-  if (currentUser) {
+  if (currentUser && hasApplicationAccess(currentUser)) {
+    elements.loginError.textContent = "";
     showAuthenticatedApp(currentUser);
     return;
   }
+  elements.loginError.textContent = currentUser
+    ? "Tu sesión está activa, pero tu cuenta no tiene acceso a ResearchHUB. Ingresa con otra cuenta o solicita el acceso a un administrador."
+    : "";
   showLogin();
 });
 

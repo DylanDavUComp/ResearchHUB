@@ -14,7 +14,6 @@ class Settings(BaseSettings):
     app_port: int = 8000
     api_v1_prefix: str = "/api/v1"
     service_name: str = "researchhub-u"
-    research_os_url: str | None = None
     cris_url: str | None = None
     crai_url: str | None = "https://crai.ucompensar.edu.co/"
     research_blog_url: str | None = None
@@ -33,10 +32,14 @@ class Settings(BaseSettings):
     database_pool_timeout_seconds: int = Field(default=30, ge=1, le=300)
     database_pool_recycle_seconds: int = Field(default=1800, ge=60)
 
+    # Clave HMAC para las huellas de sesion e intentos de login guardadas en
+    # PostgreSQL. Cambiarla invalida todas las sesiones activas.
     secret_key: str = "replace_with_secure_value_at_least_32_chars"
-    access_token_expire_minutes: int = 30
-    jwt_issuer: str = "researchhub-u"
-    jwt_audience: str = "researchhub-u-web"
+    session_idle_minutes: int = Field(default=30, ge=5, le=240)
+    session_max_hours: int = Field(default=12, ge=1, le=24)
+    session_cookie_secure: bool = True
+    login_max_failed_attempts: int = Field(default=5, ge=3, le=20)
+    login_lockout_minutes: int = Field(default=15, ge=1, le=1440)
     log_level: str = "INFO"
     docs_enabled: bool = True
     self_registration_enabled: bool = False
@@ -54,6 +57,15 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
+
+    @property
+    def session_cookie_name(self) -> str:
+        # El prefijo __Host- exige Secure, Path=/ y sin Domain en el navegador.
+        return (
+            "__Host-researchhub_session"
+            if self.session_cookie_secure
+            else "researchhub_session"
+        )
 
     @property
     def is_production(self) -> bool:
@@ -80,7 +92,6 @@ class Settings(BaseSettings):
         ]
 
     @field_validator(
-        "research_os_url",
         "cris_url",
         "crai_url",
         "research_blog_url",
@@ -96,7 +107,6 @@ class Settings(BaseSettings):
     @model_validator(mode="after")
     def validate_operational_safety(self) -> "Settings":
         application_urls = {
-            "RESEARCH_OS_URL": self.research_os_url,
             "CRIS_URL": self.cris_url,
             "CRAI_URL": self.crai_url,
             "RESEARCH_BLOG_URL": self.research_blog_url,
@@ -126,6 +136,10 @@ class Settings(BaseSettings):
         if not self.allowed_host_list:
             raise ValueError("At least one allowed host is required")
 
+        # Toda la informacion del producto vive en PostgreSQL, en cualquier ambiente.
+        if not self.database_url.startswith(("postgresql://", "postgresql+")):
+            raise ValueError("DATABASE_URL must point to PostgreSQL")
+
         if not self.is_production:
             return self
 
@@ -138,6 +152,8 @@ class Settings(BaseSettings):
             unsafe_reasons.append("SECURITY_HSTS_ENABLED must be true")
         if self.self_registration_enabled:
             unsafe_reasons.append("SELF_REGISTRATION_ENABLED must be false")
+        if not self.session_cookie_secure:
+            unsafe_reasons.append("SESSION_COOKIE_SECURE must be true")
         for setting_name, application_url in application_urls.items():
             if application_url and not application_url.startswith("https://"):
                 unsafe_reasons.append(f"{setting_name} must use HTTPS")

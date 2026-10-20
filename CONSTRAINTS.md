@@ -11,6 +11,9 @@ weakened through an explicit product and engineering decision recorded in an ADR
 - Published workflows, decisions, evaluations and audit records are immutable.
 - No demo users, shared passwords or automatic credential resets exist in runtime
   code, images or operational documentation.
+- PostgreSQL is the only store for product, session and security state in every
+  environment; the application refuses any other `DATABASE_URL`. Browsers hold no
+  credentials or product data beyond the `HttpOnly` session cookie (ADR-005).
 - A release must not claim a capability whose acceptance criteria are incomplete.
 
 ## Quality Gates

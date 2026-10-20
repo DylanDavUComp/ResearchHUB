@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>ResearchOS | Investigación UCompensar</title>
+  <link rel="icon" href="/static/avatar.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/styles.css?v=52" />
+</head>
+
+<body class="researchos">
+  <p class="ros-loading" id="ros-loading" role="status">Verificando tu sesión…</p>
+
+  <section class="login-view ros-login is-hidden" id="login-view" aria-labelledby="ros-login-title">
+    <div class="login-brand-panel">
+      <header class="login-brand-header">
+        <img class="brand-logo" src="/static/brand/ucompensar-hacer-para-saber.png"
+          alt="UCompensar, Hacer para saber" />
+      </header>
+
+      <div class="login-hero-copy">
+        <p class="ros-kicker">Investigación aplicada y transferencia</p>
+        <h1>Research<span>OS</span></h1>
+        <p>Proyectos aplicados, capacidades, resultados de investigación y transferencia al entorno.</p>
+      </div>
+
+      <div class="login-benefits">
+        <article><span class="benefit-icon"><span class="icon briefcase" aria-hidden="true"></span></span>
+          <div><strong>Proyectos aplicados</strong>
+            <p>Retos reales, resueltos con aliados.</p>
+          </div>
+        </article>
+        <article><span class="benefit-icon"><span class="icon settings" aria-hidden="true"></span></span>
+          <div><strong>Capacidades</strong>
+            <p>Laboratorios, equipos y experticia.</p>
+          </div>
+        </article>
+        <article><span class="benefit-icon"><span class="icon chart" aria-hidden="true"></span></span>
+          <div><strong>Transferencia</strong>
+            <p>Resultados que llegan al entorno.</p>
+          </div>
+        </article>
+      </div>
+
+      <img class="research-illustration" src="/static/brand/researchos-workspace-v4.webp" alt="" />
+
+      <footer>PRACTICA &middot; APRENDE &middot; CONECTA</footer>
+    </div>
+
+    <div class="login-form-panel">
+      <a class="launcher-back" href="/">
+        <span aria-hidden="true">&#8592;</span> Aplicaciones
+      </a>
+
+      <form class="login-card" id="login-form" novalidate>
+        <span class="login-lock"><span class="icon lock" aria-hidden="true"></span></span>
+        <h2 id="ros-login-title">Ingresa a ResearchOS</h2>
+        <p>Usa tu cuenta institucional. Es la misma cuenta de <strong>Research<span>HUB</span></strong>.</p>
+
+        <label for="login-email">
+          Correo institucional
+          <span class="field">
+            <span class="field-icon" aria-hidden="true">✉</span>
+            <input id="login-email" type="email" placeholder="usuario@ucompensar.edu.co" autocomplete="username"
+              maxlength="255" required />
+          </span>
+        </label>
+
+        <label for="login-password">
+          Contraseña
+          <span class="field">
+            <span class="field-icon" aria-hidden="true">▣</span>
+            <input id="login-password" type="password" placeholder="Ingresa tu contraseña"
+              autocomplete="current-password" maxlength="128" required />
+            <button class="plain-icon" id="toggle-password" type="button" aria-label="Mostrar contraseña"
+              aria-pressed="false">◉</button>
+          </span>
+        </label>
+
+        <p class="login-error" id="login-error" role="alert"></p>
+        <p class="ros-alternative is-hidden" id="login-alternative">
+          <a href="/" id="login-alternative-link">Ir a las aplicaciones a las que sí tienes acceso</a>
+        </p>
+
+        <button class="login-submit" id="login-submit" type="submit">Iniciar sesión</button>
+      </form>
+
+      <section class="login-card ros-denied is-hidden" id="access-denied" aria-labelledby="ros-denied-title"
+        tabindex="-1">
+        <span class="login-lock"><span class="icon lock" aria-hidden="true"></span></span>
+        <h2 id="ros-denied-title">Tu cuenta no tiene acceso a ResearchOS</h2>
+        <p>Iniciaste sesión como <strong id="denied-user">tu cuenta</strong>. Solicita el acceso a un
+          administrador de investigación o ingresa con otra cuenta.</p>
+        <div class="ros-denied-actions">
+          <a class="login-submit is-hidden" id="denied-hub-link" href="/">Ir a ResearchHUB</a>
+          <button class="button secondary" id="switch-account" type="button">Ingresar con otra cuenta</button>
+        </div>
+      </section>
+
+      <footer class="login-footer">
+        <span>Sesión compartida con ResearchHUB</span>
+      </footer>
+    </div>
+  </section>
+
+  <div class="app-shell is-hidden" id="app-view">
+    <aside class="sidebar" id="main-sidebar" aria-label="Navegación de ResearchOS">
+      <div class="brand product-brand">
+        <span class="institution-name">UCompensar</span>
+        <span class="product-name">ResearchOS</span>
+      </div>
+
+      <nav class="nav-list">
+        <a class="nav-item active" href="#inicio" aria-current="page"><span class="icon home"
+            aria-hidden="true"></span>Inicio</a>
+        <p class="ros-nav-label" id="ros-nav-sections-label">Áreas de trabajo</p>
+        <ul class="ros-nav-sections" id="nav-sections" aria-labelledby="ros-nav-sections-label"></ul>
+        <a class="nav-item" href="/"><span class="icon columns" aria-hidden="true"></span>Aplicaciones</a>
+        <button class="nav-item logout js-logout" type="button"><span class="icon exit"
+            aria-hidden="true"></span>Cerrar sesión</button>
+      </nav>
+    </aside>
+    <button class="sidebar-backdrop" id="sidebar-backdrop" type="button" tabindex="-1"
+      aria-label="Cerrar menú de navegación"></button>
+
+    <main class="main" id="inicio">
+      <header class="topbar">
+        <button class="mobile-menu-button" id="mobile-menu-button" type="button" aria-controls="main-sidebar"
+          aria-expanded="false" aria-label="Abrir menú de navegación">
+          <span class="icon menu" aria-hidden="true"></span>
+        </button>
+        <div>
+          <h1>ResearchOS</h1>
+          <p>Investigación aplicada, capacidades y transferencia</p>
+        </div>
+        <div class="user-tools">
+          <div class="profile">
+            <img src="/static/avatar.svg" alt="" />
+            <div>
+              <strong id="profile-name"></strong>
+              <span id="profile-role"></span>
+            </div>
+          </div>
+          <button class="top-logout js-logout" type="button">
+            <span class="icon exit" aria-hidden="true"></span>
+            Cerrar sesión
+          </button>
+        </div>
+      </header>
+
+      <section class="content">
+        <div class="page-title">
+          <h2>Inicio</h2>
+          <p id="welcome-text"></p>
+        </div>
+
+        <section class="hero-panel ros-hero">
+          <div class="hero-art" aria-hidden="true">
+            <img src="/static/brand/researchos-workspace-v4.webp" alt="" />
+          </div>
+          <div class="hero-copy">
+            <h3>Investigación que llega al entorno</h3>
+            <p>ResearchOS reunirá los proyectos aplicados, las capacidades institucionales y los resultados que
+              se transfieren a aliados y comunidades.</p>
+          </div>
+        </section>
+
+        <div class="ros-home-grid">
+          <section class="settings-card" aria-labelledby="ros-sections-title">
+            <div class="section-heading">
+              <h3 id="ros-sections-title">Áreas de trabajo</h3>
+            </div>
+            <ul class="ros-section-list" id="section-list"></ul>
+          </section>
+
+          <aside class="settings-card" aria-labelledby="ros-apps-title">
+            <div class="section-heading">
+              <h3 id="ros-apps-title">Tus aplicaciones</h3>
+            </div>
+            <p class="ros-muted">Tu cuenta institucional es la misma en todas las aplicaciones del ecosistema.
+            </p>
+            <ul class="ros-app-list" id="app-list"></ul>
+          </aside>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="/static/researchos.js?v=3"></script>
+</body>
+
+</html>

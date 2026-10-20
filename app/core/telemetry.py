@@ -5,7 +5,7 @@ from uuid import uuid4
 
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.requests import Request
-from starlette.responses import Response
+from starlette.responses import JSONResponse, Response
 
 logger = logging.getLogger("researchhub.http")
 TRACE_ID_PATTERN = re.compile(r"^[A-Za-z0-9._-]{1,64}$")
@@ -35,6 +35,38 @@ class TraceIdMiddleware(BaseHTTPMiddleware):
             },
         )
         return response
+
+
+CSRF_HEADER = "X-Requested-With"
+CSRF_HEADER_VALUE = "ResearchHUB"
+UNSAFE_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
+
+
+class CsrfHeaderMiddleware(BaseHTTPMiddleware):
+    """Exige un encabezado propio en las escrituras de la API.
+
+    Otro sitio no puede enviarlo sin una autorizacion CORS explicita; junto con la
+    cookie SameSite=Strict evita que se usen sesiones ajenas desde otro origen.
+    """
+
+    async def dispatch(self, request: Request, call_next) -> Response:  # type: ignore[no-untyped-def]
+        if (
+            request.method in UNSAFE_METHODS
+            and request.url.path.startswith("/api/")
+            and request.headers.get(CSRF_HEADER) != CSRF_HEADER_VALUE
+        ):
+            return JSONResponse(
+                status_code=403,
+                content={
+                    "error": {
+                        "code": "security.csrf_header_required",
+                        "message": "La solicitud no proviene de la aplicación.",
+                        "details": {},
+                        "trace_id": getattr(request.state, "trace_id", ""),
+                    }
+                },
+            )
+        return await call_next(request)
 
 
 class SecurityHeadersMiddleware(BaseHTTPMiddleware):

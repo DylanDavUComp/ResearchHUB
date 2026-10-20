@@ -1,6 +1,6 @@
 ---
 document_id: "SPEC-PORTAL-001"
-version: "1.5.0"
+version: "1.6.0"
 status: "Implementado"
 language: "es-CO"
 project: "ResearchHUB"
@@ -27,8 +27,9 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
 1. La portada es la primera vista, exista o no una sesion de ResearchHUB.
 2. El control `Ingresar` de ResearchHUB abre el login o reutiliza una sesion
    valida.
-3. `ResearchOS` y `CRIS` solo se habilitan cuando `RESEARCH_OS_URL` y `CRIS_URL`,
-   respectivamente, contienen una URL absoluta.
+3. `ResearchOS` es una aplicacion interna con login compartido (ver
+   `SPEC-ROS-001`): su control `Ingresar` abre `/researchos`. `CRIS` solo se
+   habilita cuando `CRIS_URL` contiene una URL absoluta.
 4. `CRAI_URL` tiene como valor institucional predeterminado
    `https://crai.ucompensar.edu.co/` y puede reemplazarse o deshabilitarse por
    ambiente.

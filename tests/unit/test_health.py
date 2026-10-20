@@ -39,7 +39,10 @@ def test_meta_uses_versioned_prefix(client: TestClient) -> None:
     assert response.json()["service"] == "researchhub-u"
     assert response.json()["features"]["self_registration"] is False
     assert response.json()["applications"]["research_hub_u"]["available"] is True
-    assert response.json()["applications"]["research_os"]["available"] is False
+    assert response.json()["applications"]["research_os"] == {
+        "available": True,
+        "url": "/researchos",
+    }
     assert response.json()["applications"]["cris"]["available"] is False
     assert response.json()["applications"]["services_marketplace"] == {
         "available": False,
@@ -55,21 +58,22 @@ def test_meta_uses_versioned_prefix(client: TestClient) -> None:
     }
 
 
-def test_meta_enables_research_os_when_url_is_configured(
-    client: TestClient, monkeypatch
-) -> None:
-    monkeypatch.setattr(
-        settings,
-        "research_os_url",
-        "https://research-os.example.edu.co",
-    )
+def test_research_os_page_is_served_with_shared_login(client: TestClient) -> None:
+    response = client.get("/researchos")
 
-    response = client.get("/api/v1/meta")
+    assert response.status_code == 200
+    assert 'id="login-form"' in response.text
+    assert 'id="access-denied"' in response.text
+    assert "/static/researchos.js?v=3" in response.text
+    assert "Microsoft" not in response.text
+    assert "Olvidaste" not in response.text
 
-    assert response.json()["applications"]["research_os"] == {
-        "available": True,
-        "url": "https://research-os.example.edu.co",
-    }
+    script = client.get("/static/researchos.js")
+    assert script.status_code == 200
+    assert "localStorage" not in script.text
+    assert 'credentials: "same-origin"' in script.text
+    assert 'const applicationCode = "research_os";' in script.text
+    assert "/api/v1/research-os/workspace" in script.text
 
 
 def test_meta_enables_cris_when_url_is_configured(
@@ -179,8 +183,8 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=49" in response.text
-    assert "/static/app.js?v=27" in response.text
+    assert "/static/styles.css?v=52" in response.text
+    assert "/static/app.js?v=30" in response.text
     assert "/static/degree-work.js?v=2" in response.text
     assert "/static/announcements.js?v=3" in response.text
 
@@ -192,7 +196,8 @@ def test_launcher_uses_consistent_action_labels(client: TestClient) -> None:
     assert "Ingresar a ResearchHUB <span" not in response.text
     assert 'Ingresar <span aria-hidden="true">&#8594;</span>' in response.text
     assert "No configurado" not in response.text
-    assert '<span id="researchos-action-label">Próximamente</span>' in response.text
+    assert '<span id="researchos-action-label">Ingresar</span>' in response.text
+    assert 'id="open-researchos" href="/researchos"' in response.text
     assert '<span id="cris-action-label">Próximamente</span>' in response.text
     assert '<span id="crai-action-label">Próximamente</span>' in response.text
     assert (
@@ -208,7 +213,7 @@ def test_launcher_uses_consistent_action_labels(client: TestClient) -> None:
         'label.textContent = isAvailable ? "Ingresar" : "Próximamente"'
         in script.text
     )
-    assert "Ingresar a ResearchOS" not in script.text
+    assert 'application: applicationCode,' in script.text
     assert "Ingresar a CRIS" not in script.text
     assert "Ingresar al CRAI" not in script.text
     assert "Leer en el blog" not in script.text

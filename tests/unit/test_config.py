@@ -31,6 +31,7 @@ def production_settings(**overrides: object) -> Settings:
         ("self_registration_enabled", True),
         ("secret_key", "replace_with_secure_value"),
         ("postgres_password", "change_me"),
+        ("session_cookie_secure", False),
     ],
 )
 def test_production_rejects_unsafe_configuration(field: str, value: object) -> None:
@@ -54,11 +55,6 @@ def test_empty_optional_application_url_is_normalized() -> None:
 @pytest.mark.parametrize(
     ("field", "http_url", "https_url"),
     [
-        (
-            "research_os_url",
-            "http://research-os.example.edu.co",
-            "https://research-os.example.edu.co",
-        ),
         (
             "cris_url",
             "http://cris.example.edu.co",

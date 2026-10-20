@@ -13,7 +13,9 @@ parcial frente a `.dev/SPEC_TRABAJOS_GRADO.md`.
 
 1. Crea `.env` a partir de `.env.example`.
 2. Sustituye `POSTGRES_PASSWORD`, `DATABASE_URL` y `SECRET_KEY` por valores locales
-   propios.
+   propios. `DATABASE_URL` debe apuntar a PostgreSQL: la aplicacion no arranca con
+   otro motor. Toda la informacion, incluidas las sesiones, vive en esa base
+   (`docs/adr/ADR-005-estado-solo-en-postgresql.md`).
 3. Levanta la aplicacion:
 
 ```powershell
@@ -25,12 +27,13 @@ La interfaz queda en `http://localhost:8000`; salud en `/health/live` y
 
 La portada permite elegir entre ResearchHUB, ResearchOS, CRIS, CRAI y Servicios y
 marketplace.
-ResearchHUB abre el flujo local de autenticacion. Los accesos externos se
+ResearchHUB y ResearchOS (`/researchos`) comparten la cuenta institucional; cada
+usuario entra solo a las aplicaciones que un administrador le asigna en
+`Configuracion > Usuarios` (ver `.dev/SPEC_RESEARCH_OS.md`). Los accesos externos se
 configuran con URL absolutas y en produccion deben usar HTTPS. CRAI incluye su URL
 institucional como valor predeterminado:
 
 ```dotenv
-RESEARCH_OS_URL=https://research-os.example.edu.co
 CRIS_URL=https://cris.example.edu.co
 CRAI_URL=https://crai.ucompensar.edu.co/
 RESEARCH_BLOG_URL=https://investigacion.example.edu.co/blog

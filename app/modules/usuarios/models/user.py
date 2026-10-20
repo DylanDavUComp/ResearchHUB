@@ -4,8 +4,10 @@ from sqlalchemy import JSON, String
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
+from app.modules.usuarios.models.user_application import APPLICATION_CODES
 
 if TYPE_CHECKING:
+    from app.modules.usuarios.models.user_application import UserApplication
     from app.modules.usuarios.models.user_role import UserRole
 
 
@@ -67,3 +69,26 @@ class User(Base):
         back_populates="users",
         viewonly=True,
     )
+
+    application_grants: Mapped[list["UserApplication"]] = relationship(
+        "UserApplication",
+        back_populates="user",
+        cascade="all, delete-orphan",
+        foreign_keys="UserApplication.user_id",
+        lazy="selectin",
+    )
+
+    @property
+    def is_superadmin(self) -> bool:
+        return self.role == "Super administrador"
+
+    @property
+    def applications(self) -> list[str]:
+        """Aplicaciones efectivas; el superadministrador accede a todas."""
+        if self.is_superadmin:
+            return list(APPLICATION_CODES)
+        granted = {grant.application for grant in self.application_grants}
+        return [code for code in APPLICATION_CODES if code in granted]
+
+    def has_application(self, application: str) -> bool:
+        return application in self.applications

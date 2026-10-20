@@ -11,7 +11,12 @@ from app.api import api_router
 from app.core.config import settings
 from app.core.exceptions import register_exception_handlers
 from app.core.logging import configure_logging
-from app.core.telemetry import SecurityHeadersMiddleware, TraceIdMiddleware
+from app.core.telemetry import (
+    CSRF_HEADER,
+    CsrfHeaderMiddleware,
+    SecurityHeadersMiddleware,
+    TraceIdMiddleware,
+)
 
 
 def create_app() -> FastAPI:
@@ -35,13 +40,14 @@ def create_app() -> FastAPI:
             allow_origins=settings.cors_origin_list,
             allow_credentials=False,
             allow_methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-            allow_headers=["Authorization", "Content-Type", "X-Trace-Id"],
+            allow_headers=["Content-Type", "X-Trace-Id", CSRF_HEADER],
         )
     app.add_middleware(
         SecurityHeadersMiddleware,
         hsts_enabled=settings.security_hsts_enabled,
         image_origins=settings.announcement_image_origin_list,
     )
+    app.add_middleware(CsrfHeaderMiddleware)
     app.add_middleware(TraceIdMiddleware)
     register_exception_handlers(app)
     app.include_router(api_router)
@@ -53,6 +59,10 @@ def create_app() -> FastAPI:
     @app.get("/", include_in_schema=False)
     def dashboard() -> FileResponse:
         return FileResponse(web_dir / "index.html")
+
+    @app.get("/researchos", include_in_schema=False)
+    def research_os() -> FileResponse:
+        return FileResponse(web_dir / "researchos.html")
 
     return app
 

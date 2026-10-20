@@ -21,6 +21,20 @@ addresses. Never use `*`; direct clients must not be able to forge forwarding da
 4. Set `BOOTSTRAP_SUPERADMIN_ENABLED=false`, remove the bootstrap password and
    redeploy. Rotate the initial account password through the approved channel.
 
+## Sessions And Login Lockout
+
+- Sessions live in `sesiones`; only HMAC digests are stored. Production requires
+  `SESSION_COOKIE_SECURE=true` and HTTPS.
+- Revoke one account: set it `Inactivo` or change its password in
+  `Configuracion > Usuarios`; its sessions end immediately.
+- Revoke every session (suspected compromise): rotate `SECRET_KEY` and redeploy.
+  This also resets login lockout counters.
+- Lockout: `LOGIN_MAX_FAILED_ATTEMPTS` failures within `LOGIN_LOCKOUT_MINUTES`
+  block that email until the window passes. Rows hold only HMAC digests, so a
+  specific account cannot be unlocked early by inspection; wait for the window.
+  Many lockouts in a short period are an authentication anomaly (see Incident
+  Signals).
+
 ## Deploy And Roll Back
 
 1. Back up the database and record the current image digest and Alembic revision.
