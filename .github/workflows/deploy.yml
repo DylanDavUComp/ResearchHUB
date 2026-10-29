@@ -21,6 +21,13 @@ jobs:
           cd /opt/researchhub
           docker compose -f compose.production.yaml up -d --build
 
+      - name: Mostrar logs de migracion si fallo el despliegue
+        if: failure()
+        run: |
+          cd /opt/researchhub
+          docker compose -f compose.production.yaml ps -a
+          docker compose -f compose.production.yaml logs --no-color --tail=200 migrate
+
       - name: Verificar contenedores
         run: |
           cd /opt/researchhub

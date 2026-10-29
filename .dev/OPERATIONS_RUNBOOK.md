@@ -21,6 +21,13 @@ addresses. Never use `*`; direct clients must not be able to forge forwarding da
 4. Set `BOOTSTRAP_SUPERADMIN_ENABLED=false`, remove the bootstrap password and
    redeploy. Rotate the initial account password through the approved channel.
 
+Interactive alternative on a running deployment: run
+`docker compose -f compose.production.yaml exec api python -m app.cli.create_superadmin`
+from an SSH session with a TTY. It prompts for name, email and password (minimum 16
+characters, entered twice, never echoed), stores only the password hash, logs
+`superadmin_create_created` or `superadmin_create_exists`, and never modifies an
+existing account.
+
 ## Deploy And Roll Back
 
 1. Back up the database and record the current image digest and Alembic revision.

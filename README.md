@@ -46,18 +46,23 @@ El espacio `Servicios y marketplace` permanece en estado `Proximamente` mientras
 sin modificar el frontend.
 
 Una base nueva no contiene usuarios predeterminados. Para crear el primer
-superadministrador, configura temporalmente en `.env`:
+superadministrador, configura temporalmente en `.env` (la clave es unica, de 16 o
+mas caracteres):
 
 ```dotenv
 BOOTSTRAP_SUPERADMIN_ENABLED=true
 BOOTSTRAP_SUPERADMIN_NAME=Nombre del operador
 BOOTSTRAP_SUPERADMIN_EMAIL=operador@ucompensar.edu.co
-BOOTSTRAP_SUPERADMIN_PASSWORD=una-clave-unica-de-16-o-mas-caracteres
+BOOTSTRAP_SUPERADMIN_PASSWORD=
 ```
 
 Ejecuta `docker compose run --rm api python -m app.cli.bootstrap_superadmin` y
 vuelve a dejar `BOOTSTRAP_SUPERADMIN_ENABLED=false` eliminando la clave del archivo.
 El comando no modifica una cuenta si el correo ya existe.
+
+En un servidor ya desplegado, `python -m app.cli.create_superadmin` dentro del
+contenedor `api` pide nombre, correo y clave de forma interactiva, sin escribirlos
+en archivos ni variables de entorno.
 
 ## Desarrollo Sin Docker
 
