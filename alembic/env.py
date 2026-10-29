@@ -1,7 +1,6 @@
 from logging.config import fileConfig
 
 import app.modules.comunicados.models  # noqa: F401
-import app.modules.semilleros.models  # noqa: F401
 import app.modules.trabajos_grado.models  # noqa: F401
 import app.modules.usuarios.models  # noqa: F401
 from alembic import context

@@ -191,31 +191,6 @@ inactivo hasta completar y aprobar su ficha normativa.
 - `PENDIENTE` La ficha nombra un solo evaluador en el equipo, pero asigna dos
   calificaciones de evaluador. Debe aclararse antes de publicar la rúbrica.
 
-#### Primer incremento operativo: etapas 1 a 4 de la vista de semillero
-
-La solicitud del usuario del 15 de octubre de 2026 autoriza iniciar estas cuatro
-etapas de forma incremental. El usuario confirmó que la etapa 1 es la solicitud
-del estudiante y la etapa 2 es la confirmación del registro por un responsable.
-También indicó que el Director de programa confirma el registro y valida los
-requisitos. Como las cuentas actuales no tienen alcance de programa, un
-superadministrador asigna explícitamente el caso a un director activo antes de
-que este pueda consultarlo o decidirlo.
-
-| Etapa | Acción y condición observable | Fuente |
-|---|---|---|
-| 1. Inscripción semillero | El estudiante presenta nombre de semillero, proyecto y programa. La solicitud queda pendiente; no se presume que el semillero esté legalizado. | POL-PIT-02, sección 5.3; decisión del usuario sobre el significado de la etapa. |
-| 2. Registro en semillero | El director asignado verifica el registro institucional fuera de la plataforma y consigna una referencia verificable. Solo entonces avanza. | POL-PIT-02, sección 5.3; decisión del usuario sobre responsable. |
-| 3. Validación | El director asignado registra el semestre y la decisión motivada. Para esta modalidad de trabajo de grado solo aprueba cuarto semestre o superior. Puede devolver y volver a revisar. | POL-PIT-03, Tabla 1; POL-PIT-02 permite pertenencia al semillero desde tercero, que es un alcance distinto. |
-| 4. Plan individual | El estudiante presenta resumen, entregables y al menos 60 horas previstas. El director asignado aprueba o devuelve con observación. El avance de la etapa exige su aprobación. | POL-PIT-03, sección 6 y Tabla 1; POL-PIT-02, sección 5.3. |
-
-Este incremento guarda datos estructurados y referencias de verificación, sin
-fingir la carga o validación de documentos. Todas las decisiones se registran con
-actor, fecha y resultado. Los comandos exigen clave de idempotencia y versión
-esperada. El estudiante solo consulta sus solicitudes; el director solo las que
-se le asignaron; el superadministrador administra la asignación y consulta global.
-Las etapas 5 a 11 conservan carácter visual pendiente de definición funcional y
-no se completan mediante este flujo.
-
 ### 5.6 Pasantía de investigación
 
 - `BASE_POLITICA` La postulación se realiza por SACC.

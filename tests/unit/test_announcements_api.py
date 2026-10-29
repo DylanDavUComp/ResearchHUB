@@ -261,36 +261,3 @@ def test_public_feed_is_paginated_newest_first(announcements_client) -> None:
         "Comunicado institucional 2",
         "Comunicado institucional 1",
     ]
-
-
-def test_public_feed_filters_by_category(announcements_client) -> None:
-    client, users, _ = announcements_client
-    for category, title in [
-        ("NOTICIA", "Semillero publica hallazgos sobre movilidad urbana"),
-        ("COMUNICADO", "Cierre administrativo de la plataforma en diciembre"),
-    ]:
-        act_as(users["admin"])
-        draft = client.post(
-            "/api/v1/admin/announcements",
-            json={**PAYLOAD, "category": category, "title": title},
-        ).json()
-        client.post(
-            f"/api/v1/admin/announcements/{draft['id']}/publication",
-            json={"version": draft["version"]},
-        )
-
-    response = client.get("/api/v1/announcements", params={"category": "NOTICIA"})
-
-    assert response.status_code == 200
-    assert response.json()["total_items"] == 1
-    assert [item["title"] for item in response.json()["data"]] == [
-        "Semillero publica hallazgos sobre movilidad urbana",
-    ]
-
-
-def test_public_feed_rejects_unknown_category(announcements_client) -> None:
-    client, _, _ = announcements_client
-
-    response = client.get("/api/v1/announcements", params={"category": "BLOG"})
-
-    assert response.status_code == 422

@@ -5,7 +5,6 @@ from app.core.health import router as health_router
 from app.modules.admin.api.routes import router as admin_router
 from app.modules.comunicados.api import router as comunicados_router
 from app.modules.homologaciones.api.routes import router as homologaciones_router
-from app.modules.semilleros.api import router as semilleros_router
 from app.modules.trabajos_grado.api import router as trabajos_grado_router
 from app.modules.usuarios.api.routes import router as usuarios_router
 
@@ -61,5 +60,4 @@ versioned_router.include_router(trabajos_grado_router)
 versioned_router.include_router(usuarios_router)
 versioned_router.include_router(admin_router)
 versioned_router.include_router(comunicados_router)
-versioned_router.include_router(semilleros_router)
 api_router.include_router(versioned_router)
