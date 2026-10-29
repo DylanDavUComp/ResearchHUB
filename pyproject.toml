@@ -12,6 +12,8 @@ dependencies = [
   "uvicorn[standard]==0.35.0",
   "sqlalchemy==2.0.42",
   "pg8000==1.31.2",
+  # pg8000 1.31.2 usa scramp.make_channel_binding en conexiones SSL; scramp 1.5 la elimino.
+  "scramp==1.4.18",
   "pydantic-settings==2.10.1",
   "alembic==1.16.4",
   "PyJWT>=2.10,<3",
