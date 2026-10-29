@@ -19,6 +19,9 @@ const announcementDateFormat = new Intl.DateTimeFormat("es-CO", {
 
 const newsElements = {
   window: document.querySelector("#news-window"),
+  eyebrow: document.querySelector("#news-eyebrow"),
+  title: document.querySelector("#news-title"),
+  researchBlog: document.querySelector("#open-research-news"),
   close: document.querySelector("#news-window-close"),
   back: document.querySelector("#news-back"),
   headlines: document.querySelector("#news-headlines"),
@@ -56,7 +59,26 @@ const announcementAdminElements = {
   cancel: document.querySelector("#cancel-announcement-form"),
 };
 
-const newsState = { page: 0, totalPages: 0, items: [], loaded: false };
+const newsFeeds = {
+  all: {
+    category: null,
+    eyebrow: "Bitácora del ecosistema",
+    title: "Comunicados y noticias",
+    closeLabel: "Cerrar comunicados",
+    empty: "Aún no hay comunicados publicados. Cuando el equipo de investigación comparta novedades, las verás aquí.",
+    error: "No pudimos cargar los comunicados.",
+  },
+  research: {
+    category: "NOTICIA",
+    eyebrow: "Blog de investigación",
+    title: "Noticias de investigación",
+    closeLabel: "Cerrar noticias de investigación",
+    empty: "Aún no hay noticias de investigación publicadas. Cuando el equipo comparta hallazgos, los verás aquí.",
+    error: "No pudimos cargar las noticias de investigación.",
+  },
+};
+
+const newsState = { page: 0, totalPages: 0, items: [], feed: newsFeeds.all };
 let managedAnnouncements = [];
 let announcementUser = null;
 
@@ -146,25 +168,31 @@ async function loadPublicNews(reset = false) {
   newsElements.window.setAttribute("aria-busy", "true");
   newsElements.more.disabled = true;
   try {
-    const response = await fetch(`/api/v1/announcements?page=${newsState.page + 1}&page_size=5`);
+    const feed = newsState.feed;
+    const params = new URLSearchParams({ page: newsState.page + 1, page_size: 5 });
+    if (feed.category) params.set("category", feed.category);
+    const response = await fetch(`/api/v1/announcements?${params}`);
     if (!response.ok) throw new Error("unavailable");
     const payload = await response.json();
+    if (feed !== newsState.feed) return;
     newsState.page = payload.page;
     newsState.totalPages = payload.total_pages;
     newsState.items = newsState.items.concat(payload.data);
     newsElements.state.classList.add("is-hidden");
     renderNews();
     if (!newsState.items.length) {
-      showNewsState("Aún no hay comunicados publicados. Cuando el equipo de investigación comparta novedades, las verás aquí.");
+      showNewsState(feed.empty);
     }
-    renderTeaser();
+    if (feed === newsFeeds.all) renderTeaser();
   } catch (error) {
     if (!newsState.items.length) {
       newsElements.layout.replaceChildren();
-      newsElements.teaserTitle.textContent = "Comunicados no disponibles por ahora";
-      newsElements.teaserTitle.disabled = true;
+      if (newsState.feed === newsFeeds.all) {
+        newsElements.teaserTitle.textContent = "Comunicados no disponibles por ahora";
+        newsElements.teaserTitle.disabled = true;
+      }
     }
-    showNewsState("No pudimos cargar los comunicados.", true);
+    showNewsState(newsState.feed.error, true);
   } finally {
     newsElements.window.setAttribute("aria-busy", "false");
     newsElements.more.disabled = false;
@@ -203,16 +231,35 @@ function showNewsArticle(item, trigger) {
   newsElements.articleTitle.focus();
 }
 
+function selectNewsFeed(feed) {
+  newsElements.eyebrow.textContent = feed.eyebrow;
+  newsElements.title.textContent = feed.title;
+  newsElements.close.setAttribute("aria-label", feed.closeLabel);
+  if (newsState.feed === feed) return Promise.resolve();
+  newsState.feed = feed;
+  newsElements.layout.replaceChildren(announcementNode("div", "news-placeholder"));
+  newsElements.state.classList.add("is-hidden");
+  newsElements.more.classList.add("is-hidden");
+  return loadPublicNews(true);
+}
+
 function openNewsWindow(trigger) {
   newsElements.window.returnFocus = trigger;
   if (!newsElements.window.open) newsElements.window.showModal();
 }
 
 newsElements.teaser.addEventListener("click", () => {
+  selectNewsFeed(newsFeeds.all);
   showNewsHeadlines();
   openNewsWindow(newsElements.teaser);
 });
-newsElements.teaserTitle.addEventListener("click", () => {
+newsElements.researchBlog.addEventListener("click", () => {
+  selectNewsFeed(newsFeeds.research);
+  showNewsHeadlines();
+  openNewsWindow(newsElements.researchBlog);
+});
+newsElements.teaserTitle.addEventListener("click", async () => {
+  await selectNewsFeed(newsFeeds.all);
   if (newsState.items[0]) showNewsArticle(newsState.items[0], newsElements.teaserTitle);
 });
 newsElements.back.addEventListener("click", showNewsHeadlines);

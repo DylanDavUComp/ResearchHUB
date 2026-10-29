@@ -30,6 +30,13 @@ addresses. Never use `*`; direct clients must not be able to forge forwarding da
 5. On regression, stop promotion and restore the previous image. Reverse schema only
    when the reviewed migration explicitly supports downgrade; otherwise roll forward.
 
+For semillero applications, the superadministrator assigns each request to an
+active Director de programa. Only that assigned director confirms registration,
+validates requirements and decides the individual plan. The registration reference
+is a manually checked institutional reference; no document is uploaded or
+verified automatically in this increment. Preserve the audit history when
+investigating a returned or disputed step. Stages 5–11 are not executable yet.
+
 Single-host reference command:
 
 ```powershell

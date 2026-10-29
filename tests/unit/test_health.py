@@ -147,7 +147,7 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'id="opportunity-carousel"' in response.text
     assert 'id="opportunity-prev"' in response.text
     assert 'id="opportunity-next"' in response.text
-    assert 'id="open-research-blog"' in response.text
+    assert 'id="open-research-news"' in response.text
     assert 'id="services-marketplace"' in response.text
     assert 'id="open-services-marketplace"' in response.text
     assert "Servicios y marketplace" in response.text
@@ -179,10 +179,10 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=49" in response.text
+    assert "/static/styles.css?v=50" in response.text
     assert "/static/app.js?v=27" in response.text
     assert "/static/degree-work.js?v=2" in response.text
-    assert "/static/announcements.js?v=3" in response.text
+    assert "/static/announcements.js?v=4" in response.text
 
 
 def test_launcher_uses_consistent_action_labels(client: TestClient) -> None:
@@ -199,8 +199,10 @@ def test_launcher_uses_consistent_action_labels(client: TestClient) -> None:
         response.text.count(
             '<span class="opportunity-link-label">Próximamente</span>'
         )
-        == 3
+        == 2
     )
+    assert 'id="open-research-news" type="button"' in response.text
+    assert 'aria-controls="news-window"' in response.text
 
     script = client.get("/static/app.js")
     assert script.status_code == 200

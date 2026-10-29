@@ -15,6 +15,7 @@ institutional production.
 | Identity bootstrap | Implemented | Explicit one-time command; no request-time seed or password reset. |
 | RBAC backend | Partial | Existing permissions are enforced; full role/scope matrix from SPEC-TG-001 remains required. |
 | Degree-work workflows | Partial | First operational iteration exists; not all policy modalities and transitions meet acceptance criteria. |
+| Semillero stages 1–4 | Partial | Solicitud, asignación de director, confirmación, validación y plan individual tienen pruebas de API. Se verificaron la migración en PostgreSQL local y la interfaz a 320, 768 y 1440 px sin desbordamiento ni errores inesperados de consola. Las etapas 5–11, el almacenamiento documental y los demás criterios de GO siguen pendientes. |
 | Documents and evidence | Blocked | Durable object storage, malware scanning, retention and legal requirements are unresolved. |
 | Institutional integrations | Blocked | Admisiones y Registro, SACC, SNIES/HECCA and identity provider contracts are unresolved. |
 | Observability | Partial | JSON request logs, trace IDs and health probes exist; metrics, dashboards and alert routing remain external work. |

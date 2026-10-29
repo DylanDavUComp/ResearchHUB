@@ -41,7 +41,10 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
    inferior de la cuadricula de aplicaciones y muestra tres flyers institucionales.
 9. El carrusel permite navegacion anterior, siguiente y directa; rota cada 4
    segundos, se detiene con foco o puntero y respeta movimiento reducido.
-10. Los flyers usan `RESEARCH_BLOG_URL`. Sin URL, comunican `Próximamente` y no
+10. El flyer `Blog de investigación` ofrece `Ver noticias`, que abre en la misma
+    pagina la ventana modal de noticias filtrada a la categoria `NOTICIA` con el
+    titulo `Noticias de investigación`; no abre pestanas ni navega. Los demas
+    flyers usan `RESEARCH_BLOG_URL`. Sin URL, comunican `Próximamente` y no
     ejecutan navegacion.
 11. `Servicios y marketplace` ocupa un panel alto equivalente al carrusel de
     oportunidades y usa `SERVICES_MARKETPLACE_URL` para habilitar su acceso.
@@ -101,7 +104,8 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
     la accion `Ver comunicados`, que abre una ventana flotante modal centrada.
 28. La ventana se organiza como portada de noticias: titular principal con imagen
     16:9 y resumen, y una columna `Mas titulares` con miniaturas. Carga 5 por
-    pagina desde `GET /api/v1/announcements`. La lectura completa ocurre en la
+    pagina desde `GET /api/v1/announcements`, que acepta el filtro opcional
+    `category`. La lectura completa ocurre en la
     misma ventana con retorno a `Titulares`. Sin imagen se usa una superficie
     morada con el tipo de comunicado. Sin publicaciones muestra un estado vacio
     real; ante un error ofrece reintentar.

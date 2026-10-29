@@ -341,6 +341,10 @@ async function showView(viewName, selectedItem = null) {
   if (viewName === "degree-work" && typeof loadDegreeWork === "function") {
     await loadDegreeWork(user);
   }
+
+  if (viewName === "home" && typeof loadSemilleroWorkflow === "function") {
+    await loadSemilleroWorkflow(user);
+  }
 }
 
 function renderDatabaseTables(tables) {

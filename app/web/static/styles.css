@@ -641,6 +641,118 @@ button {
   overflow-wrap: anywhere;
 }
 
+.semillero-timeline-note {
+  margin: 18px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.semillero-workflow {
+  margin-top: 18px;
+}
+
+.semillero-home-grid {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.semillero-workflow .section-heading p {
+  margin: 5px 0 0;
+  color: var(--muted);
+}
+
+.semillero-page-controls,
+.semillero-form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.semillero-page-controls button {
+  border: 1px solid var(--purple-700);
+  border-radius: 7px;
+  background: white;
+  color: var(--purple-800);
+  padding: 6px 10px;
+  cursor: pointer;
+}
+
+.semillero-page-controls button:disabled {
+  color: var(--muted);
+  border-color: var(--line);
+  cursor: default;
+}
+
+.semillero-case-picker,
+.semillero-form label {
+  display: grid;
+  gap: 6px;
+  font-weight: 700;
+  color: var(--purple-800);
+}
+
+.semillero-case-picker {
+  margin-top: 18px;
+}
+
+.semillero-case-picker select,
+.semillero-form input,
+.semillero-form select,
+.semillero-form textarea {
+  width: 100%;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 9px 10px;
+  color: var(--ink);
+  background: white;
+  font-weight: 400;
+}
+
+.semillero-current {
+  margin-top: 14px;
+  overflow-wrap: anywhere;
+}
+
+.semillero-current p {
+  margin: 4px 0;
+}
+
+.semillero-history {
+  margin: 12px 0 0;
+  padding-left: 20px;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+
+.semillero-form {
+  display: grid;
+  gap: 14px;
+  margin-top: 20px;
+  max-width: 640px;
+}
+
+.semillero-form h4 {
+  margin: 0;
+  color: var(--purple-800);
+  font-size: 17px;
+}
+
+.semillero-form > .button {
+  justify-self: start;
+}
+
+.semillero-workflow .form-message.is-error {
+  color: #aa1e28;
+}
+
+@media (max-width: 560px) {
+  .semillero-workflow .section-heading {
+    align-items: start;
+    flex-direction: column;
+  }
+}
+
 .metrics {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
@@ -1866,6 +1978,16 @@ button {
   color: var(--purple-900);
   font-size: 13px;
   font-weight: 800;
+}
+
+.opportunity-news-action {
+  background: #fff;
+  cursor: pointer;
+}
+
+.opportunity-news-action:hover {
+  background: var(--purple-700);
+  color: #fff;
 }
 
 .opportunity-link.is-disabled {

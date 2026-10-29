@@ -12,13 +12,21 @@ class AnnouncementRepository:
         return self.db.get(Announcement, announcement_id)
 
     def list_page(
-        self, *, page: int, page_size: int, status: str | None = None
+        self,
+        *,
+        page: int,
+        page_size: int,
+        status: str | None = None,
+        category: str | None = None,
     ) -> tuple[list[Announcement], int]:
         statement = select(Announcement)
         count_statement = select(func.count()).select_from(Announcement)
         if status is not None:
             statement = statement.where(Announcement.status == status)
             count_statement = count_statement.where(Announcement.status == status)
+        if category is not None:
+            statement = statement.where(Announcement.category == category)
+            count_statement = count_statement.where(Announcement.category == category)
         if status == "PUBLISHED":
             statement = statement.order_by(
                 Announcement.published_at.desc(), Announcement.id

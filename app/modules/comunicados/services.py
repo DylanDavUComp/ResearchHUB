@@ -20,10 +20,10 @@ class AnnouncementService:
         self.db = db
 
     def list_published(
-        self, page: int, page_size: int
+        self, page: int, page_size: int, category: str | None = None
     ) -> tuple[list[Announcement], int]:
         return self.repository.list_page(
-            page=page, page_size=page_size, status="PUBLISHED"
+            page=page, page_size=page_size, status="PUBLISHED", category=category
         )
 
     def list_for_management(

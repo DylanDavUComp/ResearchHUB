@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Investigación UCompensar</title>
   <link rel="icon" href="/static/avatar.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/styles.css?v=49" />
+  <link rel="stylesheet" href="/static/styles.css?v=50" />
 </head>
 
 <body>
@@ -142,11 +142,11 @@
                 <span>Blog de investigación</span>
                 <h4>Ideas para investigar y transformar</h4>
                 <p>Historias, hallazgos y conversaciones del ecosistema UCompensar.</p>
-                <a class="opportunity-link is-disabled js-research-blog-link" id="open-research-blog"
-                  href="#" aria-disabled="true" aria-label="Blog de investigación: Próximamente">
-                  <span class="opportunity-link-label">Próximamente</span>
+                <button class="opportunity-link opportunity-news-action" id="open-research-news" type="button"
+                  aria-haspopup="dialog" aria-controls="news-window">
+                  Ver noticias
                   <span aria-hidden="true">&#8594;</span>
-                </a>
+                </button>
               </div>
             </article>
 
@@ -253,7 +253,7 @@
       <span class="directory-index" aria-hidden="true">03</span>
       <span class="launcher-eyebrow">Comunicados</span>
       <button class="news-teaser-title" id="news-teaser-title" type="button" disabled>Cargando comunicados...</button>
-      <button class="news-teaser-cta" id="news-teaser" type="button" aria-haspopup="dialog" aria-controls="news-drawer">
+      <button class="news-teaser-cta" id="news-teaser" type="button" aria-haspopup="dialog" aria-controls="news-window">
         Ver comunicados <span aria-hidden="true">&#8594;</span>
       </button>
     </div>
@@ -263,7 +263,7 @@
     <header class="news-window-bar">
       <span class="directory-index" aria-hidden="true">03</span>
       <div>
-        <span class="launcher-eyebrow">Bitácora del ecosistema</span>
+        <span class="launcher-eyebrow" id="news-eyebrow">Bitácora del ecosistema</span>
         <h2 id="news-title">Comunicados y noticias</h2>
       </div>
       <div class="news-window-actions">
@@ -526,36 +526,36 @@
           <p id="welcome-text">Bienvenida</p>
         </div>
 
-        <div class="layout-grid">
+        <div class="layout-grid semillero-home-grid">
           <div class="primary-column">
             <section class="hero-panel">
               <div class="hero-art" aria-hidden="true">
                 <img src="/static/brand/researchhub-workspace-v3.webp" alt="" loading="lazy" />
               </div>
               <div class="hero-copy">
-                <h3>¡Avanza en tu proceso de homologacion!</h3>
-                <p>Estas realizando la Homologacion de Trabajo de Grado mediante Semillero de Investigacion.</p>
+                <h3>Avanza en tu proceso de semillero</h3>
+                <p>Consulta tu solicitud, revisa las decisiones y presenta tu plan de trabajo.</p>
                 <div class="hero-actions">
-                  <a class="button primary" href="#">Continuar proceso <span>→</span></a>
-                  <a class="button secondary" href="#">Ver mi solicitud</a>
+                  <a class="button primary" href="#semillero-process">Continuar proceso <span>→</span></a>
+                  <a class="button secondary" href="#semillero-process">Ver mi solicitud</a>
                 </div>
               </div>
             </section>
 
             <section class="process-panel">
               <div class="section-heading">
-                <h3>Etapas del proceso (4 de 11)</h3>
-                <a href="#">Ver todas las etapas</a>
+                <h3 id="semillero-timeline-heading">Etapas del proceso</h3>
+                <a href="#semillero-process">Gestionar etapas 1 a 4</a>
               </div>
-              <ol class="timeline">
-                <li class="done"><span>✓</span>
+              <ol class="timeline" id="semillero-timeline" aria-label="Etapas del proceso de semillero">
+                <li><span>1</span>
                   <p>Inscripcion semillero</p>
                 </li>
-                <li class="done"><span>✓</span>
+                <li><span>2</span>
                   <p>Registro en semillero</p>
                 </li>
-                <li class="current"><span>3</span>
-                  <p>Etapa actual Validacion</p>
+                <li><span>3</span>
+                  <p>Validacion</p>
                 </li>
                 <li><span>4</span>
                   <p>Plan de trabajo de investigacion</p>
@@ -582,32 +582,101 @@
                   <p>Fin</p>
                 </li>
               </ol>
+              <p class="semillero-timeline-note" id="semillero-timeline-note" role="status">Cargando tu proceso...</p>
             </section>
 
-            <section class="metrics">
+            <section class="process-panel semillero-workflow" id="semillero-process" aria-labelledby="semillero-process-title">
+              <div class="section-heading">
+                <div>
+                  <h3 id="semillero-process-title">Semillero: etapas 1 a 4</h3>
+                  <p>Solicitud, confirmación, validación y plan individual.</p>
+                </div>
+                <div class="semillero-page-controls">
+                  <button type="button" id="semillero-prev" aria-label="Página anterior">Anterior</button>
+                  <span id="semillero-page-label">Página 1</span>
+                  <button type="button" id="semillero-next" aria-label="Página siguiente">Siguiente</button>
+                </div>
+              </div>
+              <label class="semillero-case-picker">Solicitud
+                <select id="semillero-case-select" aria-label="Seleccionar solicitud de semillero"></select>
+              </label>
+              <div class="semillero-current" id="semillero-current" aria-live="polite"></div>
+              <ul class="semillero-history" id="semillero-history" aria-label="Historial de la solicitud"></ul>
+              <p class="form-message" id="semillero-message" role="status"></p>
+
+              <form id="semillero-create-form" class="semillero-form is-hidden">
+                <h4>Solicitar ingreso al semillero</h4>
+                <label>Nombre del semillero<input name="semillero_name" minlength="3" maxlength="160" required /></label>
+                <label>Proyecto de investigación<input name="project_title" minlength="5" maxlength="220" required /></label>
+                <label>Programa académico<input name="program" minlength="2" maxlength="160" required /></label>
+                <button class="button primary" type="submit">Enviar solicitud</button>
+              </form>
+
+              <form id="semillero-assign-form" class="semillero-form is-hidden">
+                <h4>Asignar director de programa</h4>
+                  <label>Buscar director<input name="director_query" maxlength="80" autocomplete="off" placeholder="Nombre del director" /></label>
+                <label>Director responsable<select name="reviewer_id" required></select></label>
+                <button class="button primary" type="submit">Asignar director</button>
+              </form>
+
+              <form id="semillero-register-form" class="semillero-form is-hidden">
+                <h4>Confirmar registro en semillero</h4>
+                <label>Referencia institucional de la confirmación<input name="reference" minlength="3" maxlength="160" required /></label>
+                <button class="button primary" type="submit">Confirmar registro</button>
+              </form>
+
+              <form id="semillero-validate-form" class="semillero-form is-hidden">
+                <h4>Validar requisitos de trabajo de grado</h4>
+                <label>Semestre actual<input name="semester" type="number" min="1" max="20" required /></label>
+                <label>Observación<textarea name="comment" minlength="5" maxlength="500" required></textarea></label>
+                <div class="semillero-form-actions">
+                  <button class="button primary" type="submit" name="eligible" value="true">Validar requisitos</button>
+                  <button class="button secondary" type="submit" name="eligible" value="false">Devolver para ajuste</button>
+                </div>
+              </form>
+
+              <form id="semillero-plan-form" class="semillero-form is-hidden">
+                <h4>Presentar plan individual de trabajo</h4>
+                <label>Resumen del plan<textarea name="summary" minlength="20" maxlength="3000" required></textarea></label>
+                <label>Entregables previstos<textarea name="deliverables" minlength="10" maxlength="2000" required></textarea></label>
+                <label>Horas previstas<input name="planned_hours" type="number" min="60" max="1000" required /></label>
+                <button class="button primary" type="submit">Enviar plan para revisión</button>
+              </form>
+
+              <form id="semillero-plan-decision-form" class="semillero-form is-hidden">
+                <h4>Revisar plan individual</h4>
+                <label>Observación<textarea name="comment" minlength="5" maxlength="500" required></textarea></label>
+                <div class="semillero-form-actions">
+                  <button class="button primary" type="submit" name="approved" value="true">Aprobar plan</button>
+                  <button class="button secondary" type="submit" name="approved" value="false">Devolver plan</button>
+                </div>
+              </form>
+            </section>
+
+            <section class="metrics" aria-label="Resumen del proceso de semillero">
               <article class="metric-card"><span class="metric-icon purple"><span class="icon clipboard"></span></span>
-                <div><span>Etapa actual</span><strong>Validacion</strong>
-                  <p>Etapa 3 de 11</p>
+                <div><span>Etapa actual</span><strong id="semillero-metric-stage">Sin solicitud</strong>
+                  <p id="semillero-metric-stage-detail">Envía tu inscripción para comenzar.</p>
                 </div>
               </article>
               <article class="metric-card"><span class="metric-icon orange"><span class="icon clock"></span></span>
-                <div><span>Horas de formacion</span><strong>32 / 20</strong>
-                  <p>160% completadas</p><i style="--value: 100%"></i>
+                <div><span>Horas previstas</span><strong id="semillero-metric-hours">—</strong>
+                  <p>Se registran en el plan individual.</p>
                 </div>
               </article>
               <article class="metric-card"><span class="metric-icon teal"><span class="icon users"></span></span>
-                <div><span>Horas de actividades</span><strong>24 / 60</strong>
-                  <p>40% completadas</p><i style="--value: 40%"></i>
+                <div><span>Registro en semillero</span><strong id="semillero-metric-registration">Pendiente</strong>
+                  <p>Lo confirma el director asignado.</p>
                 </div>
               </article>
               <article class="metric-card"><span class="metric-icon green"><span class="icon check"></span></span>
-                <div><span>Estado general</span><strong>En revision</strong>
-                  <p>Todo va segun lo planeado</p>
+                <div><span>Plan individual</span><strong id="semillero-metric-plan">Sin presentar</strong>
+                  <p>Requiere aprobación del director.</p>
                 </div>
               </article>
             </section>
 
-            <section class="cards-row">
+            <section class="cards-row is-hidden">
               <article class="data-card documents">
                 <h3><span class="icon doc"></span>Documentos recientes</h3>
                 <ul>
@@ -654,7 +723,7 @@
             </section>
           </div>
 
-          <aside class="side-column">
+          <aside class="side-column is-hidden">
             <section class="next-action">
               <div class="action-icon"><span class="icon calendar"></span></div>
               <div>
@@ -994,7 +1063,8 @@
 
   <script src="/static/app.js?v=27"></script>
   <script src="/static/degree-work.js?v=2"></script>
-  <script src="/static/announcements.js?v=3"></script>
+  <script src="/static/announcements.js?v=4"></script>
+  <script src="/static/semilleros.js?v=1"></script>
 </body>
 
 </html>

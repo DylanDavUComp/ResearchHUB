@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from app.core.database import get_db
 from app.core.security import get_current_user
 from app.modules.comunicados.schemas import (
+    AnnouncementCategory,
     AnnouncementCreate,
     AnnouncementPublicRead,
     AnnouncementRead,
@@ -49,8 +50,9 @@ def list_published_announcements(
     service: service_dependency,
     page: page_dependency = 1,
     page_size: Annotated[int, Query(ge=1, le=24)] = 6,
+    category: AnnouncementCategory | None = None,
 ) -> PaginatedPublicAnnouncements:
-    items, total_items = service.list_published(page, page_size)
+    items, total_items = service.list_published(page, page_size, category)
     return PaginatedPublicAnnouncements(
         data=[AnnouncementPublicRead.model_validate(item) for item in items],
         page=page,
