@@ -16,6 +16,7 @@ dependencies = [
   "scramp==1.4.18",
   "pydantic-settings==2.10.1",
   "alembic==1.16.4",
+  "PyJWT>=2.10,<3",
 ]
 
 [project.optional-dependencies]

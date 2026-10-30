@@ -1,3 +1,4 @@
+import logging
 from collections.abc import Generator
 from functools import lru_cache
 
@@ -10,6 +11,8 @@ from app.core.config import settings
 class Base(DeclarativeBase):
     pass
 
+
+logger = logging.getLogger(__name__)
 
 
 @lru_cache
@@ -43,6 +46,17 @@ def database_is_ready() -> bool:
         return True
     except Exception:
         return False
+
+
+def initialize_database_schema() -> None:
+    try:
+        import app.modules.comunicados.models  # noqa: F401
+        import app.modules.trabajos_grado.models  # noqa: F401
+        import app.modules.usuarios.models  # noqa: F401
+
+        Base.metadata.create_all(bind=get_engine())
+    except Exception as exc:
+        logger.warning("Database schema initialization skipped: %s", exc)
 
 
 def list_database_tables() -> list[dict[str, object]]:

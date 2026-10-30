@@ -1,16 +1,10 @@
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, Request, Response, status
+from fastapi import APIRouter, Depends, Response, status
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
-from app.core.security import (
-    clear_session_cookie,
-    get_current_user,
-    read_session_token,
-    require_permission,
-    set_session_cookie,
-)
+from app.core.security import get_current_user, require_permission
 from app.modules.usuarios.models import User
 from app.modules.usuarios.schemas.user import (
     LoginResponse,
@@ -20,8 +14,7 @@ from app.modules.usuarios.schemas.user import (
     UserRegister,
     UserUpdate,
 )
-from app.modules.usuarios.services import SessionService, UserService
-from app.modules.usuarios.services.user_service import to_read_model
+from app.modules.usuarios.services import UserService
 
 router = APIRouter(
     prefix="/usuarios",
@@ -55,28 +48,9 @@ users_delete_dependency = Depends(require_permission("users:delete"))
 )
 def login(
     payload: UserLogin,
-    response: Response,
     service: UserService = user_service_dependency,
 ) -> LoginResponse:
-    login_response, token = service.authenticate(payload)
-    set_session_cookie(response, token)
-    return login_response
-
-
-@router.post(
-    "/logout",
-    status_code=status.HTTP_204_NO_CONTENT,
-)
-def logout(
-    request: Request,
-    db: Session = db_dependency,
-) -> Response:
-    token = read_session_token(request)
-    if token is not None:
-        SessionService(db).revoke(token)
-    response = Response(status_code=status.HTTP_204_NO_CONTENT)
-    clear_session_cookie(response)
-    return response
+    return service.authenticate(payload)
 
 
 @router.post(
@@ -98,7 +72,14 @@ def register(
 def get_me(
     current_user: current_user_dependency,
 ) -> UserRead:
-    return to_read_model(current_user)
+    return UserRead(
+        id=current_user.id,
+        name=current_user.name,
+        email=current_user.email,
+        role=current_user.role,
+        status=current_user.status,
+        permissions=list(current_user.permissions or []),
+    )
 
 
 @router.get(
@@ -120,9 +101,9 @@ def list_users(
 def create_user(
     payload: UserCreate,
     service: UserService = user_service_dependency,
-    actor: User = users_create_dependency,
+    _: User = users_create_dependency,
 ) -> UserRead:
-    return service.create(payload, actor_id=actor.id)
+    return service.create(payload)
 
 
 @router.put(
@@ -133,9 +114,9 @@ def update_user(
     user_id: str,
     payload: UserUpdate,
     service: UserService = user_service_dependency,
-    actor: User = users_update_dependency,
+    _: User = users_update_dependency,
 ) -> UserRead:
-    return service.update(user_id, payload, actor_id=actor.id)
+    return service.update(user_id, payload)
 
 
 @router.delete(

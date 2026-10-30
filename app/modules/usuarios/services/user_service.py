@@ -1,20 +1,15 @@
 import hashlib
 import hmac
 import os
-from collections.abc import Iterable
-from typing import Literal, cast
+from typing import Literal
 from uuid import uuid4
 
 from sqlalchemy.orm import Session
 
 from app.core.config import Settings, settings
 from app.core.exceptions import AppError
-from app.modules.usuarios.models import (
-    APPLICATION_NAMES,
-    ApplicationCode,
-    User,
-    UserApplication,
-)
+from app.core.security import create_access_token
+from app.modules.usuarios.models import User
 from app.modules.usuarios.repository import UserRepository
 from app.modules.usuarios.schemas.user import (
     LoginResponse,
@@ -24,7 +19,6 @@ from app.modules.usuarios.schemas.user import (
     UserRegister,
     UserUpdate,
 )
-from app.modules.usuarios.services.session_service import SessionService
 
 ALL_PERMISSIONS = [
     "users:create",
@@ -113,37 +107,18 @@ def to_read_model(user: User) -> UserRead:
         role=user.role,
         status=user.status,
         permissions=list(user.permissions or []),
-        applications=cast(list[ApplicationCode], user.applications),
     )
-
-
-def sync_applications(
-    user: User,
-    applications: Iterable[ApplicationCode],
-    granted_by_id: str | None,
-) -> None:
-    """Conserva los accesos vigentes (y su trazabilidad) y ajusta solo la diferencia."""
-    requested: set[str] = set(applications)
-    user.application_grants = [
-        grant for grant in user.application_grants if grant.application in requested
-    ]
-    current = {grant.application for grant in user.application_grants}
-    for application in sorted(requested - current):
-        user.application_grants.append(
-            UserApplication(application=application, granted_by_id=granted_by_id)
-        )
 
 
 class UserService:
     def __init__(self, db: Session, config: Settings = settings) -> None:
         self.repository = UserRepository(db)
-        self.sessions = SessionService(db, config)
         self.config = config
 
     def list(self) -> list[UserRead]:
         return [to_read_model(user) for user in self.repository.list()]
 
-    def create(self, payload: UserCreate, actor_id: str | None = None) -> UserRead:
+    def create(self, payload: UserCreate) -> UserRead:
         email = payload.email.strip().lower()
         if self.repository.get_by_email(email):
             raise AppError(
@@ -165,7 +140,6 @@ class UserService:
             password_hash=hash_password(payload.password),
             permissions=permissions,
         )
-        sync_applications(user, payload.applications, actor_id)
         return to_read_model(self.repository.add(user))
 
     def register(self, payload: UserRegister) -> UserRead:
@@ -197,15 +171,9 @@ class UserService:
             password_hash=hash_password(payload.password),
             permissions=[],
         )
-        sync_applications(user, ["research_hub"], None)
         return to_read_model(self.repository.add(user))
 
-    def update(
-        self,
-        user_id: str,
-        payload: UserUpdate,
-        actor_id: str | None = None,
-    ) -> UserRead:
+    def update(self, user_id: str, payload: UserUpdate) -> UserRead:
         user = self.repository.get(user_id)
         if user is None:
             raise AppError(
@@ -221,7 +189,6 @@ class UserService:
                 message="Ya existe un usuario con ese correo institucional.",
                 status_code=409,
             )
-        revoke_sessions = payload.status != "Activo" or bool(payload.password)
         user.name = payload.name.strip()
         user.email = email
         user.role = payload.role
@@ -231,29 +198,9 @@ class UserService:
             if payload.role == "Super administrador"
             else payload.permissions
         )
-        if payload.applications is not None:
-            requested_applications = set(payload.applications)
-            current_applications = {
-                grant.application for grant in user.application_grants
-            }
-            if actor_id == user_id and requested_applications != current_applications:
-                # Evita que un administrador se conceda accesos o se bloquee a si mismo.
-                raise AppError(
-                    code="users.self_access_change",
-                    message=(
-                        "No puedes modificar tus propios accesos a aplicaciones; "
-                        "solicítalo a otro administrador."
-                    ),
-                    status_code=400,
-                )
-            sync_applications(user, payload.applications, actor_id)
         if payload.password:
             user.password_hash = hash_password(payload.password)
-        updated = self.repository.update(user)
-        if revoke_sessions:
-            # Una cuenta inactiva o con nueva contrasena no conserva sesiones abiertas.
-            self.sessions.revoke_all_for_user(user_id, "account_changed")
-        return to_read_model(updated)
+        return to_read_model(self.repository.update(user))
 
     def delete(self, user_id: str) -> None:
         user = self.repository.get(user_id)
@@ -269,73 +216,45 @@ class UserService:
                 message="No se puede eliminar un superadministrador.",
                 status_code=400,
             )
-        self.sessions.revoke_all_for_user(user_id, "account_deleted")
         self.repository.delete(user)
 
-    def authenticate(self, payload: UserLogin) -> tuple[LoginResponse, str]:
-        """Valida credenciales y devuelve el usuario y el token de sesion nuevo."""
-        email = payload.email.strip().lower()
-        if self.sessions.login_is_locked(email):
-            raise AppError(
-                code="users.too_many_attempts",
-                message=(
-                    "Demasiados intentos fallidos. Espera "
-                    f"{self.config.login_lockout_minutes} minutos e intenta de nuevo."
-                ),
-                status_code=429,
-            )
-        user = self.repository.get_by_email(email)
+    def authenticate(self, payload: UserLogin) -> LoginResponse:
+        user = self.repository.get_by_email(payload.email.strip().lower())
         password_hash = user.password_hash if user is not None else DUMMY_PASSWORD_HASH
         password_is_valid = verify_password(payload.password, password_hash)
         if user is None or user.status != "Activo" or not password_is_valid:
-            self.sessions.record_failed_login(email)
             raise AppError(
                 code="users.invalid_credentials",
-                message="Credenciales inválidas o usuario inactivo.",
+                message="Credenciales invalidas o usuario inactivo.",
                 status_code=401,
-            )
-        self.sessions.clear_failed_logins(email)
-        if payload.application and not user.has_application(payload.application):
-            raise AppError(
-                code="users.application_forbidden",
-                message=(
-                    "Tu cuenta no tiene acceso a "
-                    f"{APPLICATION_NAMES[payload.application]}."
-                ),
-                status_code=403,
-                details={
-                    "application": payload.application,
-                    "applications": user.applications,
-                },
             )
         if password_needs_rehash(user.password_hash):
             user.password_hash = hash_password(payload.password)
             self.repository.update(user)
-        return LoginResponse(user=to_read_model(user)), self.sessions.create(user.id)
+        return LoginResponse(
+            access_token=create_access_token(user.id),
+            token_type="bearer",
+            user=to_read_model(user),
+        )
 
 
-def create_superadmin(
+def bootstrap_superadmin(
     db: Session,
-    name: str,
-    email: str,
-    password: str,
-) -> Literal["created", "exists"]:
-    """Crea un superadministrador directamente en PostgreSQL.
-
-    Nunca modifica una cuenta existente: no es un mecanismo de recuperacion.
-    """
-    normalized_email = email.strip().lower()
-    if UserRepository(db).get_by_email(normalized_email):
+    config: Settings = settings,
+) -> Literal["created", "disabled", "exists"]:
+    if not config.bootstrap_superadmin_enabled:
+        return "disabled"
+    email = (config.bootstrap_superadmin_email or "").strip().lower()
+    if UserRepository(db).get_by_email(email):
         return "exists"
-    UserService(db).create(
+    UserService(db, config).create(
         UserCreate(
-            name=name.strip(),
-            email=normalized_email,
+            name=config.bootstrap_superadmin_name or "",
+            email=email,
             role="Super administrador",
             status="Activo",
-            password=password,
+            password=config.bootstrap_superadmin_password or "",
             permissions=ALL_PERMISSIONS,
-            applications=["research_hub", "research_os"],
         )
     )
     return "created"

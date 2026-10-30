@@ -13,9 +13,7 @@ parcial frente a `.dev/SPEC_TRABAJOS_GRADO.md`.
 
 1. Crea `.env` a partir de `.env.example`.
 2. Sustituye `POSTGRES_PASSWORD`, `DATABASE_URL` y `SECRET_KEY` por valores locales
-   propios. `DATABASE_URL` debe apuntar a PostgreSQL: la aplicacion no arranca con
-   otro motor. Toda la informacion, incluidas las sesiones, vive en esa base
-   (`docs/adr/ADR-005-estado-solo-en-postgresql.md`).
+   propios.
 3. Levanta la aplicacion:
 
 ```powershell
@@ -27,13 +25,12 @@ La interfaz queda en `http://localhost:8000`; salud en `/health/live` y
 
 La portada permite elegir entre ResearchHUB, ResearchOS, CRIS, CRAI y Servicios y
 marketplace.
-ResearchHUB y ResearchOS (`/researchos`) comparten la cuenta institucional; cada
-usuario entra solo a las aplicaciones que un administrador le asigna en
-`Configuracion > Usuarios` (ver `.dev/SPEC_RESEARCH_OS.md`). Los accesos externos se
+ResearchHUB abre el flujo local de autenticacion. Los accesos externos se
 configuran con URL absolutas y en produccion deben usar HTTPS. CRAI incluye su URL
 institucional como valor predeterminado:
 
 ```dotenv
+RESEARCH_OS_URL=https://research-os.example.edu.co
 CRIS_URL=https://cris.example.edu.co
 CRAI_URL=https://crai.ucompensar.edu.co/
 RESEARCH_BLOG_URL=https://investigacion.example.edu.co/blog
@@ -48,18 +45,24 @@ El espacio `Servicios y marketplace` permanece en estado `Proximamente` mientras
 `SERVICES_MARKETPLACE_URL` no este configurada. Al definirla, habilita el acceso
 sin modificar el frontend.
 
-Una base nueva no contiene usuarios predeterminados. Usuarios, contrasenas y
-accesos viven solo en PostgreSQL; ninguna credencial se configura en `.env`. Para
-crear el primer superadministrador, con la aplicacion en ejecucion:
+Una base nueva no contiene usuarios predeterminados. Para crear el primer
+superadministrador, configura temporalmente en `.env` (la clave es unica, de 16 o
+mas caracteres):
 
-```powershell
-docker compose exec api python -m app.cli.create_superadmin
+```dotenv
+BOOTSTRAP_SUPERADMIN_ENABLED=true
+BOOTSTRAP_SUPERADMIN_NAME=Nombre del operador
+BOOTSTRAP_SUPERADMIN_EMAIL=operador@ucompensar.edu.co
+BOOTSTRAP_SUPERADMIN_PASSWORD=
 ```
 
-El comando pide nombre, correo y contrasena (oculta y confirmada, 16 o mas
-caracteres) en la terminal y guarda solo su hash en PostgreSQL. Rechaza ejecuciones
-no interactivas y no modifica una cuenta si el correo ya existe. Las demas cuentas
-se crean desde `Configuracion > Usuarios`.
+Ejecuta `docker compose run --rm api python -m app.cli.bootstrap_superadmin` y
+vuelve a dejar `BOOTSTRAP_SUPERADMIN_ENABLED=false` eliminando la clave del archivo.
+El comando no modifica una cuenta si el correo ya existe.
+
+En un servidor ya desplegado, `python -m app.cli.create_superadmin` dentro del
+contenedor `api` pide nombre, correo y clave de forma interactiva, sin escribirlos
+en archivos ni variables de entorno.
 
 ## Desarrollo Sin Docker
 
@@ -68,7 +71,7 @@ py -3.12 -m venv .venv
 .venv\Scripts\Activate.ps1
 python -m pip install -e ".[dev]"
 alembic upgrade head
-python -m app.cli.create_superadmin
+python -m app.cli.bootstrap_superadmin
 uvicorn app.main:app --reload
 ```
 

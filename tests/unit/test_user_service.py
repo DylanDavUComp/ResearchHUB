@@ -8,7 +8,7 @@ from app.modules.usuarios.schemas.user import UserCreate, UserLogin, UserRegiste
 from app.modules.usuarios.services.user_service import (
     ALL_PERMISSIONS,
     UserService,
-    create_superadmin,
+    bootstrap_superadmin,
     hash_password,
     verify_password,
 )
@@ -92,27 +92,34 @@ def test_self_registration_is_disabled_by_default() -> None:
             raise AssertionError("El registro publico debio estar deshabilitado")
 
 
-def test_create_superadmin_stores_only_a_password_hash() -> None:
+def test_bootstrap_creates_superadmin_only_when_explicitly_enabled() -> None:
+    config = local_settings(
+        bootstrap_superadmin_enabled=True,
+        bootstrap_superadmin_name="Operador inicial",
+        bootstrap_superadmin_email="operador@ucompensar.edu.co",
+        bootstrap_superadmin_password="StrongBootstrapPassword-2026",
+    )
+
     with database_session() as db:
-        result = create_superadmin(
-            db,
-            "Operador inicial",
-            "Operador@UCompensar.edu.co",
-            "StrongSuperadminPassword-2026",
-        )
+        assert bootstrap_superadmin(db, config) == "created"
         user = db.query(User).one()
 
-        assert result == "created"
         assert user.email == "operador@ucompensar.edu.co"
-        assert user.role == "Super administrador"
         assert user.permissions == ALL_PERMISSIONS
-        assert "StrongSuperadminPassword-2026" not in user.password_hash
-        assert verify_password("StrongSuperadminPassword-2026", user.password_hash)
+        assert verify_password("StrongBootstrapPassword-2026", user.password_hash)
 
 
-def test_create_superadmin_never_resets_an_existing_account() -> None:
+def test_bootstrap_never_resets_an_existing_account() -> None:
+    config = local_settings(
+        bootstrap_superadmin_enabled=True,
+        bootstrap_superadmin_name="Operador reemplazo",
+        bootstrap_superadmin_email="operador@ucompensar.edu.co",
+        bootstrap_superadmin_password="NewBootstrapPassword-2026",
+    )
+
     with database_session() as db:
-        UserService(db, local_settings()).create(
+        service = UserService(db, config)
+        service.create(
             UserCreate(
                 name="Operador existente",
                 email="operador@ucompensar.edu.co",
@@ -122,15 +129,8 @@ def test_create_superadmin_never_resets_an_existing_account() -> None:
             )
         )
 
-        result = create_superadmin(
-            db,
-            "Operador reemplazo",
-            "operador@ucompensar.edu.co",
-            "NewSuperadminPassword-2026",
-        )
+        assert bootstrap_superadmin(db, config) == "exists"
         user = db.query(User).one()
-
-        assert result == "exists"
         assert user.name == "Operador existente"
         assert verify_password("ExistingPassword-2026", user.password_hash)
-        assert not verify_password("NewSuperadminPassword-2026", user.password_hash)
+        assert not verify_password("NewBootstrapPassword-2026", user.password_hash)

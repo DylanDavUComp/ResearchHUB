@@ -13,30 +13,20 @@ addresses. Never use `*`; direct clients must not be able to forge forwarding da
 
 ## First Superadministrator
 
-Accounts and password hashes live only in PostgreSQL; no credential is ever placed
-in `.env`, environment variables, command arguments or deployment files.
+1. Set the three `BOOTSTRAP_SUPERADMIN_*` values through the secret manager and set
+   `BOOTSTRAP_SUPERADMIN_ENABLED=true`.
+2. Run `python -m app.cli.bootstrap_superadmin` as a one-off deployment job.
+3. Confirm the event `superadmin_bootstrap_created`; the command returns `existing`
+   without modifying an account when the email already exists.
+4. Set `BOOTSTRAP_SUPERADMIN_ENABLED=false`, remove the bootstrap password and
+   redeploy. Rotate the initial account password through the approved channel.
 
-1. From an interactive terminal on the host, run
-   `docker compose -f compose.production.yaml exec api python -m app.cli.create_superadmin`.
-2. Type name, email and password when prompted (hidden, confirmed, 16+ characters).
-   The command refuses non-interactive input.
-3. Confirm the event `superadmin_created`. An existing email returns
-   `superadmin_exists` and the account is not modified.
-4. Create every other account from `Configuracion > Usuarios`.
-
-## Sessions And Login Lockout
-
-- Sessions live in `sesiones`; only HMAC digests are stored. Production requires
-  `SESSION_COOKIE_SECURE=true` and HTTPS.
-- Revoke one account: set it `Inactivo` or change its password in
-  `Configuracion > Usuarios`; its sessions end immediately.
-- Revoke every session (suspected compromise): rotate `SECRET_KEY` and redeploy.
-  This also resets login lockout counters.
-- Lockout: `LOGIN_MAX_FAILED_ATTEMPTS` failures within `LOGIN_LOCKOUT_MINUTES`
-  block that email until the window passes. Rows hold only HMAC digests, so a
-  specific account cannot be unlocked early by inspection; wait for the window.
-  Many lockouts in a short period are an authentication anomaly (see Incident
-  Signals).
+Interactive alternative on a running deployment: run
+`docker compose -f compose.production.yaml exec api python -m app.cli.create_superadmin`
+from an SSH session with a TTY. It prompts for name, email and password (minimum 16
+characters, entered twice, never echoed), stores only the password hash, logs
+`superadmin_create_created` or `superadmin_create_exists`, and never modifies an
+existing account.
 
 ## Deploy And Roll Back
 

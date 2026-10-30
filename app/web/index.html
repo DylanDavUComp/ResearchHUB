@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Investigación UCompensar</title>
   <link rel="icon" href="/static/avatar.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/styles.css?v=54" />
+  <link rel="stylesheet" href="/static/styles.css?v=49" />
 </head>
 
 <body>
@@ -68,9 +68,9 @@
             <span class="application-type">Investigación aplicada y transferencia</span>
             <h3>ResearchOS</h3>
             <p>Proyectos aplicados, capacidades, resultados de investigación y transferencia.</p>
-            <a class="application-action secondary" id="open-researchos" href="/researchos"
-              aria-disabled="false" aria-label="Ingresar a ResearchOS">
-              <span id="researchos-action-label">Ingresar</span>
+            <a class="application-action secondary is-disabled" id="open-researchos" href="#"
+              aria-disabled="true" aria-label="ResearchOS: Próximamente">
+              <span id="researchos-action-label">Próximamente</span>
               <span aria-hidden="true">&#8594;</span>
             </a>
           </div>
@@ -458,7 +458,7 @@
           <summary class="nav-item nav-group-summary">
             <span class="icon briefcase"></span>
             Gestion administrativa
-            <span class="chevron">›</span>
+            <span class="chevron">â€º</span>
           </summary>
           <div class="nav-sublist">
             <a class="nav-item nav-subitem" href="#" data-view="degree-work"><span class="icon clipboard"></span>Mi
@@ -822,7 +822,6 @@
                     <th>Correo</th>
                     <th>Rol</th>
                     <th>Estado</th>
-                    <th>Aplicaciones</th>
                     <th>Permisos</th>
                     <th>Acciones</th>
                   </tr>
@@ -856,11 +855,6 @@
               <label>Contraseña inicial<input id="user-password" type="password" minlength="12" maxlength="128"
                   placeholder="Obligatoria al crear una cuenta" autocomplete="new-password" /></label>
               <fieldset>
-                <legend>Aplicaciones</legend>
-                <label><input type="checkbox" name="application" value="research_hub" checked /> ResearchHUB</label>
-                <label><input type="checkbox" name="application" value="research_os" /> ResearchOS</label>
-              </fieldset>
-              <fieldset>
                 <legend>Permisos</legend>
                 <label><input type="checkbox" name="permission" value="users:create" /> Crear usuarios</label>
                 <label><input type="checkbox" name="permission" value="users:read" /> Consultar usuarios</label>
@@ -869,7 +863,6 @@
                 <label><input type="checkbox" name="permission" value="settings:manage" /> Gestionar
                   configuracion</label>
               </fieldset>
-              <p class="user-admin-status" id="user-admin-status" role="status" aria-live="polite"></p>
               <div class="form-actions">
                 <button class="button secondary" id="cancel-user-button" type="button">Cancelar</button>
                 <button class="button primary" type="submit">Guardar</button>
@@ -999,8 +992,7 @@
     </main>
   </div>
 
-  <script src="/static/user-admin.js?v=2"></script>
-  <script src="/static/app.js?v=31"></script>
+  <script src="/static/app.js?v=27"></script>
   <script src="/static/degree-work.js?v=2"></script>
   <script src="/static/announcements.js?v=3"></script>
 </body>
