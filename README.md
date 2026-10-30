@@ -48,19 +48,18 @@ El espacio `Servicios y marketplace` permanece en estado `Proximamente` mientras
 `SERVICES_MARKETPLACE_URL` no este configurada. Al definirla, habilita el acceso
 sin modificar el frontend.
 
-Una base nueva no contiene usuarios predeterminados. Para crear el primer
-superadministrador, configura temporalmente en `.env`:
+Una base nueva no contiene usuarios predeterminados. Usuarios, contrasenas y
+accesos viven solo en PostgreSQL; ninguna credencial se configura en `.env`. Para
+crear el primer superadministrador, con la aplicacion en ejecucion:
 
-```dotenv
-BOOTSTRAP_SUPERADMIN_ENABLED=true
-BOOTSTRAP_SUPERADMIN_NAME=Nombre del operador
-BOOTSTRAP_SUPERADMIN_EMAIL=operador@ucompensar.edu.co
-BOOTSTRAP_SUPERADMIN_PASSWORD=una-clave-unica-de-16-o-mas-caracteres
+```powershell
+docker compose exec api python -m app.cli.create_superadmin
 ```
 
-Ejecuta `docker compose run --rm api python -m app.cli.bootstrap_superadmin` y
-vuelve a dejar `BOOTSTRAP_SUPERADMIN_ENABLED=false` eliminando la clave del archivo.
-El comando no modifica una cuenta si el correo ya existe.
+El comando pide nombre, correo y contrasena (oculta y confirmada, 16 o mas
+caracteres) en la terminal y guarda solo su hash en PostgreSQL. Rechaza ejecuciones
+no interactivas y no modifica una cuenta si el correo ya existe. Las demas cuentas
+se crean desde `Configuracion > Usuarios`.
 
 ## Desarrollo Sin Docker
 
@@ -69,7 +68,7 @@ py -3.12 -m venv .venv
 .venv\Scripts\Activate.ps1
 python -m pip install -e ".[dev]"
 alembic upgrade head
-python -m app.cli.bootstrap_superadmin
+python -m app.cli.create_superadmin
 uvicorn app.main:app --reload
 ```
 

@@ -4,40 +4,6 @@ const csrfHeader = { name: "X-Requested-With", value: "ResearchHUB" };
 
 const applicationCode = "research_hub";
 
-const allPermissions = [
-  "users:create",
-  "users:read",
-  "users:update",
-  "users:delete",
-  "settings:manage",
-  "degree_work:self:create",
-  "degree_work:self:read",
-  "degree_work:self:submit",
-  "degree_work:assigned:read",
-  "degree_work:assigned:review",
-  "degree_work:assigned:evaluate",
-  "degree_work:program:read",
-  "degree_work:program:decide",
-  "degree_work:program:assign",
-  "degree_work:program:report",
-  "degree_work:any:read",
-  "degree_work:any:support",
-  "modalities:read",
-  "modalities:create",
-  "modalities:update",
-  "modalities:delete",
-  "modalities:publish",
-  "modalities:retire",
-  "audit:any:read",
-];
-
-const applicationNames = {
-  research_hub: "ResearchHUB",
-  research_os: "ResearchOS",
-};
-
-let cachedUsers = [];
-
 async function endSession() {
   try {
     await fetch("/api/v1/usuarios/logout", {
@@ -138,17 +104,6 @@ const elements = {
   profileName: document.querySelector("#profile-name"),
   profileRole: document.querySelector("#profile-role"),
   welcomeText: document.querySelector("#welcome-text"),
-  usersTableBody: document.querySelector("#users-table-body"),
-  userForm: document.querySelector("#user-form"),
-  userFormTitle: document.querySelector("#user-form-title"),
-  userId: document.querySelector("#user-id"),
-  userName: document.querySelector("#user-name"),
-  userEmail: document.querySelector("#user-email"),
-  userRole: document.querySelector("#user-role"),
-  userStatus: document.querySelector("#user-status"),
-  userPassword: document.querySelector("#user-password"),
-  newUserButton: document.querySelector("#new-user-button"),
-  cancelUserButton: document.querySelector("#cancel-user-button"),
   superadminOnlyItems: document.querySelectorAll(".superadmin-only"),
   databaseState: document.querySelector("#database-state"),
   databaseName: document.querySelector("#database-name"),
@@ -168,22 +123,6 @@ function setNavigationOpen(isOpen) {
     "aria-label",
     isOpen ? "Cerrar menu de navegacion" : "Abrir menu de navegacion"
   );
-}
-
-async function getUsers() {
-  const response = await apiFetch(
-    "/api/v1/usuarios"
-  );
-
-  if (!response.ok) {
-    throw new Error(
-      "No fue posible consultar los usuarios."
-    );
-  }
-
-  cachedUsers = await response.json();
-
-  return cachedUsers;
 }
 
 async function getSessionUser() {
@@ -325,8 +264,8 @@ async function showView(viewName, selectedItem = null) {
     ?.setAttribute("open", "");
 
   if (viewName === "settings") {
-    await renderUsers();
-    resetUserForm();
+    await userAdmin.render();
+    userAdmin.reset();
     await loadDatabaseCatalog(user);
     if (typeof loadModalitySettings === "function") {
       await loadModalitySettings(user);
@@ -395,160 +334,6 @@ async function loadDatabaseCatalog(user) {
       "No se pudo consultar la base de datos. Verifica que PostgreSQL este activo.";
     elements.databaseTablesBody.innerHTML =
       '<tr><td colspan="4">Catalogo no disponible.</td></tr>';
-  }
-}
-
-async function renderUsers() {
-  const user = await getSessionUser();
-  const canUpdate = hasPermission(user, "users:update");
-  const canDelete = hasPermission(user, "users:delete");
-
-  elements.usersTableBody.innerHTML = '<tr><td colspan="7">Cargando usuarios...</td></tr>';
-
-  try {
-    const users = await getUsers();
-    elements.usersTableBody.replaceChildren();
-    users.forEach((item) => {
-      const permissionCount = item.permissions?.length || 0;
-      const row = document.createElement("tr");
-      const nameCell = document.createElement("td");
-      const name = document.createElement("strong");
-      name.textContent = item.name;
-      nameCell.append(name);
-
-      const emailCell = document.createElement("td");
-      emailCell.textContent = item.email;
-      const roleCell = document.createElement("td");
-      const role = document.createElement("span");
-      role.className = "role-pill";
-      role.textContent = item.role;
-      roleCell.append(role);
-      const statusCell = document.createElement("td");
-      const userStatus = document.createElement("span");
-      userStatus.className = `status-pill ${item.status === "Inactivo" ? "inactive" : ""}`;
-      userStatus.textContent = item.status;
-      statusCell.append(userStatus);
-      const permissionsCell = document.createElement("td");
-      permissionsCell.textContent = permissionCount === allPermissions.length
-        ? "Todos"
-        : `${permissionCount} permisos`;
-      const applicationsCell = document.createElement("td");
-      applicationsCell.textContent = (item.applications || [])
-        .map((code) => applicationNames[code] || code)
-        .join(", ") || "Sin acceso";
-
-      const actionsCell = document.createElement("td");
-      const actions = document.createElement("div");
-      actions.className = "action-buttons";
-      const edit = document.createElement("button");
-      edit.className = "table-button";
-      edit.type = "button";
-      edit.dataset.edit = item.id;
-      edit.disabled = !canUpdate;
-      edit.textContent = "Editar";
-      const remove = document.createElement("button");
-      remove.className = "table-button danger";
-      remove.type = "button";
-      remove.dataset.delete = item.id;
-      remove.disabled = !canDelete || item.role === "Super administrador";
-      remove.textContent = "Eliminar";
-      actions.append(edit, remove);
-      actionsCell.append(actions);
-      row.append(
-        nameCell,
-        emailCell,
-        roleCell,
-        statusCell,
-        applicationsCell,
-        permissionsCell,
-        actionsCell,
-      );
-      elements.usersTableBody.append(row);
-    });
-  } catch (error) {
-    elements.usersTableBody.innerHTML =
-      '<tr><td colspan="7">No se pudieron consultar los usuarios en PostgreSQL.</td></tr>';
-  }
-}
-
-function resetUserForm() {
-  elements.userForm.reset();
-  elements.userId.value = "";
-  elements.userFormTitle.textContent = "Nuevo usuario";
-}
-
-function fillUserForm(user) {
-  elements.userId.value = user.id;
-  elements.userName.value = user.name;
-  elements.userEmail.value = user.email;
-  elements.userRole.value = user.role;
-  elements.userStatus.value = user.status;
-  elements.userPassword.value = "";
-  document.querySelectorAll('input[name="permission"]').forEach((checkbox) => {
-    checkbox.checked = user.permissions.includes(checkbox.value);
-  });
-  document.querySelectorAll('input[name="application"]').forEach((checkbox) => {
-    checkbox.checked = (user.applications || []).includes(checkbox.value);
-  });
-  elements.userFormTitle.textContent = "Editar usuario";
-}
-
-function collectSelectedApplications() {
-  return Array.from(document.querySelectorAll('input[name="application"]:checked')).map(
-    (checkbox) => checkbox.value,
-  );
-}
-
-function collectSelectedPermissions() {
-  return Array.from(document.querySelectorAll('input[name="permission"]:checked')).map(
-    (checkbox) => checkbox.value,
-  );
-}
-
-async function upsertUser(event) {
-  event.preventDefault();
-  const editingId = elements.userId.value;
-  const role = elements.userRole.value;
-  const permissions =
-    role === "Super administrador" ? [...allPermissions] : collectSelectedPermissions();
-
-  const payload = {
-    id: editingId || crypto.randomUUID(),
-    name: elements.userName.value.trim(),
-    email: elements.userEmail.value.trim().toLowerCase(),
-    role,
-    status: elements.userStatus.value,
-    password: elements.userPassword.value || null,
-    permissions,
-    applications: collectSelectedApplications(),
-  };
-
-  if (!editingId && !payload.password) {
-    alert("Define una contraseña inicial para crear el usuario.");
-    elements.userPassword.focus();
-    return;
-  }
-
-  try {
-    const response = await apiFetch(
-      editingId ? `/api/v1/usuarios/${editingId}` : "/api/v1/usuarios",
-      {
-        method: editingId ? "PUT" : "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      },
-    );
-
-    if (!response.ok) {
-      const errorPayload = await response.json();
-      alert(errorPayload.error?.message || "No fue posible guardar el usuario.");
-      return;
-    }
-
-    renderUsers();
-    resetUserForm();
-  } catch (error) {
-    alert("No fue posible guardar el usuario en PostgreSQL.");
   }
 }
 
@@ -1111,35 +896,7 @@ window.addEventListener("resize", () => {
     setNavigationOpen(false);
   }
 });
-elements.newUserButton.addEventListener("click", resetUserForm);
-elements.cancelUserButton.addEventListener("click", resetUserForm);
-elements.userForm.addEventListener("submit", upsertUser);
-elements.usersTableBody.addEventListener("click", (event) => {
-  const editId = event.target.dataset.edit;
-  const deleteId = event.target.dataset.delete;
-
-  if (editId) {
-    const user = cachedUsers.find((item) => item.id === editId);
-    if (user) fillUserForm(user);
-  }
-
-  if (deleteId) {
-    apiFetch(`/api/v1/usuarios/${deleteId}`, { method: "DELETE" }).then((response) => {
-      if (!response.ok) {
-        alert("No fue posible eliminar el usuario.");
-        return;
-      }
-      renderUsers();
-    });
-  }
-});
-elements.userRole.addEventListener("change", () => {
-  if (elements.userRole.value === "Super administrador") {
-    document.querySelectorAll('input[name="permission"]').forEach((checkbox) => {
-      checkbox.checked = true;
-    });
-  }
-});
+userAdmin.init({ apiFetch, getCurrentUser: getSessionUser });
 
 async function initializeApp() {
   try {

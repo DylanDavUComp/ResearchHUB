@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Investigación UCompensar</title>
   <link rel="icon" href="/static/avatar.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/styles.css?v=52" />
+  <link rel="stylesheet" href="/static/styles.css?v=54" />
 </head>
 
 <body>
@@ -458,7 +458,7 @@
           <summary class="nav-item nav-group-summary">
             <span class="icon briefcase"></span>
             Gestion administrativa
-            <span class="chevron">â€º</span>
+            <span class="chevron">›</span>
           </summary>
           <div class="nav-sublist">
             <a class="nav-item nav-subitem" href="#" data-view="degree-work"><span class="icon clipboard"></span>Mi
@@ -869,6 +869,7 @@
                 <label><input type="checkbox" name="permission" value="settings:manage" /> Gestionar
                   configuracion</label>
               </fieldset>
+              <p class="user-admin-status" id="user-admin-status" role="status" aria-live="polite"></p>
               <div class="form-actions">
                 <button class="button secondary" id="cancel-user-button" type="button">Cancelar</button>
                 <button class="button primary" type="submit">Guardar</button>
@@ -998,7 +999,8 @@
     </main>
   </div>
 
-  <script src="/static/app.js?v=30"></script>
+  <script src="/static/user-admin.js?v=2"></script>
+  <script src="/static/app.js?v=31"></script>
   <script src="/static/degree-work.js?v=2"></script>
   <script src="/static/announcements.js?v=3"></script>
 </body>

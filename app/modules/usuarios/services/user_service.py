@@ -232,16 +232,17 @@ class UserService:
             else payload.permissions
         )
         if payload.applications is not None:
-            if (
-                actor_id == user_id
-                and payload.role != "Super administrador"
-                and "research_hub" not in payload.applications
-            ):
+            requested_applications = set(payload.applications)
+            current_applications = {
+                grant.application for grant in user.application_grants
+            }
+            if actor_id == user_id and requested_applications != current_applications:
+                # Evita que un administrador se conceda accesos o se bloquee a si mismo.
                 raise AppError(
-                    code="users.self_lockout",
+                    code="users.self_access_change",
                     message=(
-                        "No puedes quitarte el acceso a ResearchHUB: perderías la "
-                        "administración de usuarios."
+                        "No puedes modificar tus propios accesos a aplicaciones; "
+                        "solicítalo a otro administrador."
                     ),
                     status_code=400,
                 )
@@ -313,22 +314,26 @@ class UserService:
         return LoginResponse(user=to_read_model(user)), self.sessions.create(user.id)
 
 
-def bootstrap_superadmin(
+def create_superadmin(
     db: Session,
-    config: Settings = settings,
-) -> Literal["created", "disabled", "exists"]:
-    if not config.bootstrap_superadmin_enabled:
-        return "disabled"
-    email = (config.bootstrap_superadmin_email or "").strip().lower()
-    if UserRepository(db).get_by_email(email):
+    name: str,
+    email: str,
+    password: str,
+) -> Literal["created", "exists"]:
+    """Crea un superadministrador directamente en PostgreSQL.
+
+    Nunca modifica una cuenta existente: no es un mecanismo de recuperacion.
+    """
+    normalized_email = email.strip().lower()
+    if UserRepository(db).get_by_email(normalized_email):
         return "exists"
-    UserService(db, config).create(
+    UserService(db).create(
         UserCreate(
-            name=config.bootstrap_superadmin_name or "",
-            email=email,
+            name=name.strip(),
+            email=normalized_email,
             role="Super administrador",
             status="Activo",
-            password=config.bootstrap_superadmin_password or "",
+            password=password,
             permissions=ALL_PERMISSIONS,
             applications=["research_hub", "research_os"],
         )

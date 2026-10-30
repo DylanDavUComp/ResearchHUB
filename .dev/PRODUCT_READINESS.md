@@ -12,7 +12,7 @@ institutional production.
 | Area | State | Evidence or remaining work |
 |---|---|---|
 | Modular FastAPI/PostgreSQL runtime | Implemented | Health probes, Alembic, pooled connections and production Compose profile. |
-| Identity bootstrap | Implemented | Explicit one-time command; no request-time seed or password reset. |
+| Identity bootstrap | Implemented | Interactive `create_superadmin` command writes straight to PostgreSQL; no credentials in env files, no request-time seed or password reset. |
 | Per-application access | Implemented | ResearchHUB/ResearchOS grants enforced in backend (SPEC-ROS-001); access-change audit history remains pending. |
 | Sessions and login protection | Implemented | PostgreSQL sessions in HttpOnly cookies with revocation, idle/absolute expiry, login lockout and CSRF header (ADR-005). Ingress rate limiting is still required. |
 | ResearchOS | Partial | Shared login, access control and workspace shell; functional modules await approved specs. |

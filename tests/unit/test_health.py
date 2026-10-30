@@ -64,7 +64,11 @@ def test_research_os_page_is_served_with_shared_login(client: TestClient) -> Non
     assert response.status_code == 200
     assert 'id="login-form"' in response.text
     assert 'id="access-denied"' in response.text
-    assert "/static/researchos.js?v=3" in response.text
+    assert "/static/researchos.js?v=5" in response.text
+    assert "/static/user-admin.js?v=2" in response.text
+    assert 'data-view="settings"' in response.text
+    assert 'id="users-table-body"' in response.text
+    assert 'class="nav-group"' in response.text
     assert "Microsoft" not in response.text
     assert "Olvidaste" not in response.text
 
@@ -183,8 +187,10 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=52" in response.text
-    assert "/static/app.js?v=30" in response.text
+    assert "/static/styles.css?v=54" in response.text
+    assert "/static/app.js?v=31" in response.text
+    assert "/static/user-admin.js?v=2" in response.text
+    assert response.text.index("user-admin.js") < response.text.index("app.js?v")
     assert "/static/degree-work.js?v=2" in response.text
     assert "/static/announcements.js?v=3" in response.text
 

@@ -40,8 +40,9 @@ hasta que su spec sea aprobado.
    no asigna `research_os` a nadie. Las cuentas nuevas reciben `research_hub`
    salvo que el administrador indique otra cosa.
 7. Los usuarios con permiso `users:update` asignan o retiran aplicaciones en
-   `Configuracion > Usuarios`. Nadie puede retirarse a si mismo ResearchHUB,
-   porque perderia la administracion de usuarios.
+   `Configuracion > Usuarios`, disponible con el mismo comportamiento en
+   ResearchHUB y ResearchOS. Nadie puede modificar sus propios accesos
+   (`users.self_access_change`): ni concederse una aplicacion ni bloquearse.
 
 ## Experiencia
 
@@ -56,7 +57,12 @@ hasta que su spec sea aprobado.
    muestra el login de HUB con el motivo.
 5. Cerrar sesion en cualquiera de las dos aplicaciones revoca en PostgreSQL la
    sesion compartida y vuelve al portal (ADR-005).
-6. El portal habilita `Ingresar` de ResearchOS hacia `/researchos`. La variable
+6. ResearchOS replica la navegacion de ResearchHUB: Inicio, grupo
+   `Investigacion aplicada` con sus areas, `Reportes`, `Configuracion` (con
+   `settings:manage`), `Aplicaciones` y `Cerrar sesion`. Lo que aun no opera
+   se muestra deshabilitado como `Próximamente`; no hay notificaciones ni
+   soporte simulados.
+7. El portal habilita `Ingresar` de ResearchOS hacia `/researchos`. La variable
    `RESEARCH_OS_URL` se retira.
 
 ## Criterios de aceptacion

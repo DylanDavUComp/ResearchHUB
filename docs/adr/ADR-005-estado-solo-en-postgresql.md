@@ -29,11 +29,16 @@ intentos de login solo se exigian al ingress y la aplicacion aceptaba cualquier
    CSRF adicional a `SameSite=Strict`.
 6. El navegador no guarda credenciales ni datos del producto (`localStorage` y
    `sessionStorage` no se usan).
+7. Usuarios, contrasenas (hash scrypt) y accesos, incluido el superadministrador,
+   existen solo en PostgreSQL. El primero se crea con el comando interactivo
+   `python -m app.cli.create_superadmin`; no hay variables `BOOTSTRAP_*` ni
+   credenciales en `.env`.
 
 ## Fuera de la base, por diseno
 
-- Secretos (`SECRET_KEY`, credenciales de PostgreSQL): los entrega la plataforma
-  de despliegue. Guardarlos en la base expondria todo con una sola filtracion.
+- Secretos de infraestructura (`SECRET_KEY` y la credencial con la que la API se
+  conecta a PostgreSQL): los entrega la plataforma de despliegue. No son cuentas de
+  personas y no pueden guardarse en la base a la que dan acceso.
 - Codigo, estilos e imagenes de marca: se versionan en Git y se sirven como
   archivos estaticos.
 - Logs operativos: salen por stdout hacia la plataforma de observabilidad, sin

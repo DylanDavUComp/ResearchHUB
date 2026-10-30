@@ -85,14 +85,3 @@ def test_production_application_urls_require_https(
 
     config = production_settings(**{field: https_url})
     assert getattr(config, field) == https_url
-
-
-def test_bootstrap_requires_complete_strong_credentials() -> None:
-    with pytest.raises(ValidationError):
-        Settings(
-            bootstrap_superadmin_enabled=True,
-            bootstrap_superadmin_email="operator@ucompensar.edu.co",
-            bootstrap_superadmin_password="short",
-            secret_key="a-secure-local-secret-with-at-least-32-characters",
-            _env_file=None,
-        )

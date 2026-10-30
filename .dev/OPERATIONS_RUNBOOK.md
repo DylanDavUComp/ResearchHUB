@@ -13,13 +13,16 @@ addresses. Never use `*`; direct clients must not be able to forge forwarding da
 
 ## First Superadministrator
 
-1. Set the three `BOOTSTRAP_SUPERADMIN_*` values through the secret manager and set
-   `BOOTSTRAP_SUPERADMIN_ENABLED=true`.
-2. Run `python -m app.cli.bootstrap_superadmin` as a one-off deployment job.
-3. Confirm the event `superadmin_bootstrap_created`; the command returns `existing`
-   without modifying an account when the email already exists.
-4. Set `BOOTSTRAP_SUPERADMIN_ENABLED=false`, remove the bootstrap password and
-   redeploy. Rotate the initial account password through the approved channel.
+Accounts and password hashes live only in PostgreSQL; no credential is ever placed
+in `.env`, environment variables, command arguments or deployment files.
+
+1. From an interactive terminal on the host, run
+   `docker compose -f compose.production.yaml exec api python -m app.cli.create_superadmin`.
+2. Type name, email and password when prompted (hidden, confirmed, 16+ characters).
+   The command refuses non-interactive input.
+3. Confirm the event `superadmin_created`. An existing email returns
+   `superadmin_exists` and the account is not modified.
+4. Create every other account from `Configuracion > Usuarios`.
 
 ## Sessions And Login Lockout
 

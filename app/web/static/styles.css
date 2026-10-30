@@ -6465,37 +6465,34 @@ button {
   background: var(--purple-700);
 }
 
-.ros-nav-label {
-  margin: 14px 0 2px;
-  padding: 0 12px;
-  color: rgba(255, 255, 255, 0.72);
-  font-size: 12px;
-  font-weight: 800;
-  text-transform: uppercase;
-}
-
-.ros-nav-sections {
-  display: grid;
-  gap: 4px;
-  margin: 0 0 8px;
-  padding: 0;
+.ros-nav-sublist {
+  margin: 0;
   list-style: none;
 }
 
-.ros-nav-sections .nav-item {
-  min-height: 42px;
-  justify-content: space-between;
-  gap: 8px;
-  font-size: 14px;
-  color: rgba(255, 255, 255, 0.78);
+.researchos .nav-item.is-disabled {
+  color: rgba(255, 255, 255, 0.82);
   cursor: default;
 }
 
-.ros-nav-sections .nav-item:hover {
+.ros-nav-text {
+  display: grid;
+  gap: 2px;
+  padding-block: 6px;
+  line-height: 1.2;
+}
+
+.ros-nav-text small {
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.researchos .nav-item.is-disabled:hover {
   background: transparent;
 }
 
-.ros-nav-sections .ros-status {
+.ros-status {
   border-color: rgba(255, 255, 255, 0.4);
   color: #fff;
   background: transparent;
@@ -6590,4 +6587,22 @@ button {
     flex-direction: column;
     gap: 8px;
   }
+}
+
+/* Mensajes de la administracion de usuarios (ResearchHUB y ResearchOS). */
+.user-admin-status {
+  margin: 4px 0 0;
+  font-weight: 700;
+}
+
+.user-admin-status:empty {
+  display: none;
+}
+
+.user-admin-status[data-kind="error"] {
+  color: #b42318;
+}
+
+.user-admin-status[data-kind="success"] {
+  color: var(--green-600);
 }

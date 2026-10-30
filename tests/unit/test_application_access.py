@@ -1,11 +1,10 @@
 import pytest
-from app.core.config import Settings
 from app.core.exceptions import AppError
 from app.modules.usuarios.models import User, UserApplication
 from app.modules.usuarios.schemas.user import UserCreate, UserUpdate
 from app.modules.usuarios.services.user_service import (
     UserService,
-    bootstrap_superadmin,
+    create_superadmin,
 )
 from fastapi.testclient import TestClient
 from sqlalchemy import select
@@ -277,8 +276,13 @@ def test_update_can_revoke_application_access(
     assert updated.applications == ["research_os"]
 
 
-def test_admin_cannot_remove_own_research_hub_access(
+@pytest.mark.parametrize(
+    "applications",
+    [["research_os"], ["research_hub", "research_os"], []],
+)
+def test_admin_cannot_change_own_application_access(
     session_factory: sessionmaker[Session],
+    applications: list[str],
 ) -> None:
     admin_id = create_user(
         session_factory, "admin@ucompensar.edu.co", ["research_hub"], "Administrador"
@@ -291,12 +295,35 @@ def test_admin_cannot_remove_own_research_hub_access(
                 name="Administrador",
                 email="admin@ucompensar.edu.co",
                 role="Administrador",
+                applications=applications,  # type: ignore[arg-type]
+            ),
+            actor_id=admin_id,
+        )
+
+    assert error.value.code == "users.self_access_change"
+
+
+def test_admin_can_save_own_profile_with_unchanged_access(
+    session_factory: sessionmaker[Session],
+) -> None:
+    admin_id = create_user(
+        session_factory, "admin@ucompensar.edu.co", ["research_os"], "Administrador"
+    )
+
+    with session_factory() as db:
+        updated = UserService(db).update(
+            admin_id,
+            UserUpdate(
+                name="Nombre corregido",
+                email="admin@ucompensar.edu.co",
+                role="Administrador",
                 applications=["research_os"],
             ),
             actor_id=admin_id,
         )
 
-    assert error.value.code == "users.self_lockout"
+    assert updated.name == "Nombre corregido"
+    assert updated.applications == ["research_os"]
 
 
 def test_deleting_user_removes_its_grants(
@@ -319,20 +346,19 @@ def test_deleting_user_removes_its_grants(
     assert remaining == []
 
 
-def test_bootstrap_superadmin_receives_both_applications(
+def test_created_superadmin_receives_both_applications(
     session_factory: sessionmaker[Session],
 ) -> None:
-    config = Settings(
-        bootstrap_superadmin_enabled=True,
-        bootstrap_superadmin_name="Super administrador",
-        bootstrap_superadmin_email="root@ucompensar.edu.co",
-        bootstrap_superadmin_password="Clave-super-segura-2026",
-    )
-
     with session_factory() as db:
-        assert bootstrap_superadmin(db, config) == "created"
+        result = create_superadmin(
+            db,
+            "Super administrador",
+            "root@ucompensar.edu.co",
+            "Clave-super-segura-2026",
+        )
         grants = sorted(
             grant.application for grant in db.scalars(select(UserApplication))
         )
 
+    assert result == "created"
     assert grants == ["research_hub", "research_os"]

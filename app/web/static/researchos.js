@@ -32,6 +32,10 @@ const elements = {
   profileRole: document.querySelector("#profile-role"),
   welcomeText: document.querySelector("#welcome-text"),
   navSections: document.querySelector("#nav-sections"),
+  navItems: document.querySelectorAll(".nav-item[data-view]"),
+  adminOnly: document.querySelectorAll(".admin-only"),
+  homeSection: document.querySelector("#home-section"),
+  settingsSection: document.querySelector("#settings-section"),
   sectionList: document.querySelector("#section-list"),
   appList: document.querySelector("#app-list"),
 };
@@ -117,12 +121,17 @@ function renderSections(sections) {
   sections.forEach((section) => {
     const navItem = document.createElement("li");
     const navLabel = document.createElement("span");
-    navLabel.className = "nav-item is-disabled";
+    navLabel.className = "nav-item nav-subitem is-disabled";
     navLabel.setAttribute("aria-disabled", "true");
-    navLabel.textContent = section.name;
+    const navText = document.createElement("span");
+    navText.className = "ros-nav-text";
+    navText.textContent = section.name;
     if (!section.available) {
-      navLabel.append(createStatus("Próximamente"));
+      const soon = document.createElement("small");
+      soon.textContent = "Próximamente";
+      navText.append(soon);
     }
+    navLabel.append(navText);
     navItem.append(navLabel);
     elements.navSections.append(navItem);
 
@@ -167,14 +176,55 @@ function renderApplications(user) {
   });
 }
 
+let currentUser = null;
+
+function canManageSettings(user) {
+  return userHasPermission(user, "settings:manage");
+}
+
+async function fetchCurrentUser() {
+  const response = await apiFetch("/api/v1/usuarios/me");
+  if (!response.ok) {
+    throw new Error("La sesión no es válida.");
+  }
+  currentUser = await response.json();
+  return currentUser;
+}
+
+async function showView(viewName) {
+  if (viewName === "settings" && !canManageSettings(currentUser)) {
+    return;
+  }
+  elements.homeSection.classList.toggle("is-hidden", viewName !== "home");
+  elements.settingsSection.classList.toggle("is-hidden", viewName !== "settings");
+  elements.navItems.forEach((item) => {
+    const isSelected = item.dataset.view === viewName;
+    item.classList.toggle("active", isSelected);
+    if (isSelected) {
+      item.setAttribute("aria-current", "page");
+    } else {
+      item.removeAttribute("aria-current");
+    }
+  });
+  if (viewName === "settings") {
+    userAdmin.reset();
+    await userAdmin.render();
+  }
+}
+
 function showWorkspace(workspace) {
   const { user, sections } = workspace;
+  currentUser = user;
+  elements.adminOnly.forEach((item) => {
+    item.classList.toggle("is-hidden", !canManageSettings(user));
+  });
   elements.profileName.textContent = user.name;
   elements.profileRole.textContent = user.role;
   elements.welcomeText.textContent = `Hola, ${user.name}. Este es tu espacio de investigación aplicada.`;
   renderSections(sections);
   renderApplications(user);
   showOnly("app");
+  showView("home");
 }
 
 async function loadWorkspace() {
@@ -270,6 +320,16 @@ elements.switchAccount.addEventListener("click", async () => {
 });
 document.querySelectorAll(".js-logout").forEach((button) => {
   button.addEventListener("click", logout);
+});
+userAdmin.init({ apiFetch, getCurrentUser: fetchCurrentUser });
+elements.navItems.forEach((item) => {
+  item.addEventListener("click", (event) => {
+    event.preventDefault();
+    showView(item.dataset.view);
+    if (window.matchMedia("(max-width: 860px)").matches) {
+      setNavigationOpen(false);
+    }
+  });
 });
 elements.mobileMenuButton.addEventListener("click", () => {
   setNavigationOpen(!elements.sidebar.classList.contains("is-open"));

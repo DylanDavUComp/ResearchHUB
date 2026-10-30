@@ -47,10 +47,6 @@ class Settings(BaseSettings):
     cors_origins: str = ""
     announcement_image_origins: str = ""
     security_hsts_enabled: bool = False
-    bootstrap_superadmin_enabled: bool = False
-    bootstrap_superadmin_name: str | None = None
-    bootstrap_superadmin_email: str | None = None
-    bootstrap_superadmin_password: str | None = None
 
     model_config = SettingsConfigDict(
         env_file=".env",
@@ -118,20 +114,6 @@ class Settings(BaseSettings):
             parsed_url = urlsplit(application_url)
             if parsed_url.scheme not in {"http", "https"} or not parsed_url.hostname:
                 raise ValueError(f"{setting_name} must be an absolute HTTP(S) URL")
-
-        if self.bootstrap_superadmin_enabled:
-            if not all(
-                (
-                    self.bootstrap_superadmin_name,
-                    self.bootstrap_superadmin_email,
-                    self.bootstrap_superadmin_password,
-                )
-            ):
-                raise ValueError("Bootstrap credentials must be complete")
-            if len(self.bootstrap_superadmin_password or "") < 16:
-                raise ValueError(
-                    "Bootstrap password must contain at least 16 characters"
-                )
 
         if not self.allowed_host_list:
             raise ValueError("At least one allowed host is required")
