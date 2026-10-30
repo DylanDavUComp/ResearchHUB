@@ -1,0 +1,12 @@
+# Configuracion de gitleaks. Conserva todas las reglas por defecto.
+[extend]
+useDefault = true
+
+# Contraseñas ficticias de las pruebas unitarias de login y sesiones. No son
+# credenciales: solo existen en la base temporal de pruebas. La excepcion exige
+# a la vez la ruta y el valor exacto, para no ocultar secretos reales en tests.
+[[allowlists]]
+description = "Contraseñas ficticias de tests/unit"
+condition = "AND"
+paths = ['''(^|/)tests/unit/[^/]+\.py$''']
+regexes = ['''^(Nueva-)?[Cc]lave-(institucional-2026|equivocada-123)$''']
