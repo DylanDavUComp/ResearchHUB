@@ -37,6 +37,9 @@ class TraceIdMiddleware(BaseHTTPMiddleware):
         return response
 
 
+# Unicos reproductores que un comunicado puede incrustar (modo sin cookies).
+VIDEO_FRAME_SOURCES = "https://www.youtube-nocookie.com https://player.vimeo.com"
+
 CSRF_HEADER = "X-Requested-With"
 CSRF_HEADER_VALUE = "ResearchHUB"
 UNSAFE_METHODS = {"POST", "PUT", "PATCH", "DELETE"}
@@ -85,11 +88,18 @@ class SecurityHeadersMiddleware(BaseHTTPMiddleware):
         response.headers["permissions-policy"] = (
             "camera=(), microphone=(), geolocation=()"
         )
-        response.headers["content-security-policy"] = (
-            "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; "
-            f"object-src 'none'; img-src {self.img_src}; script-src 'self'; "
-            "style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'"
-        )
+        if request.url.path.startswith("/media/"):
+            # Archivos subidos: nunca se ejecutan como pagina, aunque se abran solos.
+            response.headers["content-security-policy"] = (
+                "default-src 'none'; frame-ancestors 'none'; sandbox"
+            )
+        else:
+            response.headers["content-security-policy"] = (
+                "default-src 'self'; base-uri 'self'; frame-ancestors 'none'; "
+                f"object-src 'none'; img-src {self.img_src}; script-src 'self'; "
+                f"frame-src {VIDEO_FRAME_SOURCES}; "
+                "style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'"
+            )
         if request.url.path.startswith("/api/"):
             response.headers["cache-control"] = "no-store"
         if self.hsts_enabled:

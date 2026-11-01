@@ -1,7 +1,8 @@
 from datetime import UTC, datetime
+from typing import Any
 
-from sqlalchemy import DateTime, ForeignKey, Integer, String, Text
-from sqlalchemy.orm import Mapped, mapped_column
+from sqlalchemy import JSON, DateTime, ForeignKey, Integer, LargeBinary, String, Text
+from sqlalchemy.orm import Mapped, deferred, mapped_column, relationship
 
 from app.core.database import Base
 
@@ -17,7 +18,9 @@ class Announcement(Base):
     category: Mapped[str] = mapped_column(String(20), index=True)
     title: Mapped[str] = mapped_column(String(160))
     summary: Mapped[str] = mapped_column(String(280))
+    # Texto plano derivado de `content`, para busquedas y clientes sin bloques.
     body: Mapped[str] = mapped_column(Text, default="")
+    content: Mapped[list[dict[str, Any]]] = mapped_column(JSON, default=list)
     link_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     image_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
     image_alt: Mapped[str | None] = mapped_column(String(200), nullable=True)
@@ -54,3 +57,34 @@ class AnnouncementAuditEvent(Base):
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True), default=utc_now
     )
+
+
+class AnnouncementAsset(Base):
+    """Imagen o documento subido a un comunicado (ADR-006).
+
+    Un archivo sin comunicado es una subida en curso: se vincula al guardar y, si
+    nunca se guarda, se elimina al dia siguiente.
+    """
+
+    __tablename__ = "announcement_assets"
+
+    id: Mapped[str] = mapped_column(String(36), primary_key=True)
+    announcement_id: Mapped[str | None] = mapped_column(
+        String(36),
+        ForeignKey("announcements.id", ondelete="CASCADE"),
+        nullable=True,
+        index=True,
+    )
+    kind: Mapped[str] = mapped_column(String(20))
+    content_type: Mapped[str] = mapped_column(String(80))
+    filename: Mapped[str] = mapped_column(String(200))
+    size_bytes: Mapped[int] = mapped_column(Integer)
+    sha256: Mapped[str] = mapped_column(String(64))
+    data: Mapped[bytes] = deferred(mapped_column(LargeBinary))
+    uploaded_by: Mapped[str] = mapped_column(String(36))
+    created_at: Mapped[datetime] = mapped_column(
+        DateTime(timezone=True), default=utc_now, index=True
+    )
+
+    # Ordena el INSERT del comunicado antes de vincular sus archivos.
+    announcement: Mapped[Announcement | None] = relationship()

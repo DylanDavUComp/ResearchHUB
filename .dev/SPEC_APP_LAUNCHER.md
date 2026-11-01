@@ -106,10 +106,46 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
     misma ventana con retorno a `Titulares`. Sin imagen se usa una superficie
     morada con el tipo de comunicado. Sin publicaciones muestra un estado vacio
     real; ante un error ofrece reintentar.
-29. Las imagenes se referencian por URL: rutas `/static/` o HTTPS de los origenes
-    declarados en `ANNOUNCEMENT_IMAGE_ORIGINS`, que tambien se agregan a la CSP
-    `img-src`. Toda imagen exige texto alternativo. El enlace opcional solo acepta
-    URL absolutas HTTPS y abre en una pestana nueva.
+29. Las imagenes se suben al comunicado o se referencian por URL: rutas
+    `/static/` o HTTPS de los origenes declarados en `ANNOUNCEMENT_IMAGE_ORIGINS`,
+    que tambien se agregan a la CSP `img-src`. Toda imagen exige texto
+    alternativo. El enlace opcional solo acepta URL absolutas HTTPS y abre en una
+    pestana nueva.
+29a. El contenido se edita como un blog en un editor visual por bloques:
+    parrafo, titulo, subtitulo, lista con vinetas o numerada, cita, destacado
+    (informacion, logro, importante), separador, imagen (ancho del texto o
+    completo), galeria de 2 a 12 imagenes, video de YouTube o Vimeo (modo sin
+    cookies, unicos origenes en la CSP `frame-src`), boton, documento PDF, tabla
+    y evento (fechas, modalidad, lugar, inscripcion). El texto admite negrita,
+    cursiva, subrayado, tachado, codigo y enlaces HTTPS o `mailto:`. Lo pegado
+    entra como texto plano; un enlace de video pegado en un parrafo vacio se
+    convierte en video; arrastrar o pegar imagenes y PDF los sube. El editor
+    tiene vista previa identica a la portada, contadores, aviso de cambios sin
+    guardar y `Ctrl+S`.
+29b. El contenido viaja y se guarda como bloques JSON validados por el servidor
+    (`announcements.content`), nunca como HTML; `body` es su texto plano
+    derivado. Un cliente que envia solo `body` obtiene parrafos. Maximo 150
+    bloques y 200 KB.
+29c. Los archivos subidos siguen ADR-006: imagenes JPG, PNG, WebP o GIF hasta
+    2 MB y PDF hasta 5 MB, tipo detectado por contenido, servidos en
+    `/media/announcements/<id>`, publicos solo con su comunicado publicado. Cada
+    comunicado publicado tiene enlace directo `/?comunicado=<id>`
+    (`GET /api/v1/announcements/<id>`), boton `Copiar enlace` y tiempo de
+    lectura.
+29d. `Importar JSON` carga uno o varios comunicados (objeto, lista o
+    `{"announcements": [...]}`, hasta 50 por archivo, 5 MB) como borradores
+    `Por aprobar`; tambien se puede soltar el archivo sobre la tabla.
+    `POST /api/v1/admin/announcements/import` valida primero (`dry_run=true`) y
+    muestra un informe por comunicado con bloque y campo de cada error en
+    espanol; con un solo error no se crea ninguno. Rechaza campos desconocidos,
+    titulos repetidos (en el archivo o existentes) y referencias a archivos
+    subidos. Cada borrador queda en `announcement_audit_events`.
+29e. `Descargar skill para IA` entrega
+    `/static/downloads/skill-comunicados-researchhub.md`: instrucciones para que
+    cualquier asistente de IA redacte comunicados con la voz UCompensar, sin
+    inventar datos, en el JSON que acepta la importacion. Sus ejemplos se
+    importan en las pruebas automaticas; si el contrato cambia, el skill debe
+    actualizarse en el mismo cambio.
 30. Solo el Super administrador gestiona comunicados, en la consola
     `/configuracion` (seccion `Comunicados`). Un borrador figura `Por aprobar`:
     `Revisar y ajustar` lo edita, `Aprobar y publicar` lo publica y `No aprobar`

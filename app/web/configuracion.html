@@ -7,7 +7,7 @@
   <meta name="robots" content="noindex" />
   <title>Configuración general | Investigación UCompensar</title>
   <link rel="icon" href="/static/avatar.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/styles.css?v=56" />
+  <link rel="stylesheet" href="/static/styles.css?v=59" />
 </head>
 
 <body class="settings-console">
@@ -159,7 +159,17 @@
           <section class="settings-card announcement-settings-card" id="announcement-settings-card">
             <div class="section-heading">
               <div><h3>Comunicados de la portada</h3><p class="console-pending" id="announcement-pending" role="status"></p></div>
-              <button class="button primary" id="new-announcement-button" type="button">Nuevo comunicado</button>
+              <div class="announcement-actions">
+                <a class="button secondary" id="announcement-skill-download"
+                  href="/static/downloads/skill-comunicados-researchhub.md"
+                  download="skill-comunicados-researchhub.md"
+                  title="Instrucciones para que cualquier IA redacte comunicados en el JSON que acepta ResearchHUB">Descargar
+                  skill para IA</a>
+                <button class="button secondary" id="import-announcements-button" type="button">Importar JSON</button>
+                <input class="sr-only" id="import-announcements-file" type="file" accept=".json,application/json"
+                  tabindex="-1" aria-hidden="true" />
+                <button class="button primary" id="new-announcement-button" type="button">Nuevo comunicado</button>
+              </div>
             </div>
             <div class="degree-work-table-wrap">
               <table class="degree-work-table">
@@ -343,30 +353,110 @@
         </form>
       </dialog>
 
-      <dialog class="degree-work-dialog" id="announcement-dialog" aria-labelledby="announcement-form-title">
-        <form id="announcement-form">
+      <dialog class="degree-work-dialog announcement-import-dialog" id="announcement-import-dialog"
+        aria-labelledby="announcement-import-title">
+        <div class="import-panel">
+          <div class="dialog-heading">
+            <div>
+              <span class="page-eyebrow">Importar comunicados</span>
+              <h3 id="announcement-import-title">Revisa antes de importar</h3>
+            </div>
+            <button class="icon-action" type="button" id="close-announcement-import" aria-label="Cerrar">&times;</button>
+          </div>
+          <p class="import-file" id="announcement-import-file"></p>
+          <p class="import-summary" id="announcement-import-summary" role="status"></p>
+          <ol class="import-list" id="announcement-import-list"></ol>
+          <div class="form-actions">
+            <button class="button secondary" type="button" id="cancel-announcement-import">Cancelar</button>
+            <button class="button primary" type="button" id="confirm-announcement-import">Importar borradores</button>
+          </div>
+        </div>
+      </dialog>
+
+      <dialog class="announcement-studio" id="announcement-dialog" aria-labelledby="announcement-form-title">
+        <form id="announcement-form" novalidate>
           <input id="announcement-id" type="hidden" />
           <input id="announcement-version" type="hidden" />
-          <div class="dialog-heading"><div><span class="page-eyebrow">Comunicados de la portada</span><h3 id="announcement-form-title">Nuevo comunicado</h3></div><button class="icon-action" type="button" id="close-announcement-form" aria-label="Cerrar">&times;</button></div>
+          <header class="studio-header">
+            <div>
+              <span class="page-eyebrow">Comunicados de la portada</span>
+              <h3 id="announcement-form-title">Nuevo comunicado</h3>
+            </div>
+            <div class="studio-tabs" role="tablist" aria-label="Modo del editor">
+              <button type="button" role="tab" id="studio-tab-edit" aria-selected="true"
+                aria-controls="studio-edit-panel">Editar</button>
+              <button type="button" role="tab" id="studio-tab-preview" aria-selected="false"
+                aria-controls="studio-preview-panel" tabindex="-1">Vista previa</button>
+            </div>
+            <button class="icon-action" type="button" id="close-announcement-form" aria-label="Cerrar">&times;</button>
+          </header>
           <p class="console-dialog-hint is-hidden" id="announcement-form-hint"></p>
-          <div class="modality-form-grid">
-            <label>Tipo
-              <select id="announcement-category" required>
-                <option value="NOTICIA">Noticia</option>
-                <option value="COMUNICADO">Comunicado</option>
-                <option value="EVENTO">Evento</option>
-                <option value="CONVOCATORIA">Convocatoria</option>
-              </select>
-            </label>
-            <label>Enlace opcional (HTTPS)<input id="announcement-link" type="url" maxlength="500" placeholder="https://" /></label>
-            <label>Imagen (ruta /static/ o URL HTTPS autorizada)<input id="announcement-image-url" maxlength="500" placeholder="https://" /></label>
-            <label>Descripción de la imagen<input id="announcement-image-alt" maxlength="200" placeholder="Qué muestra la imagen" /></label>
-            <label class="wide-field">Título<input id="announcement-title" minlength="5" maxlength="160" required /></label>
-            <label class="wide-field">Resumen para la portada<textarea id="announcement-summary" minlength="10" maxlength="280" rows="2" required></textarea></label>
-            <label class="wide-field">Contenido completo<textarea id="announcement-body" maxlength="6000" rows="12"></textarea></label>
+
+          <div class="studio-body" id="studio-edit-panel" role="tabpanel" aria-labelledby="studio-tab-edit">
+            <div class="studio-main">
+              <label class="studio-title-field">
+                <span class="sr-only">Título</span>
+                <textarea id="announcement-title" rows="2" minlength="5" maxlength="160" required
+                  placeholder="Título del comunicado"></textarea>
+                <small class="studio-counter" data-counter-for="announcement-title"></small>
+              </label>
+              <label class="studio-summary-field">
+                <span>Resumen para la portada</span>
+                <textarea id="announcement-summary" minlength="10" maxlength="280" rows="2" required
+                  placeholder="Dos líneas que inviten a leer"></textarea>
+                <small class="studio-counter" data-counter-for="announcement-summary"></small>
+              </label>
+              <div class="rich-editor" id="announcement-editor" aria-label="Contenido del comunicado"></div>
+            </div>
+
+            <aside class="studio-side" aria-label="Datos del comunicado">
+              <label class="rich-field">Tipo
+                <select id="announcement-category" required>
+                  <option value="NOTICIA">Noticia</option>
+                  <option value="COMUNICADO">Comunicado</option>
+                  <option value="EVENTO">Evento</option>
+                  <option value="CONVOCATORIA">Convocatoria</option>
+                </select>
+              </label>
+              <fieldset class="studio-cover">
+                <legend>Imagen de portada</legend>
+                <div class="studio-cover-preview is-empty" id="announcement-cover-preview">
+                  <span>Sin imagen: se muestra el tipo de comunicado.</span>
+                </div>
+                <div class="rich-inline-actions">
+                  <button class="button secondary" type="button" id="announcement-cover-upload">Subir imagen</button>
+                  <button class="button secondary" type="button" id="announcement-cover-remove">Quitar</button>
+                </div>
+                <p class="rich-upload-status" id="announcement-cover-status" role="status"></p>
+                <label class="rich-field">Dirección de la imagen
+                  <input id="announcement-image-url" maxlength="500" placeholder="Se completa al subir la imagen" />
+                </label>
+                <label class="rich-field">Descripción de la imagen
+                  <input id="announcement-image-alt" maxlength="200" placeholder="Qué muestra la imagen" />
+                </label>
+              </fieldset>
+              <label class="rich-field">Enlace al final (HTTPS, opcional)
+                <input id="announcement-link" type="url" maxlength="500" placeholder="https://" />
+              </label>
+              <div class="studio-help">
+                <strong>Atajos</strong>
+                <p>Ctrl+B negrita · Ctrl+I cursiva · Ctrl+K enlace · Ctrl+S guardar. Arrastra imágenes o PDF al
+                  texto. Pega un enlace de YouTube en un párrafo vacío para insertar el video.</p>
+              </div>
+            </aside>
           </div>
-          <p class="form-message" id="announcement-form-message" role="alert"></p>
-          <div class="form-actions"><button class="button secondary" type="button" id="cancel-announcement-form">Cancelar</button><button class="button primary" type="submit">Guardar ajustes</button></div>
+
+          <div class="studio-preview is-hidden" id="studio-preview-panel" role="tabpanel"
+            aria-labelledby="studio-tab-preview" tabindex="0">
+            <article class="news-article" id="announcement-preview"></article>
+          </div>
+
+          <footer class="studio-footer">
+            <p class="form-message" id="announcement-form-message" role="alert"></p>
+            <span class="studio-dirty" id="announcement-dirty" aria-live="polite"></span>
+            <button class="button secondary" type="button" id="cancel-announcement-form">Cancelar</button>
+            <button class="button primary" type="submit">Guardar ajustes</button>
+          </footer>
         </form>
       </dialog>
     </main>
@@ -374,7 +464,10 @@
 
   <script src="/static/user-admin.js?v=2"></script>
   <script src="/static/modality-admin.js?v=1"></script>
-  <script src="/static/announcement-admin.js?v=2"></script>
+  <script src="/static/announcement-render.js?v=1"></script>
+  <script src="/static/announcement-editor.js?v=1"></script>
+  <script src="/static/announcement-admin.js?v=3"></script>
+  <script src="/static/announcement-import.js?v=1"></script>
   <script src="/static/settings-console.js?v=1"></script>
 </body>
 

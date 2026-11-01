@@ -1,19 +1,36 @@
 from datetime import datetime
-from typing import Literal
+from typing import Any, Literal
 from urllib.parse import urlparse
 
-from pydantic import BaseModel, ConfigDict, Field, field_validator, model_validator
+from pydantic import (
+    BaseModel,
+    ConfigDict,
+    Field,
+    TypeAdapter,
+    field_validator,
+    model_validator,
+)
 
-from app.core.config import settings
+from app.modules.comunicados.blocks import (
+    Block,
+    blocks_from_text,
+    check_content_size,
+    plain_text,
+    validate_image_source,
+)
 
 AnnouncementCategory = Literal["NOTICIA", "COMUNICADO", "EVENTO", "CONVOCATORIA"]
 AnnouncementStatus = Literal["DRAFT", "PUBLISHED", "WITHDRAWN"]
+BlockAdapter: TypeAdapter[Block] = TypeAdapter(Block)
 
 
 class AnnouncementContent(BaseModel):
     category: AnnouncementCategory
     title: str = Field(min_length=5, max_length=160)
     summary: str = Field(min_length=10, max_length=280)
+    # Contenido enriquecido. Si llega solo `body` (texto plano historico), se
+    # convierte en parrafos; `body` siempre se deriva del contenido.
+    content: list[Block] | None = None
     body: str = Field(default="", max_length=6000)
     link_url: str | None = Field(default=None, max_length=500)
     image_url: str | None = Field(default=None, max_length=500)
@@ -40,17 +57,7 @@ class AnnouncementContent(BaseModel):
     def validate_image_url(cls, value: str | None) -> str | None:
         if value is None or not value.strip():
             return None
-        value = value.strip()
-        if value.startswith("/static/") and ".." not in value and "//" not in value:
-            return value
-        parsed = urlparse(value)
-        origin = f"{parsed.scheme}://{parsed.netloc}"
-        allowed_origins = settings.announcement_image_origin_list
-        if parsed.scheme == "https" and origin in allowed_origins:
-            return value
-        raise ValueError(
-            "La imagen debe estar en /static/ o en un dominio autorizado con HTTPS."
-        )
+        return validate_image_source(value)
 
     @model_validator(mode="after")
     def require_image_alt(self) -> "AnnouncementContent":
@@ -60,6 +67,20 @@ class AnnouncementContent(BaseModel):
         if not self.image_url:
             self.image_alt = None
         return self
+
+    @model_validator(mode="after")
+    def derive_body(self) -> "AnnouncementContent":
+        if self.content is None:
+            self.content = [
+                BlockAdapter.validate_python(block)
+                for block in blocks_from_text(self.body)
+            ]
+        check_content_size(list(self.content))
+        self.body = plain_text(self.content_dump())
+        return self
+
+    def content_dump(self) -> list[dict[str, object]]:
+        return [block.model_dump(mode="json") for block in self.content or []]
 
 
 class AnnouncementCreate(AnnouncementContent):
@@ -78,6 +99,7 @@ class AnnouncementPublicRead(BaseModel):
     title: str
     summary: str
     body: str
+    content: list[dict[str, Any]]
     link_url: str | None
     image_url: str | None
     image_alt: str | None
@@ -92,6 +114,7 @@ class AnnouncementRead(BaseModel):
     title: str
     summary: str
     body: str
+    content: list[dict[str, Any]]
     link_url: str | None
     image_url: str | None
     image_alt: str | None

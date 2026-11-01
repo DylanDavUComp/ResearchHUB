@@ -90,6 +90,13 @@ def get_current_user(request: Request, db: db_dependency) -> User:
     return user
 
 
+def get_optional_user(request: Request, db: db_dependency) -> User | None:
+    """Usuario de la sesion si existe y esta activo; si no, visitante anonimo."""
+    token = read_session_token(request)
+    user = SessionService(db).resolve(token) if token else None
+    return user if user is not None and user.status == "Activo" else None
+
+
 def require_permission(permission: str) -> Callable[[User], User]:
     def permission_dependency(
         current_user: Annotated[User, Depends(get_current_user)],

@@ -192,12 +192,15 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=56" in response.text
+    assert "/static/styles.css?v=59" in response.text
     assert "/static/app.js?v=32" in response.text
     assert "/static/user-admin.js?v=2" in response.text
     assert response.text.index("user-admin.js") < response.text.index("app.js?v")
     assert "/static/degree-work.js?v=3" in response.text
-    assert "/static/announcements.js?v=4" in response.text
+    assert "/static/announcements.js?v=5" in response.text
+    assert response.text.index("announcement-render.js") < response.text.index(
+        "announcements.js"
+    )
 
 
 

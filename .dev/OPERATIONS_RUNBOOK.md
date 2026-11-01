@@ -61,6 +61,25 @@ for approval:
   Many lockouts in a short period are an authentication anomaly (see Incident
   Signals).
 
+## Announcement Files
+
+Images and PDFs uploaded to announcements live in `announcement_assets` (ADR-006)
+and are included in every database backup.
+
+- Limits: images 2 MB (JPG, PNG, WebP, GIF), PDF 5 MB, 60 files per
+  announcement. SVG and HTML are refused by content signature.
+- The ingress must accept request bodies of at least 6 MB on
+  `/api/v1/admin/announcement-assets` (nginx: `client_max_body_size 6m`);
+  otherwise uploads above its default fail with HTTP 413 from the proxy.
+- `announcement_asset_uploaded` is logged per upload. Unsaved uploads are purged
+  after 24 hours; files an announcement stops using are deleted when it is saved.
+- Bulk drafts: `Configuracion > Comunicados > Importar JSON` (up to 50 per
+  file). It validates everything first and creates nothing if any item fails.
+  The downloadable AI skill (`skill-comunicados-researchhub.md`) documents the
+  JSON contract; keep it in sync with `app/modules/comunicados/blocks.py`.
+- Watch the table size: `SELECT pg_size_pretty(pg_total_relation_size(
+  'announcement_assets'));`. Review ADR-006 above 5 GB.
+
 ## Deploy And Roll Back
 
 1. Back up the database and record the current image digest and Alembic revision.

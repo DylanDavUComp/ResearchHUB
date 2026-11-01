@@ -5,9 +5,15 @@ from sqlalchemy.orm import Session
 from sqlalchemy.orm.exc import StaleDataError
 
 from app.core.exceptions import AppError
+from app.modules.comunicados.assets import AnnouncementAssetService
+from app.modules.comunicados.blocks import referenced_asset_ids
 from app.modules.comunicados.models import Announcement, AnnouncementAuditEvent
 from app.modules.comunicados.repository import AnnouncementRepository
-from app.modules.comunicados.schemas import AnnouncementCreate, AnnouncementUpdate
+from app.modules.comunicados.schemas import (
+    AnnouncementContent,
+    AnnouncementCreate,
+    AnnouncementUpdate,
+)
 from app.modules.usuarios.models import User
 
 # Los comunicados se gestionan solo desde la consola de configuracion general.
@@ -19,6 +25,7 @@ PUBLISHABLE_STATUSES = {"DRAFT", "WITHDRAWN"}
 class AnnouncementService:
     def __init__(self, db: Session) -> None:
         self.repository = AnnouncementRepository(db)
+        self.assets = AnnouncementAssetService(db)
         self.db = db
 
     def list_published(
@@ -27,6 +34,12 @@ class AnnouncementService:
         return self.repository.list_page(
             page=page, page_size=page_size, status="PUBLISHED"
         )
+
+    def get_published(self, announcement_id: str) -> Announcement:
+        announcement = self._get(announcement_id)
+        if announcement.status != "PUBLISHED":
+            raise AppError("announcements.not_found", "El comunicado no existe.", 404)
+        return announcement
 
     def list_for_management(
         self, actor: User, page: int, page_size: int, status: str | None
@@ -37,14 +50,35 @@ class AnnouncementService:
     def create(self, payload: AnnouncementCreate, actor: User) -> Announcement:
         self._require_admin(actor)
         announcement = Announcement(
-            id=str(uuid4()),
-            status="DRAFT",
-            author_id=actor.id,
-            **payload.model_dump(),
+            id=str(uuid4()), status="DRAFT", author_id=actor.id, **self._fields(payload)
         )
+        self.assets.sync(announcement, self._references(payload))
         event = self._event(announcement, actor, "CREATE", "DRAFT")
         event.from_status = "NONE"
         return self.repository.save(announcement, event)
+
+    def create_many(
+        self, payloads: list[AnnouncementCreate], actor: User
+    ) -> list[Announcement]:
+        """Crea varios borradores en una sola transaccion: todos o ninguno."""
+        self._require_admin(actor)
+        created: list[Announcement] = []
+        for payload in payloads:
+            announcement = Announcement(
+                id=str(uuid4()),
+                status="DRAFT",
+                author_id=actor.id,
+                **self._fields(payload),
+            )
+            event = self._event(announcement, actor, "CREATE", "DRAFT")
+            event.from_status = "NONE"
+            self.db.add_all([announcement, event])
+            created.append(announcement)
+        self.db.commit()
+        return created
+
+    def require_admin(self, actor: User) -> None:
+        self._require_admin(actor)
 
     def update(
         self, announcement_id: str, payload: AnnouncementUpdate, actor: User
@@ -52,8 +86,9 @@ class AnnouncementService:
         self._require_admin(actor)
         announcement = self._get(announcement_id)
         self._require_version(announcement, payload.version)
-        for field, value in payload.model_dump(exclude={"version"}).items():
+        for field, value in self._fields(payload).items():
             setattr(announcement, field, value)
+        self.assets.sync(announcement, self._references(payload))
         return self._save(
             announcement,
             self._event(announcement, actor, "UPDATE", announcement.status),
@@ -91,9 +126,20 @@ class AnnouncementService:
     def delete(self, announcement_id: str, actor: User) -> None:
         self._require_admin(actor)
         announcement = self._get(announcement_id)
+        self.assets.delete_for(announcement)
         self.repository.delete(
             announcement, self._event(announcement, actor, "DELETE", "DELETED")
         )
+
+    @staticmethod
+    def _fields(payload: AnnouncementContent) -> dict[str, object]:
+        fields = payload.model_dump(exclude={"content", "version"})
+        fields["content"] = payload.content_dump()
+        return fields
+
+    @staticmethod
+    def _references(payload: AnnouncementContent) -> set[str]:
+        return referenced_asset_ids(payload.content_dump(), payload.image_url)
 
     def _save(
         self, announcement: Announcement, event: AnnouncementAuditEvent

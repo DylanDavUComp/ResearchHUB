@@ -28,6 +28,8 @@ const newsElements = {
   articleSummary: document.querySelector("#news-article-summary"),
   articleBody: document.querySelector("#news-article-body"),
   articleLink: document.querySelector("#news-article-link"),
+  articleShare: document.querySelector("#news-article-share"),
+  articleShareStatus: document.querySelector("#news-article-share-status"),
 };
 
 const newsState = { page: 0, totalPages: 0, items: [], loaded: false };
@@ -144,7 +146,39 @@ async function loadPublicNews(reset = false) {
   }
 }
 
+// Cada comunicado tiene un enlace directo: /?comunicado=<id>.
+function setNewsDeepLink(id) {
+  const url = new URL(window.location.href);
+  if (id) url.searchParams.set("comunicado", id);
+  else url.searchParams.delete("comunicado");
+  window.history.replaceState(null, "", url);
+}
+
+async function copyNewsLink() {
+  const url = new URL("/", window.location.origin);
+  url.searchParams.set("comunicado", newsElements.articleShare.dataset.id);
+  try {
+    await navigator.clipboard.writeText(url.toString());
+    newsElements.articleShareStatus.textContent = "Enlace copiado.";
+  } catch (error) {
+    newsElements.articleShareStatus.textContent = url.toString();
+  }
+}
+
+async function openLinkedNews() {
+  const id = new URLSearchParams(window.location.search).get("comunicado");
+  if (!id || !/^[0-9a-f-]{36}$/.test(id)) return;
+  try {
+    const response = await fetch(`/api/v1/announcements/${id}`);
+    if (!response.ok) throw new Error("unavailable");
+    showNewsArticle(await response.json(), newsElements.teaserTitle);
+  } catch (error) {
+    setNewsDeepLink(null);
+  }
+}
+
 function showNewsHeadlines() {
+  setNewsDeepLink(null);
   newsElements.article.classList.add("is-hidden");
   newsElements.back.classList.add("is-hidden");
   newsElements.headlines.classList.remove("is-hidden");
@@ -156,15 +190,15 @@ function showNewsArticle(item, trigger) {
   newsElements.window.lastHeadline = trigger;
   newsElements.articleMedia.replaceWith(renderNewsMedia(item, "news-article-media"));
   newsElements.articleMedia = newsElements.article.querySelector(".news-article-media");
-  newsElements.articleMeta.textContent = announcementMeta(item);
+  newsElements.articleMeta.textContent = `${announcementMeta(item)} · ${announcementReadingMinutes(item)} min de lectura`;
   newsElements.articleTitle.textContent = item.title;
   newsElements.articleSummary.textContent = item.summary;
   newsElements.articleBody.replaceChildren(
-    ...item.body
-      .split(/\n\s*\n/)
-      .filter((paragraph) => paragraph.trim())
-      .map((paragraph) => announcementNode("p", "", paragraph.trim())),
+    renderAnnouncementBlocks(item.content?.length ? item.content : announcementBlocksFromText(item.body)),
   );
+  newsElements.articleShare.dataset.id = item.id;
+  newsElements.articleShareStatus.textContent = "";
+  setNewsDeepLink(item.id);
   newsElements.articleLink.classList.toggle("is-hidden", !item.link_url);
   newsElements.articleLink.href = item.link_url || "#";
   newsElements.headlines.classList.add("is-hidden");
@@ -193,9 +227,12 @@ newsElements.window.addEventListener("click", (event) => {
   if (event.target === newsElements.window) newsElements.window.close();
 });
 newsElements.window.addEventListener("close", () => {
+  setNewsDeepLink(null);
   newsElements.window.lastHeadline = null;
   newsElements.window.returnFocus?.focus();
 });
 newsElements.more.addEventListener("click", () => loadPublicNews());
+newsElements.articleShare.addEventListener("click", copyNewsLink);
 
 loadPublicNews(true);
+openLinkedNews();

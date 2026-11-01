@@ -17,6 +17,7 @@ from app.core.telemetry import (
     SecurityHeadersMiddleware,
     TraceIdMiddleware,
 )
+from app.modules.comunicados.api import media_router
 
 
 def create_app() -> FastAPI:
@@ -51,6 +52,7 @@ def create_app() -> FastAPI:
     app.add_middleware(TraceIdMiddleware)
     register_exception_handlers(app)
     app.include_router(api_router)
+    app.include_router(media_router)
 
     mimetypes.add_type("image/webp", ".webp")
     web_dir = Path(__file__).parent / "web"

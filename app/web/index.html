@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Investigación UCompensar</title>
   <link rel="icon" href="/static/avatar.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/styles.css?v=56" />
+  <link rel="stylesheet" href="/static/styles.css?v=59" />
 </head>
 
 <body>
@@ -294,10 +294,14 @@
       </div>
       <article class="news-article is-hidden" id="news-article">
         <div class="news-article-media" id="news-article-media"></div>
-        <span class="launcher-eyebrow" id="news-article-meta"></span>
+        <div class="news-article-meta-row">
+          <span class="launcher-eyebrow" id="news-article-meta"></span>
+          <button class="news-share" id="news-article-share" type="button">Copiar enlace</button>
+          <span class="news-share-status" id="news-article-share-status" role="status"></span>
+        </div>
         <h3 id="news-article-title" tabindex="-1"></h3>
         <p class="news-article-summary" id="news-article-summary"></p>
-        <div class="news-article-body" id="news-article-body"></div>
+        <div class="news-article-body rich-content" id="news-article-body"></div>
         <a class="opportunity-link is-hidden" id="news-article-link" href="#" target="_blank" rel="noopener noreferrer">
           Más información <span aria-hidden="true">&#8599;</span>
         </a>
@@ -893,7 +897,8 @@
   <script src="/static/user-admin.js?v=2"></script>
   <script src="/static/app.js?v=32"></script>
   <script src="/static/degree-work.js?v=3"></script>
-  <script src="/static/announcements.js?v=4"></script>
+  <script src="/static/announcement-render.js?v=1"></script>
+  <script src="/static/announcements.js?v=5"></script>
 </body>
 
 </html>
