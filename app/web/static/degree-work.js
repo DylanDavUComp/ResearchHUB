@@ -1,7 +1,6 @@
 const degreeWorkState = {
   currentUser: null,
   modalities: [],
-  settingsModalities: [],
   cases: [],
   selectedCaseId: null,
   selectedModalityCode: null,
@@ -45,31 +44,13 @@ const degreeWorkElements = {
   caseProgram: document.querySelector("#case-program"),
   caseFormMessage: document.querySelector("#case-form-message"),
   cancelCaseForm: document.querySelector("#cancel-case-form"),
-  modalitySettingsBody: document.querySelector("#modality-settings-body"),
-  newModalityButton: document.querySelector("#new-modality-button"),
-  modalityDialog: document.querySelector("#modality-dialog"),
-  modalityForm: document.querySelector("#modality-form"),
-  modalityFormTitle: document.querySelector("#modality-form-title"),
-  modalityId: document.querySelector("#modality-id"),
-  modalityCode: document.querySelector("#modality-code"),
-  modalityName: document.querySelector("#modality-name"),
-  modalityDescription: document.querySelector("#modality-description"),
-  modalitySemester: document.querySelector("#modality-semester"),
-  modalityDuration: document.querySelector("#modality-duration"),
-  modalityMinParticipants: document.querySelector("#modality-min-participants"),
-  modalityMaxParticipants: document.querySelector("#modality-max-participants"),
-  modalityHomologatable: document.querySelector("#modality-homologatable"),
-  workflowStepList: document.querySelector("#workflow-step-list"),
-  addWorkflowStep: document.querySelector("#add-workflow-step"),
-  modalityFormMessage: document.querySelector("#modality-form-message"),
-  cancelModalityForm: document.querySelector("#cancel-modality-form"),
 };
 
 const roleCopy = {
   Estudiante: ["Mi trabajo de grado", "Selecciona una modalidad y consulta el siguiente paso de tu proceso.", "Mis solicitudes"],
   Docente: ["Bandeja docente", "Revisa los casos asignados y registra las acciones de tu etapa.", "Casos asignados"],
   "Director de programa": ["Control del programa", "Gestiona avales, asignaciones, decisiones y registros finales.", "Casos del programa"],
-  Administrador: ["Operacion institucional", "Consulta procesos y administra la configuracion operativa.", "Casos institucionales"],
+  Administrador: ["Operacion institucional", "Consulta procesos y gestiona los usuarios institucionales.", "Casos institucionales"],
   "Super administrador": ["Gobierno de trabajos de grado", "Supervisa procesos, modalidades, flujos y trazabilidad.", "Todos los casos"],
 };
 
@@ -493,169 +474,6 @@ async function createDegreeWorkCase(event) {
   }
 }
 
-async function loadModalitySettings(user) {
-  if (!["Administrador", "Super administrador"].includes(user.role)) return;
-  degreeWorkState.currentUser = user;
-  try {
-    degreeWorkState.settingsModalities = await degreeWorkJson("/api/v1/degree-work-modalities?include_inactive=true");
-    renderModalitySettings();
-  } catch (error) {
-    clearElement(degreeWorkElements.modalitySettingsBody);
-    const row = document.createElement("tr");
-    const cell = createNode("td", "", error.message);
-    cell.colSpan = 7;
-    row.append(cell);
-    degreeWorkElements.modalitySettingsBody.append(row);
-  }
-}
-
-function renderModalitySettings() {
-  clearElement(degreeWorkElements.modalitySettingsBody);
-  degreeWorkState.settingsModalities.forEach((modality) => {
-    const row = document.createElement("tr");
-    const name = createNode("td");
-    name.append(createNode("strong", "", modality.name), createNode("small", "table-secondary", modality.code));
-    const statusCell = createNode("td");
-    statusCell.append(createNode("span", `status-pill status-${modality.status.toLowerCase()}`, statusCopy[modality.status] || modality.status));
-    const actions = createNode("td");
-    const actionWrap = createNode("div", "action-buttons");
-    if (modality.status === "DRAFT") {
-      actionWrap.append(modalityActionButton("Editar", () => openModalityDialog(modality)));
-      actionWrap.append(modalityActionButton("Eliminar", () => deleteModality(modality), "danger"));
-      if (degreeWorkState.currentUser.role === "Super administrador") actionWrap.append(modalityActionButton("Publicar", () => changeModalityState(modality, "publication")));
-    }
-    if (modality.status === "ACTIVE" && degreeWorkState.currentUser.role === "Super administrador") actionWrap.append(modalityActionButton("Retirar", () => changeModalityState(modality, "retirement"), "danger"));
-    actions.append(actionWrap);
-    row.append(name, createNode("td", "", String(modality.version)), createNode("td", "", modality.is_homologatable ? "Si" : "No"), createNode("td", "", `${modality.min_participants} - ${modality.max_participants}`), createNode("td", "", `${modality.workflow_steps.length} pasos`), statusCell, actions);
-    degreeWorkElements.modalitySettingsBody.append(row);
-  });
-}
-
-function modalityActionButton(label, action, variant = "") {
-  const button = createNode("button", `table-button ${variant}`, label);
-  button.type = "button";
-  button.addEventListener("click", action);
-  return button;
-}
-
-function addWorkflowStepRow(data = {}) {
-  const row = createNode("div", "workflow-step-row");
-  const code = document.createElement("input");
-  code.className = "workflow-code";
-  code.placeholder = "CODIGO_PASO";
-  code.required = true;
-  code.value = data.code || "";
-  const name = document.createElement("input");
-  name.className = "workflow-name";
-  name.placeholder = "Nombre visible";
-  name.required = true;
-  name.value = data.name || "";
-  const type = document.createElement("select");
-  type.className = "workflow-type";
-  ["FORM", "DOCUMENT", "VALIDATION", "APPROVAL", "ASSIGNMENT", "ACTIVITY", "EVALUATION", "REGISTRATION", "CLOSURE"].forEach((value) => {
-    const option = createNode("option", "", value);
-    option.value = value;
-    option.selected = value === data.step_type;
-    type.append(option);
-  });
-  const role = document.createElement("select");
-  role.className = "workflow-role";
-  ["Estudiante", "Docente", "Director de programa", "Administrador", "Super administrador"].forEach((value) => {
-    const option = createNode("option", "", value);
-    option.value = value;
-    option.selected = data.responsible_roles?.includes(value);
-    role.append(option);
-  });
-  const remove = createNode("button", "icon-action danger-icon", "×");
-  remove.type = "button";
-  remove.title = "Eliminar paso";
-  remove.setAttribute("aria-label", "Eliminar paso");
-  remove.addEventListener("click", () => row.remove());
-  row.append(code, name, type, role, remove);
-  degreeWorkElements.workflowStepList.append(row);
-}
-
-function openModalityDialog(modality = null) {
-  degreeWorkElements.modalityForm.reset();
-  clearElement(degreeWorkElements.workflowStepList);
-  degreeWorkElements.modalityFormMessage.textContent = "";
-  degreeWorkElements.modalityId.value = modality?.id || "";
-  degreeWorkElements.modalityCode.value = modality?.code || "";
-  degreeWorkElements.modalityCode.disabled = Boolean(modality);
-  degreeWorkElements.modalityName.value = modality?.name || "";
-  degreeWorkElements.modalityDescription.value = modality?.description || "";
-  degreeWorkElements.modalitySemester.value = modality?.initial_semester || "";
-  degreeWorkElements.modalityDuration.value = modality?.duration_label || "Por definir";
-  degreeWorkElements.modalityMinParticipants.value = modality?.min_participants || 1;
-  degreeWorkElements.modalityMaxParticipants.value = modality?.max_participants || 1;
-  degreeWorkElements.modalityHomologatable.checked = modality?.is_homologatable || false;
-  degreeWorkElements.modalityFormTitle.textContent = modality ? "Editar modalidad" : "Nueva modalidad";
-  const steps = modality?.workflow_steps || [
-    { code: "APPLICATION", name: "Postulacion", step_type: "FORM", responsible_roles: ["Estudiante"] },
-    { code: "CLOSURE", name: "Cierre", step_type: "CLOSURE", responsible_roles: ["Director de programa"] },
-  ];
-  steps.forEach(addWorkflowStepRow);
-  degreeWorkElements.modalityDialog.showModal();
-}
-
-function collectWorkflowSteps() {
-  return Array.from(degreeWorkElements.workflowStepList.querySelectorAll(".workflow-step-row")).map((row) => ({
-    code: row.querySelector(".workflow-code").value.trim().toUpperCase().replaceAll(" ", "_"),
-    name: row.querySelector(".workflow-name").value.trim(),
-    step_type: row.querySelector(".workflow-type").value,
-    responsible_roles: [row.querySelector(".workflow-role").value],
-    is_decision: row.querySelector(".workflow-type").value === "APPROVAL",
-  }));
-}
-
-async function saveModality(event) {
-  event.preventDefault();
-  const id = degreeWorkElements.modalityId.value;
-  const payload = {
-    name: degreeWorkElements.modalityName.value.trim(),
-    description: degreeWorkElements.modalityDescription.value.trim(),
-    is_homologatable: degreeWorkElements.modalityHomologatable.checked,
-    initial_semester: degreeWorkElements.modalitySemester.value ? Number(degreeWorkElements.modalitySemester.value) : null,
-    duration_label: degreeWorkElements.modalityDuration.value.trim() || "Por definir",
-    min_participants: Number(degreeWorkElements.modalityMinParticipants.value),
-    max_participants: Number(degreeWorkElements.modalityMaxParticipants.value),
-    requirements: [],
-    evaluation_criteria: [],
-    workflow_steps: collectWorkflowSteps(),
-  };
-  if (!id) payload.code = degreeWorkElements.modalityCode.value.trim().toUpperCase();
-  degreeWorkElements.modalityFormMessage.textContent = "Guardando borrador...";
-  try {
-    await degreeWorkJson(id ? `/api/v1/degree-work-modalities/${id}` : "/api/v1/degree-work-modalities", {
-      method: id ? "PATCH" : "POST",
-      body: JSON.stringify(payload),
-    });
-    degreeWorkElements.modalityDialog.close();
-    await loadModalitySettings(degreeWorkState.currentUser);
-  } catch (error) {
-    degreeWorkElements.modalityFormMessage.textContent = error.message;
-  }
-}
-
-async function changeModalityState(modality, action) {
-  try {
-    await degreeWorkJson(`/api/v1/degree-work-modalities/${modality.id}/${action}`, { method: "POST" });
-    await loadModalitySettings(degreeWorkState.currentUser);
-  } catch (error) {
-    window.alert(error.message);
-  }
-}
-
-async function deleteModality(modality) {
-  if (!window.confirm(`Eliminar el borrador "${modality.name}"?`)) return;
-  try {
-    await degreeWorkJson(`/api/v1/degree-work-modalities/${modality.id}`, { method: "DELETE" });
-    await loadModalitySettings(degreeWorkState.currentUser);
-  } catch (error) {
-    window.alert(error.message);
-  }
-}
-
 degreeWorkElements.search.addEventListener("input", renderModalityCatalog);
 degreeWorkElements.journeyStages.forEach((button) => {
   button.addEventListener("click", () => {
@@ -673,7 +491,3 @@ degreeWorkElements.refresh.addEventListener("click", () => loadDegreeWork(degree
 degreeWorkElements.openCaseForm.addEventListener("click", () => openCaseDialog());
 degreeWorkElements.cancelCaseForm.addEventListener("click", () => degreeWorkElements.caseDialog.close());
 degreeWorkElements.caseForm.addEventListener("submit", createDegreeWorkCase);
-degreeWorkElements.newModalityButton.addEventListener("click", () => openModalityDialog());
-degreeWorkElements.cancelModalityForm.addEventListener("click", () => degreeWorkElements.modalityDialog.close());
-degreeWorkElements.addWorkflowStep.addEventListener("click", () => addWorkflowStepRow());
-degreeWorkElements.modalityForm.addEventListener("submit", saveModality);

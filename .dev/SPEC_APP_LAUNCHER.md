@@ -110,11 +110,27 @@ Ofrecer una entrada institucional unica y responsive para elegir entre:
     declarados en `ANNOUNCEMENT_IMAGE_ORIGINS`, que tambien se agregan a la CSP
     `img-src`. Toda imagen exige texto alternativo. El enlace opcional solo acepta
     URL absolutas HTTPS y abre en una pestana nueva.
-30. Administrador y Super administrador gestionan comunicados en `Configuracion`:
-    crean borradores, editan, publican, retiran y eliminan borradores nunca
-    publicados. Un comunicado publicado no se edita sin retirarlo. Las escrituras
-    usan control de version optimista y quedan en
-    `announcement_audit_events`.
+30. Solo el Super administrador gestiona comunicados, en la consola
+    `/configuracion` (seccion `Comunicados`). Un borrador figura `Por aprobar`:
+    `Revisar y ajustar` lo edita, `Aprobar y publicar` lo publica y `No aprobar`
+    lo elimina sin publicarlo. Todo comunicado admite CRUD completo: publicado se
+    puede `Editar` (el cambio se ve de inmediato en la portada, con aviso previo),
+    `Retirar` o `Eliminar`; retirado se puede `Editar`, `Volver a publicar` o
+    `Eliminar`. Eliminar pide confirmacion y es definitivo.
+    Las escrituras usan control de version optimista y quedan en
+    `announcement_audit_events`. El comando
+    `python -m app.cli.create_announcement_draft --author <correo>` crea un
+    borrador desde JSON por entrada estandar; nunca publica ni duplica titulos.
+31. La consola `/configuracion` reune la configuracion general del ecosistema:
+    comunicados, modalidades y flujos, usuarios y catalogo de base de datos. Usa
+    el login y la sesion compartidos de ResearchHUB y ResearchOS, pero el login con
+    `settings_console=true` responde `403 users.settings_console_forbidden` sin
+    emitir sesion a otro rol, y cada API vuelve a exigir Super administrador. La
+    portada la enlaza de forma discreta con `Configuracion` en el encabezado
+    (solo el icono en movil).
+32. ResearchHUB y ResearchOS conservan en `Configuracion` solo la gestion de
+    usuarios, para quien tenga `settings:manage`; Administrador ya no gestiona
+    comunicados ni el catalogo de modalidades.
 
 ## Criterios de aceptacion
 

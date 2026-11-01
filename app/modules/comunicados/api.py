@@ -103,7 +103,7 @@ def create_announcement(
 @router.patch(
     "/admin/announcements/{announcement_id}",
     response_model=AnnouncementRead,
-    summary="Editar comunicado no publicado",
+    summary="Editar comunicado",
 )
 def update_announcement(
     announcement_id: str,
@@ -119,7 +119,7 @@ def update_announcement(
 @router.delete(
     "/admin/announcements/{announcement_id}",
     status_code=status.HTTP_204_NO_CONTENT,
-    summary="Eliminar borrador nunca publicado",
+    summary="Eliminar comunicado",
 )
 def delete_announcement(
     announcement_id: str,

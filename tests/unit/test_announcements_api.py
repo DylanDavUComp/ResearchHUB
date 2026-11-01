@@ -48,6 +48,7 @@ def announcements_client() -> Generator[
     users = {
         "student": build_user("student-1", "Estudiante"),
         "admin": build_user("admin-1", "Administrador"),
+        "superadmin": build_user("super-1", "Super administrador"),
     }
     with Session(engine, expire_on_commit=False) as setup:
         setup.add_all(users.values())
@@ -68,7 +69,7 @@ def act_as(user: User) -> None:
 
 
 def create_draft(client: TestClient, users: dict[str, User]) -> dict[str, object]:
-    act_as(users["admin"])
+    act_as(users["superadmin"])
     response = client.post("/api/v1/admin/announcements", json=PAYLOAD)
     assert response.status_code == 201
     return response.json()
@@ -102,6 +103,26 @@ def test_student_cannot_create_announcements(announcements_client) -> None:
     assert response.json()["error"]["code"] == "announcements.forbidden"
 
 
+
+def test_administrator_no_longer_manages_announcements(announcements_client) -> None:
+    client, users, _ = announcements_client
+    draft = create_draft(client, users)
+    act_as(users["admin"])
+
+    listed = client.get("/api/v1/admin/announcements")
+    created = client.post("/api/v1/admin/announcements", json=PAYLOAD)
+    published = client.post(
+        f"/api/v1/admin/announcements/{draft['id']}/publication",
+        json={"version": draft["version"]},
+    )
+
+    assert [listed.status_code, created.status_code, published.status_code] == [
+        403,
+        403,
+        403,
+    ]
+    assert created.json()["error"]["code"] == "announcements.forbidden"
+
 def test_drafts_stay_out_of_the_public_feed(announcements_client) -> None:
     client, users, _ = announcements_client
     create_draft(client, users)
@@ -128,15 +149,23 @@ def test_publication_lifecycle_is_audited(announcements_client) -> None:
     assert "author_id" not in feed["data"][0]
     assert "status" not in feed["data"][0]
 
-    locked = client.patch(
+    edited = client.patch(
         f"/api/v1/admin/announcements/{draft['id']}",
-        json={**PAYLOAD, "version": published.json()["version"]},
+        json={
+            **PAYLOAD,
+            "title": "Convocatoria interna de semilleros 2027 ampliada",
+            "version": published.json()["version"],
+        },
     )
-    assert locked.status_code == 409
+    assert edited.status_code == 200
+    assert edited.json()["status"] == "PUBLISHED"
+    assert client.get("/api/v1/announcements").json()["data"][0]["title"] == (
+        "Convocatoria interna de semilleros 2027 ampliada"
+    )
 
     withdrawn = client.post(
         f"/api/v1/admin/announcements/{draft['id']}/withdrawal",
-        json={"version": published.json()["version"]},
+        json={"version": edited.json()["version"]},
     )
     assert withdrawn.json()["status"] == "WITHDRAWN"
     assert client.get("/api/v1/announcements").json()["total_items"] == 0
@@ -148,7 +177,7 @@ def test_publication_lifecycle_is_audited(announcements_client) -> None:
             )
         )
     )
-    assert actions == ["CREATE", "PUBLISH", "WITHDRAW"]
+    assert actions == ["CREATE", "PUBLISH", "UPDATE", "WITHDRAW"]
 
 
 def test_stale_version_is_rejected(announcements_client) -> None:
@@ -170,8 +199,8 @@ def test_stale_version_is_rejected(announcements_client) -> None:
     assert stale.json()["error"]["code"] == "announcements.version_conflict"
 
 
-def test_published_announcement_cannot_be_deleted(announcements_client) -> None:
-    client, users, _ = announcements_client
+def test_published_announcement_can_be_deleted(announcements_client) -> None:
+    client, users, inspector = announcements_client
     draft = create_draft(client, users)
     client.post(
         f"/api/v1/admin/announcements/{draft['id']}/publication",
@@ -180,7 +209,12 @@ def test_published_announcement_cannot_be_deleted(announcements_client) -> None:
 
     response = client.delete(f"/api/v1/admin/announcements/{draft['id']}")
 
-    assert response.status_code == 409
+    assert response.status_code == 204
+    assert client.get("/api/v1/announcements").json()["total_items"] == 0
+    deleted = inspector.scalars(
+        select(AnnouncementAuditEvent).where(AnnouncementAuditEvent.action == "DELETE")
+    ).one()
+    assert (deleted.from_status, deleted.to_status) == ("PUBLISHED", "DELETED")
 
 
 def test_draft_can_be_deleted(announcements_client) -> None:
@@ -199,7 +233,7 @@ def test_draft_can_be_deleted(announcements_client) -> None:
 )
 def test_links_require_absolute_https(announcements_client, link_url) -> None:
     client, users, _ = announcements_client
-    act_as(users["admin"])
+    act_as(users["superadmin"])
 
     response = client.post(
         "/api/v1/admin/announcements", json={**PAYLOAD, "link_url": link_url}
@@ -210,7 +244,7 @@ def test_links_require_absolute_https(announcements_client, link_url) -> None:
 
 def test_image_requires_alt_text_and_allowed_origin(announcements_client) -> None:
     client, users, _ = announcements_client
-    act_as(users["admin"])
+    act_as(users["superadmin"])
 
     missing_alt = client.post(
         "/api/v1/admin/announcements",
@@ -247,7 +281,7 @@ def test_image_requires_alt_text_and_allowed_origin(announcements_client) -> Non
 def test_public_feed_is_paginated_newest_first(announcements_client) -> None:
     client, users, _ = announcements_client
     for index in range(3):
-        act_as(users["admin"])
+        act_as(users["superadmin"])
         draft = client.post(
             "/api/v1/admin/announcements",
             json={**PAYLOAD, "title": f"Comunicado institucional {index}"},

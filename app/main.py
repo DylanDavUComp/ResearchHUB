@@ -64,6 +64,10 @@ def create_app() -> FastAPI:
     def research_os() -> FileResponse:
         return FileResponse(web_dir / "researchos.html")
 
+    @app.get("/configuracion", include_in_schema=False)
+    def settings_console() -> FileResponse:
+        return FileResponse(web_dir / "configuracion.html")
+
     return app
 
 

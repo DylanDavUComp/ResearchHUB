@@ -21,7 +21,8 @@ from app.modules.trabajos_grado.schemas import (
 )
 from app.modules.usuarios.models import User
 
-ADMIN_ROLES = {"Administrador", "Super administrador"}
+# El catalogo de modalidades se gestiona solo desde la consola de configuracion.
+SETTINGS_ROLES = {"Super administrador"}
 MANAGEMENT_ROLES = {"Director de programa", "Administrador", "Super administrador"}
 
 
@@ -326,7 +327,7 @@ class DegreeWorkService:
     def create_modality(
         self, payload: ModalityCreate, actor: User
     ) -> DegreeWorkModality:
-        self._require_role(actor, ADMIN_ROLES)
+        self._require_role(actor, SETTINGS_ROLES)
         if self.repository.get_modality_by_code(payload.code):
             raise AppError(
                 "degree_work.modality_code_exists",
@@ -344,7 +345,7 @@ class DegreeWorkService:
     def update_modality(
         self, modality_id: str, payload: ModalityUpdate, actor: User
     ) -> DegreeWorkModality:
-        self._require_role(actor, ADMIN_ROLES)
+        self._require_role(actor, SETTINGS_ROLES)
         modality = self._get_modality(modality_id)
         if modality.status != "DRAFT":
             raise AppError(
@@ -358,7 +359,7 @@ class DegreeWorkService:
         return self.repository.save_modality(modality)
 
     def delete_modality(self, modality_id: str, actor: User) -> None:
-        self._require_role(actor, ADMIN_ROLES)
+        self._require_role(actor, SETTINGS_ROLES)
         modality = self._get_modality(modality_id)
         if modality.status != "DRAFT" or self.repository.count_cases_for_modality(
             modality_id

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Investigación UCompensar</title>
   <link rel="icon" href="/static/avatar.svg" type="image/svg+xml" />
-  <link rel="stylesheet" href="/static/styles.css?v=54" />
+  <link rel="stylesheet" href="/static/styles.css?v=56" />
 </head>
 
 <body>
@@ -15,9 +15,16 @@
       <header class="launcher-header">
         <img class="launcher-logo" src="/static/brand/ucompensar-hacer-para-saber.png"
           alt="UCompensar, Hacer para saber" />
-        <div class="launcher-context">
-          <span class="launcher-context-kicker">Portal institucional</span>
-          <strong>Ecosistema de investigación</strong>
+        <div class="launcher-header-tools">
+          <div class="launcher-context">
+            <span class="launcher-context-kicker">Portal institucional</span>
+            <strong>Ecosistema de investigación</strong>
+          </div>
+          <a class="launcher-settings-link" href="/configuracion"
+            title="Configuración general, solo superadministradores">
+            <span class="icon settings" aria-hidden="true"></span>
+            <span class="launcher-settings-text">Configuración</span>
+          </a>
         </div>
       </header>
     </div>
@@ -877,132 +884,16 @@
             </form>
           </aside>
 
-          <section class="settings-card modality-settings-card admin-only" id="modality-settings-card">
-            <div class="section-heading">
-              <div><h3>Modalidades y flujos</h3><p>Administra borradores; publicar y retirar requiere superadministrador.</p></div>
-              <button class="button primary" id="new-modality-button" type="button">Nueva modalidad</button>
-            </div>
-            <div class="degree-work-table-wrap">
-              <table class="degree-work-table">
-                <thead><tr><th>Modalidad</th><th>Version</th><th>Homologable</th><th>Participantes</th><th>Flujo</th><th>Estado</th><th>Acciones</th></tr></thead>
-                <tbody id="modality-settings-body"><tr><td colspan="7">Cargando catalogo...</td></tr></tbody>
-              </table>
-            </div>
-          </section>
-
-          <section class="settings-card announcement-settings-card admin-only" id="announcement-settings-card">
-            <div class="section-heading">
-              <div><h3>Comunicados de la portada</h3><p>Redacta en borrador y publica cuando esté listo. Para editar algo publicado, retíralo primero.</p></div>
-              <button class="button primary" id="new-announcement-button" type="button">Nuevo comunicado</button>
-            </div>
-            <div class="degree-work-table-wrap">
-              <table class="degree-work-table">
-                <thead><tr><th>Comunicado</th><th>Tipo</th><th>Estado</th><th>Publicado</th><th>Acciones</th></tr></thead>
-                <tbody id="announcement-settings-body"><tr><td colspan="5">Cargando comunicados...</td></tr></tbody>
-              </table>
-            </div>
-          </section>
-
-          <section class="settings-card database-card superadmin-only is-hidden" id="database-settings-card">
-            <div class="section-heading">
-              <h3>Bases de datos del proyecto</h3>
-              <span class="status-pill">Solo superadministrador</span>
-            </div>
-            <p class="database-state" id="database-state">Consulta en modo lectura.</p>
-            <div class="database-list">
-              <article>
-                <span class="database-icon"><span class="icon columns"></span></span>
-                <div>
-                  <strong id="database-name">researchhub_u</strong>
-                  <dl>
-                    <dt>Motor</dt>
-                    <dd id="database-engine">PostgreSQL</dd>
-                    <dt>Host</dt>
-                    <dd id="database-host">localhost</dd>
-                    <dt>Puerto</dt>
-                    <dd id="database-port">5432</dd>
-                    <dt>Volumen Docker</dt>
-                    <dd id="database-volume">postgres_data</dd>
-                    <dt>Directorio interno</dt>
-                    <dd id="database-directory">/var/lib/postgresql/data</dd>
-                  </dl>
-                </div>
-              </article>
-            </div>
-            <div class="database-table-wrap">
-              <table class="database-table">
-                <thead>
-                  <tr>
-                    <th>Esquema</th>
-                    <th>Tabla / vista</th>
-                    <th>Tipo</th>
-                    <th>Columnas</th>
-                  </tr>
-                </thead>
-                <tbody id="database-tables-body">
-                  <tr>
-                    <td colspan="4">Sin datos cargados.</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </section>
         </div>
       </section>
 
-      <dialog class="degree-work-dialog modality-dialog" id="modality-dialog">
-        <form method="dialog" id="modality-form">
-          <input id="modality-id" type="hidden" />
-          <div class="dialog-heading"><div><span class="page-eyebrow">Configuracion</span><h3 id="modality-form-title">Nueva modalidad</h3></div><button class="icon-action" value="cancel" aria-label="Cerrar">&times;</button></div>
-          <div class="modality-form-grid">
-            <label>Codigo estable<input id="modality-code" pattern="[A-Z0-9_]+" required placeholder="NUEVA_MODALIDAD" /></label>
-            <label>Nombre<input id="modality-name" maxlength="160" required /></label>
-            <label class="wide-field">Descripcion<textarea id="modality-description" maxlength="2000" rows="3"></textarea></label>
-            <label>Semestre inicial<input id="modality-semester" type="number" min="1" max="20" /></label>
-            <label>Duracion<input id="modality-duration" maxlength="120" value="Por definir" /></label>
-            <label>Participantes minimos<input id="modality-min-participants" type="number" min="1" max="20" value="1" required /></label>
-            <label>Participantes maximos<input id="modality-max-participants" type="number" min="1" max="20" value="1" required /></label>
-            <label class="checkbox-row wide-field"><input id="modality-homologatable" type="checkbox" /> Es objeto de homologacion</label>
-          </div>
-          <div class="workflow-builder-heading"><div><h4>Flujo de trabajo</h4><p>Ordena pasos y define el rol responsable.</p></div><button class="button secondary" id="add-workflow-step" type="button">Agregar paso</button></div>
-          <div class="workflow-step-list" id="workflow-step-list"></div>
-          <p class="form-message" id="modality-form-message" role="alert"></p>
-          <div class="form-actions"><button class="button secondary" type="button" id="cancel-modality-form">Cancelar</button><button class="button primary" type="submit">Guardar borrador</button></div>
-        </form>
-      </dialog>
-
-      <dialog class="degree-work-dialog" id="announcement-dialog">
-        <form id="announcement-form">
-          <input id="announcement-id" type="hidden" />
-          <input id="announcement-version" type="hidden" />
-          <div class="dialog-heading"><div><span class="page-eyebrow">Portada</span><h3 id="announcement-form-title">Nuevo comunicado</h3></div><button class="icon-action" type="button" id="close-announcement-form" aria-label="Cerrar">&times;</button></div>
-          <div class="modality-form-grid">
-            <label>Tipo
-              <select id="announcement-category" required>
-                <option value="NOTICIA">Noticia</option>
-                <option value="COMUNICADO">Comunicado</option>
-                <option value="EVENTO">Evento</option>
-                <option value="CONVOCATORIA">Convocatoria</option>
-              </select>
-            </label>
-            <label>Enlace opcional (HTTPS)<input id="announcement-link" type="url" maxlength="500" placeholder="https://" /></label>
-            <label>Imagen (ruta /static/ o URL HTTPS autorizada)<input id="announcement-image-url" maxlength="500" placeholder="https://" /></label>
-            <label>Descripción de la imagen<input id="announcement-image-alt" maxlength="200" placeholder="Qué muestra la imagen" /></label>
-            <label class="wide-field">Título<input id="announcement-title" minlength="5" maxlength="160" required /></label>
-            <label class="wide-field">Resumen para la portada<textarea id="announcement-summary" minlength="10" maxlength="280" rows="2" required></textarea></label>
-            <label class="wide-field">Contenido completo<textarea id="announcement-body" maxlength="6000" rows="7"></textarea></label>
-          </div>
-          <p class="form-message" id="announcement-form-message" role="alert"></p>
-          <div class="form-actions"><button class="button secondary" type="button" id="cancel-announcement-form">Cancelar</button><button class="button primary" type="submit">Guardar borrador</button></div>
-        </form>
-      </dialog>
     </main>
   </div>
 
   <script src="/static/user-admin.js?v=2"></script>
-  <script src="/static/app.js?v=31"></script>
-  <script src="/static/degree-work.js?v=2"></script>
-  <script src="/static/announcements.js?v=3"></script>
+  <script src="/static/app.js?v=32"></script>
+  <script src="/static/degree-work.js?v=3"></script>
+  <script src="/static/announcements.js?v=4"></script>
 </body>
 
 </html>

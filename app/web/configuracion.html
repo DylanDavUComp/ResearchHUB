@@ -1,0 +1,381 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="robots" content="noindex" />
+  <title>Configuración general | Investigación UCompensar</title>
+  <link rel="icon" href="/static/avatar.svg" type="image/svg+xml" />
+  <link rel="stylesheet" href="/static/styles.css?v=56" />
+</head>
+
+<body class="settings-console">
+  <p class="ros-loading" id="console-loading" role="status">Verificando tu sesión…</p>
+
+  <section class="login-view console-login is-hidden" id="login-view" aria-labelledby="console-login-title">
+    <div class="login-brand-panel">
+      <header class="login-brand-header">
+        <img class="brand-logo" src="/static/brand/ucompensar-hacer-para-saber.png"
+          alt="UCompensar, Hacer para saber" />
+      </header>
+
+      <div class="login-hero-copy">
+        <p class="ros-kicker">Solo superadministradores</p>
+        <h1>Configuración <span>general</span></h1>
+        <p>Comunicados, catálogos, usuarios y base de datos de todo el ecosistema de investigación.</p>
+      </div>
+
+      <div class="login-benefits">
+        <article><span class="benefit-icon"><span class="icon bell" aria-hidden="true"></span></span>
+          <div><strong>Comunicados</strong>
+            <p>Revisa, ajusta y aprueba lo que se publica.</p>
+          </div>
+        </article>
+        <article><span class="benefit-icon"><span class="icon clipboard" aria-hidden="true"></span></span>
+          <div><strong>Catálogos</strong>
+            <p>Modalidades y flujos de trabajo de grado.</p>
+          </div>
+        </article>
+        <article><span class="benefit-icon"><span class="icon users" aria-hidden="true"></span></span>
+          <div><strong>Usuarios</strong>
+            <p>Cuentas, roles y acceso a cada aplicación.</p>
+          </div>
+        </article>
+      </div>
+
+      <footer>PRACTICA &middot; APRENDE &middot; CONECTA</footer>
+    </div>
+
+    <div class="login-form-panel">
+      <a class="launcher-back" href="/">
+        <span aria-hidden="true">&#8592;</span> Aplicaciones
+      </a>
+
+      <form class="login-card" id="login-form" novalidate>
+        <span class="login-lock"><span class="icon lock" aria-hidden="true"></span></span>
+        <h2 id="console-login-title">Ingresa a la configuración general</h2>
+        <p>Usa tu cuenta institucional de <strong>Research<span>HUB</span></strong> y ResearchOS. Solo entran
+          cuentas con rol Super administrador.</p>
+
+        <label for="login-email">
+          Correo institucional
+          <span class="field">
+            <span class="field-icon" aria-hidden="true">✉</span>
+            <input id="login-email" type="email" placeholder="usuario@ucompensar.edu.co" autocomplete="username"
+              maxlength="255" required />
+          </span>
+        </label>
+
+        <label for="login-password">
+          Contraseña
+          <span class="field">
+            <span class="field-icon" aria-hidden="true">▣</span>
+            <input id="login-password" type="password" placeholder="Ingresa tu contraseña"
+              autocomplete="current-password" maxlength="128" required />
+            <button class="plain-icon" id="toggle-password" type="button" aria-label="Mostrar contraseña"
+              aria-pressed="false">◉</button>
+          </span>
+        </label>
+
+        <p class="login-error" id="login-error" role="alert"></p>
+
+        <button class="login-submit" id="login-submit" type="submit">Iniciar sesión</button>
+      </form>
+
+      <section class="login-card ros-denied is-hidden" id="access-denied" aria-labelledby="console-denied-title"
+        tabindex="-1">
+        <span class="login-lock"><span class="icon lock" aria-hidden="true"></span></span>
+        <h2 id="console-denied-title">La configuración general es solo para superadministradores</h2>
+        <p>Iniciaste sesión como <strong id="denied-user">tu cuenta</strong>. Tu sesión en las aplicaciones
+          sigue activa: puedes volver a ellas o ingresar con otra cuenta.</p>
+        <div class="ros-denied-actions">
+          <a class="login-submit" href="/">Volver a las aplicaciones</a>
+          <button class="button secondary" id="switch-account" type="button">Ingresar con otra cuenta</button>
+        </div>
+      </section>
+
+      <footer class="login-footer">
+        <span>Sesión compartida con ResearchHUB y ResearchOS</span>
+      </footer>
+    </div>
+  </section>
+
+  <div class="app-shell is-hidden" id="app-view">
+    <aside class="sidebar" id="main-sidebar" aria-label="Navegación de la configuración general">
+      <div class="brand product-brand">
+        <span class="institution-name">UCompensar</span>
+        <span class="product-name">Configuración</span>
+      </div>
+
+      <nav class="nav-list">
+        <a class="nav-item active" href="#comunicados" data-view="announcements" aria-current="page"><span
+            class="icon bell" aria-hidden="true"></span>Comunicados</a>
+        <a class="nav-item" href="#modalidades" data-view="modalities"><span class="icon clipboard"
+            aria-hidden="true"></span>Modalidades y flujos</a>
+        <a class="nav-item" href="#usuarios" data-view="users"><span class="icon users"
+            aria-hidden="true"></span>Usuarios</a>
+        <a class="nav-item" href="#base-de-datos" data-view="database"><span class="icon columns"
+            aria-hidden="true"></span>Base de datos</a>
+        <a class="nav-item" href="/"><span class="icon home" aria-hidden="true"></span>Aplicaciones</a>
+        <button class="nav-item logout js-logout" type="button"><span class="icon exit"
+            aria-hidden="true"></span>Cerrar sesión</button>
+      </nav>
+    </aside>
+    <button class="sidebar-backdrop" id="sidebar-backdrop" type="button" tabindex="-1"
+      aria-label="Cerrar menú de navegación"></button>
+
+    <main class="main">
+      <header class="topbar">
+        <button class="mobile-menu-button" id="mobile-menu-button" type="button" aria-controls="main-sidebar"
+          aria-expanded="false" aria-label="Abrir menú de navegación">
+          <span class="icon menu" aria-hidden="true"></span>
+        </button>
+        <div>
+          <h1>Configuración general</h1>
+          <p>Ecosistema de investigación y sus espacios de trabajo</p>
+        </div>
+        <div class="user-tools">
+          <div class="profile">
+            <img src="/static/avatar.svg" alt="" />
+            <div>
+              <strong id="profile-name"></strong>
+              <span id="profile-role"></span>
+            </div>
+          </div>
+          <button class="top-logout js-logout" type="button">
+            <span class="icon exit" aria-hidden="true"></span>
+            Cerrar sesión
+          </button>
+        </div>
+      </header>
+
+      <section class="content app-section" id="announcements-section" data-section="announcements">
+        <div class="page-title">
+          <h2>Comunicados</h2>
+          <p>Lo que aparece en «03 Comunicados» de la portada. Nada se publica sin tu aprobación.</p>
+        </div>
+        <div class="settings-grid console-single">
+          <section class="settings-card announcement-settings-card" id="announcement-settings-card">
+            <div class="section-heading">
+              <div><h3>Comunicados de la portada</h3><p class="console-pending" id="announcement-pending" role="status"></p></div>
+              <button class="button primary" id="new-announcement-button" type="button">Nuevo comunicado</button>
+            </div>
+            <div class="degree-work-table-wrap">
+              <table class="degree-work-table">
+                <thead><tr><th>Comunicado</th><th>Tipo</th><th>Estado</th><th>Publicado</th><th>Acciones</th></tr></thead>
+                <tbody id="announcement-settings-body"><tr><td colspan="5">Cargando comunicados...</td></tr></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="content app-section is-hidden" id="modalities-section" data-section="modalities">
+        <div class="page-title">
+          <h2>Modalidades y flujos</h2>
+          <p>Catálogo de trabajos de grado que usa ResearchHUB.</p>
+        </div>
+        <div class="settings-grid console-single">
+          <section class="settings-card modality-settings-card" id="modality-settings-card">
+            <div class="section-heading">
+              <div><h3>Modalidades y flujos</h3><p>Crea borradores, publícalos en el catálogo y retíralos cuando dejen de ofrecerse.</p></div>
+              <button class="button primary" id="new-modality-button" type="button">Nueva modalidad</button>
+            </div>
+            <div class="degree-work-table-wrap">
+              <table class="degree-work-table">
+                <thead><tr><th>Modalidad</th><th>Version</th><th>Homologable</th><th>Participantes</th><th>Flujo</th><th>Estado</th><th>Acciones</th></tr></thead>
+                <tbody id="modality-settings-body"><tr><td colspan="7">Cargando catalogo...</td></tr></tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <section class="content app-section is-hidden" id="users-section" data-section="users">
+        <div class="page-title">
+          <h2>Usuarios</h2>
+          <p>Cuentas institucionales, roles y acceso a ResearchHUB y ResearchOS.</p>
+        </div>
+
+        <div class="settings-grid">
+          <section class="settings-card users-settings-card" aria-labelledby="console-users-title">
+            <div class="section-heading">
+              <h3 id="console-users-title">Usuarios institucionales</h3>
+              <button class="button primary" id="new-user-button" type="button">Nuevo usuario</button>
+            </div>
+            <div class="user-table-wrap">
+              <table class="user-table">
+                <thead>
+                  <tr>
+                    <th>Nombre</th>
+                    <th>Correo</th>
+                    <th>Rol</th>
+                    <th>Estado</th>
+                    <th>Aplicaciones</th>
+                    <th>Permisos</th>
+                    <th>Acciones</th>
+                  </tr>
+                </thead>
+                <tbody id="users-table-body"></tbody>
+              </table>
+            </div>
+          </section>
+
+          <aside class="settings-card user-form-card">
+            <h3 id="user-form-title">Nuevo usuario</h3>
+            <form id="user-form">
+              <input id="user-id" type="hidden" />
+              <label>Nombre completo<input id="user-name" maxlength="160" required /></label>
+              <label>Correo institucional<input id="user-email" type="email" maxlength="255" required /></label>
+              <label>Rol
+                <select id="user-role" required>
+                  <option value="Estudiante">Estudiante</option>
+                  <option value="Docente">Docente</option>
+                  <option value="Director de programa">Director de programa</option>
+                  <option value="Administrador">Administrador</option>
+                  <option value="Super administrador">Super administrador</option>
+                </select>
+              </label>
+              <label>Estado
+                <select id="user-status">
+                  <option value="Activo">Activo</option>
+                  <option value="Inactivo">Inactivo</option>
+                </select>
+              </label>
+              <label>Contraseña inicial<input id="user-password" type="password" minlength="12" maxlength="128"
+                  placeholder="Obligatoria al crear una cuenta" autocomplete="new-password" /></label>
+              <fieldset>
+                <legend>Aplicaciones</legend>
+                <label><input type="checkbox" name="application" value="research_hub" checked /> ResearchHUB</label>
+                <label><input type="checkbox" name="application" value="research_os" /> ResearchOS</label>
+              </fieldset>
+              <fieldset>
+                <legend>Permisos</legend>
+                <label><input type="checkbox" name="permission" value="users:create" /> Crear usuarios</label>
+                <label><input type="checkbox" name="permission" value="users:read" /> Consultar usuarios</label>
+                <label><input type="checkbox" name="permission" value="users:update" /> Actualizar usuarios</label>
+                <label><input type="checkbox" name="permission" value="users:delete" /> Eliminar usuarios</label>
+                <label><input type="checkbox" name="permission" value="settings:manage" /> Gestionar
+                  usuarios en las aplicaciones</label>
+              </fieldset>
+              <p class="user-admin-status" id="user-admin-status" role="status" aria-live="polite"></p>
+              <div class="form-actions">
+                <button class="button secondary" id="cancel-user-button" type="button">Cancelar</button>
+                <button class="button primary" type="submit">Guardar</button>
+              </div>
+            </form>
+          </aside>
+        </div>
+      </section>
+
+      <section class="content app-section is-hidden" id="database-section" data-section="database">
+        <div class="page-title">
+          <h2>Base de datos</h2>
+          <p>Catálogo de tablas de PostgreSQL en modo de solo lectura.</p>
+        </div>
+        <div class="settings-grid console-single">
+          <section class="settings-card database-card" id="database-settings-card">
+            <div class="section-heading">
+              <h3>Bases de datos del proyecto</h3>
+              <span class="status-pill">Solo lectura</span>
+            </div>
+            <p class="database-state" id="database-state">Consulta en modo lectura.</p>
+            <div class="database-list">
+              <article>
+                <span class="database-icon"><span class="icon columns"></span></span>
+                <div>
+                  <strong id="database-name">—</strong>
+                  <dl>
+                    <dt>Motor</dt>
+                    <dd id="database-engine">—</dd>
+                    <dt>Host</dt>
+                    <dd id="database-host">—</dd>
+                    <dt>Puerto</dt>
+                    <dd id="database-port">—</dd>
+                    <dt>Volumen Docker</dt>
+                    <dd id="database-volume">—</dd>
+                    <dt>Directorio interno</dt>
+                    <dd id="database-directory">—</dd>
+                  </dl>
+                </div>
+              </article>
+            </div>
+            <div class="database-table-wrap">
+              <table class="database-table">
+                <thead>
+                  <tr>
+                    <th>Esquema</th>
+                    <th>Tabla / vista</th>
+                    <th>Tipo</th>
+                    <th>Columnas</th>
+                  </tr>
+                </thead>
+                <tbody id="database-tables-body">
+                  <tr>
+                    <td colspan="4">Sin datos cargados.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </section>
+        </div>
+      </section>
+
+      <dialog class="degree-work-dialog modality-dialog" id="modality-dialog">
+        <form method="dialog" id="modality-form">
+          <input id="modality-id" type="hidden" />
+          <div class="dialog-heading"><div><span class="page-eyebrow">Modalidades y flujos</span><h3 id="modality-form-title">Nueva modalidad</h3></div><button class="icon-action" value="cancel" aria-label="Cerrar">&times;</button></div>
+          <div class="modality-form-grid">
+            <label>Codigo estable<input id="modality-code" pattern="[A-Z0-9_]+" required placeholder="NUEVA_MODALIDAD" /></label>
+            <label>Nombre<input id="modality-name" maxlength="160" required /></label>
+            <label class="wide-field">Descripcion<textarea id="modality-description" maxlength="2000" rows="3"></textarea></label>
+            <label>Semestre inicial<input id="modality-semester" type="number" min="1" max="20" /></label>
+            <label>Duracion<input id="modality-duration" maxlength="120" value="Por definir" /></label>
+            <label>Participantes minimos<input id="modality-min-participants" type="number" min="1" max="20" value="1" required /></label>
+            <label>Participantes maximos<input id="modality-max-participants" type="number" min="1" max="20" value="1" required /></label>
+            <label class="checkbox-row wide-field"><input id="modality-homologatable" type="checkbox" /> Es objeto de homologacion</label>
+          </div>
+          <div class="workflow-builder-heading"><div><h4>Flujo de trabajo</h4><p>Ordena pasos y define el rol responsable.</p></div><button class="button secondary" id="add-workflow-step" type="button">Agregar paso</button></div>
+          <div class="workflow-step-list" id="workflow-step-list"></div>
+          <p class="form-message" id="modality-form-message" role="alert"></p>
+          <div class="form-actions"><button class="button secondary" type="button" id="cancel-modality-form">Cancelar</button><button class="button primary" type="submit">Guardar borrador</button></div>
+        </form>
+      </dialog>
+
+      <dialog class="degree-work-dialog" id="announcement-dialog" aria-labelledby="announcement-form-title">
+        <form id="announcement-form">
+          <input id="announcement-id" type="hidden" />
+          <input id="announcement-version" type="hidden" />
+          <div class="dialog-heading"><div><span class="page-eyebrow">Comunicados de la portada</span><h3 id="announcement-form-title">Nuevo comunicado</h3></div><button class="icon-action" type="button" id="close-announcement-form" aria-label="Cerrar">&times;</button></div>
+          <p class="console-dialog-hint is-hidden" id="announcement-form-hint"></p>
+          <div class="modality-form-grid">
+            <label>Tipo
+              <select id="announcement-category" required>
+                <option value="NOTICIA">Noticia</option>
+                <option value="COMUNICADO">Comunicado</option>
+                <option value="EVENTO">Evento</option>
+                <option value="CONVOCATORIA">Convocatoria</option>
+              </select>
+            </label>
+            <label>Enlace opcional (HTTPS)<input id="announcement-link" type="url" maxlength="500" placeholder="https://" /></label>
+            <label>Imagen (ruta /static/ o URL HTTPS autorizada)<input id="announcement-image-url" maxlength="500" placeholder="https://" /></label>
+            <label>Descripción de la imagen<input id="announcement-image-alt" maxlength="200" placeholder="Qué muestra la imagen" /></label>
+            <label class="wide-field">Título<input id="announcement-title" minlength="5" maxlength="160" required /></label>
+            <label class="wide-field">Resumen para la portada<textarea id="announcement-summary" minlength="10" maxlength="280" rows="2" required></textarea></label>
+            <label class="wide-field">Contenido completo<textarea id="announcement-body" maxlength="6000" rows="12"></textarea></label>
+          </div>
+          <p class="form-message" id="announcement-form-message" role="alert"></p>
+          <div class="form-actions"><button class="button secondary" type="button" id="cancel-announcement-form">Cancelar</button><button class="button primary" type="submit">Guardar ajustes</button></div>
+        </form>
+      </dialog>
+    </main>
+  </div>
+
+  <script src="/static/user-admin.js?v=2"></script>
+  <script src="/static/modality-admin.js?v=1"></script>
+  <script src="/static/announcement-admin.js?v=2"></script>
+  <script src="/static/settings-console.js?v=1"></script>
+</body>
+
+</html>

@@ -104,15 +104,6 @@ const elements = {
   profileName: document.querySelector("#profile-name"),
   profileRole: document.querySelector("#profile-role"),
   welcomeText: document.querySelector("#welcome-text"),
-  superadminOnlyItems: document.querySelectorAll(".superadmin-only"),
-  databaseState: document.querySelector("#database-state"),
-  databaseName: document.querySelector("#database-name"),
-  databaseEngine: document.querySelector("#database-engine"),
-  databaseHost: document.querySelector("#database-host"),
-  databasePort: document.querySelector("#database-port"),
-  databaseVolume: document.querySelector("#database-volume"),
-  databaseDirectory: document.querySelector("#database-directory"),
-  databaseTablesBody: document.querySelector("#database-tables-body"),
 };
 
 function setNavigationOpen(isOpen) {
@@ -146,16 +137,9 @@ function hasPermission(user, permission) {
   return user?.permissions?.includes(permission) || user?.role === "Super administrador";
 }
 
-function isSuperadmin(user) {
-  return user?.role?.trim().toLowerCase() === "super administrador";
-}
-
 function syncRoleVisibility(user) {
   document.querySelectorAll(".admin-only").forEach((item) => {
     item.classList.toggle("is-hidden", !hasPermission(user, "settings:manage"));
-  });
-  elements.superadminOnlyItems.forEach((item) => {
-    item.classList.toggle("is-hidden", !isSuperadmin(user));
   });
   document.querySelectorAll(".student-only").forEach((item) => {
     item.classList.toggle("is-hidden", user?.role !== "Estudiante");
@@ -266,74 +250,10 @@ async function showView(viewName, selectedItem = null) {
   if (viewName === "settings") {
     await userAdmin.render();
     userAdmin.reset();
-    await loadDatabaseCatalog(user);
-    if (typeof loadModalitySettings === "function") {
-      await loadModalitySettings(user);
-    }
-    if (typeof loadAnnouncementSettings === "function") {
-      await loadAnnouncementSettings(user);
-    }
   }
 
   if (viewName === "degree-work" && typeof loadDegreeWork === "function") {
     await loadDegreeWork(user);
-  }
-}
-
-function renderDatabaseTables(tables) {
-  if (!tables.length) {
-    elements.databaseTablesBody.innerHTML =
-      '<tr><td colspan="4">No hay tablas ni vistas creadas en la base de datos.</td></tr>';
-    return;
-  }
-
-  elements.databaseTablesBody.innerHTML = tables
-    .map((table) => {
-      const columns = table.columns
-        .map((column) => `${column.name} (${column.type})`)
-        .join(", ");
-      return `
-        <tr>
-          <td>${table.schema}</td>
-          <td><strong>${table.name}</strong></td>
-          <td>${table.type}</td>
-          <td>${columns || `${table.column_count} columnas`}</td>
-        </tr>
-      `;
-    })
-    .join("");
-}
-
-async function loadDatabaseCatalog(user) {
-  if (!isSuperadmin(user)) return;
-
-  elements.databaseState.textContent = "Consultando tablas en modo lectura...";
-  elements.databaseTablesBody.innerHTML = '<tr><td colspan="4">Cargando catalogo...</td></tr>';
-
-  try {
-    const response = await apiFetch(
-      "/api/v1/admin/databases"
-    );
-
-    if (!response.ok) {
-      throw new Error("No fue posible consultar el catalogo de bases de datos.");
-    }
-
-    const payload = await response.json();
-    const database = payload.databases[0];
-    elements.databaseName.textContent = database.name;
-    elements.databaseEngine.textContent = database.engine;
-    elements.databaseHost.textContent = database.host;
-    elements.databasePort.textContent = database.port;
-    elements.databaseVolume.textContent = database.docker_volume;
-    elements.databaseDirectory.textContent = database.internal_directory;
-    elements.databaseState.textContent = "Catalogo disponible en modo lectura.";
-    renderDatabaseTables(database.tables);
-  } catch (error) {
-    elements.databaseState.textContent =
-      "No se pudo consultar la base de datos. Verifica que PostgreSQL este activo.";
-    elements.databaseTablesBody.innerHTML =
-      '<tr><td colspan="4">Catalogo no disponible.</td></tr>';
   }
 }
 

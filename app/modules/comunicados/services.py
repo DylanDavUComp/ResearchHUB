@@ -10,8 +10,10 @@ from app.modules.comunicados.repository import AnnouncementRepository
 from app.modules.comunicados.schemas import AnnouncementCreate, AnnouncementUpdate
 from app.modules.usuarios.models import User
 
-ADMIN_ROLES = {"Administrador", "Super administrador"}
-EDITABLE_STATUSES = {"DRAFT", "WITHDRAWN"}
+# Los comunicados se gestionan solo desde la consola de configuracion general.
+ADMIN_ROLES = {"Super administrador"}
+# Un comunicado se edita o elimina en cualquier estado; solo se publica lo no publicado.
+PUBLISHABLE_STATUSES = {"DRAFT", "WITHDRAWN"}
 
 
 class AnnouncementService:
@@ -49,12 +51,6 @@ class AnnouncementService:
     ) -> Announcement:
         self._require_admin(actor)
         announcement = self._get(announcement_id)
-        if announcement.status not in EDITABLE_STATUSES:
-            raise AppError(
-                "announcements.published_immutable",
-                "Retira el comunicado antes de editarlo.",
-                409,
-            )
         self._require_version(announcement, payload.version)
         for field, value in payload.model_dump(exclude={"version"}).items():
             setattr(announcement, field, value)
@@ -66,7 +62,7 @@ class AnnouncementService:
     def publish(self, announcement_id: str, version: int, actor: User) -> Announcement:
         self._require_admin(actor)
         announcement = self._get(announcement_id)
-        if announcement.status not in EDITABLE_STATUSES:
+        if announcement.status not in PUBLISHABLE_STATUSES:
             raise AppError(
                 "announcements.already_published",
                 "El comunicado ya está publicado.",
@@ -95,12 +91,6 @@ class AnnouncementService:
     def delete(self, announcement_id: str, actor: User) -> None:
         self._require_admin(actor)
         announcement = self._get(announcement_id)
-        if announcement.status != "DRAFT":
-            raise AppError(
-                "announcements.cannot_delete",
-                "Solo se eliminan borradores que nunca se han publicado.",
-                409,
-            )
         self.repository.delete(
             announcement, self._event(announcement, actor, "DELETE", "DELETED")
         )
@@ -142,7 +132,7 @@ class AnnouncementService:
         if actor.role not in ADMIN_ROLES:
             raise AppError(
                 "announcements.forbidden",
-                "Tu rol no permite gestionar comunicados.",
+                "La gestión de comunicados es exclusiva de superadministradores.",
                 403,
             )
 

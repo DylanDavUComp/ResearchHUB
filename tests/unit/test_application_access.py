@@ -7,6 +7,7 @@ from app.modules.usuarios.services.user_service import (
     create_superadmin,
 )
 from fastapi.testclient import TestClient
+from httpx import Response
 from sqlalchemy import select
 from sqlalchemy.orm import Session, sessionmaker
 from tests.unit.auth_support import PASSWORD, create_user, login
@@ -362,3 +363,41 @@ def test_created_superadmin_receives_both_applications(
 
     assert result == "created"
     assert grants == ["research_hub", "research_os"]
+
+
+def settings_console_login(client: TestClient, email: str) -> Response:
+    return client.post(
+        "/api/v1/usuarios/login",
+        json={"email": email, "password": PASSWORD, "settings_console": True},
+    )
+
+
+@pytest.mark.parametrize("role", ["Administrador", "Director de programa", "Docente"])
+def test_settings_console_issues_no_session_to_other_roles(
+    client: TestClient, session_factory: sessionmaker[Session], role: str
+) -> None:
+    create_user(session_factory, "otro@ucompensar.edu.co", ["research_hub"], role)
+
+    response = settings_console_login(client, "otro@ucompensar.edu.co")
+
+    assert response.status_code == 403
+    assert response.json()["error"]["code"] == "users.settings_console_forbidden"
+    assert response.cookies.get("researchhub_session") is None
+    assert client.get("/api/v1/usuarios/me").status_code == 401
+    # La misma cuenta conserva su ingreso normal a las aplicaciones.
+    assert login(client, "otro@ucompensar.edu.co", "research_hub").status_code == 200
+
+
+def test_settings_console_shares_the_superadmin_session(
+    client: TestClient, session_factory: sessionmaker[Session]
+) -> None:
+    create_user(
+        session_factory, "super@ucompensar.edu.co", [], "Super administrador"
+    )
+
+    response = settings_console_login(client, "super@ucompensar.edu.co")
+
+    assert response.status_code == 200
+    assert response.cookies.get("researchhub_session")
+    assert client.get("/api/v1/admin/announcements").status_code == 200
+    assert client.get("/api/v1/research-os/workspace").status_code == 200

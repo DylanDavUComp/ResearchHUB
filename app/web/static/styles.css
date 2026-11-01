@@ -6453,7 +6453,8 @@ button {
   justify-content: center;
 }
 
-.researchos button.nav-item {
+.researchos button.nav-item,
+.settings-console button.nav-item {
   width: 100%;
   border: 0;
   background: transparent;
@@ -6461,7 +6462,8 @@ button {
   text-align: left;
 }
 
-.researchos button.nav-item:hover {
+.researchos button.nav-item:hover,
+.settings-console button.nav-item:hover {
   background: var(--purple-700);
 }
 
@@ -6605,4 +6607,183 @@ button {
 
 .user-admin-status[data-kind="success"] {
   color: var(--green-600);
+}
+
+/* Entrada discreta a la configuracion general desde el encabezado del portal. */
+.launcher-header-tools {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.launcher-settings-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0 4px 0 20px;
+  border-left: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.launcher-settings-link .icon {
+  width: 18px;
+  height: 18px;
+}
+
+.launcher-settings-link:hover {
+  color: var(--purple-700);
+}
+
+@media (max-width: 680px) {
+  .launcher-settings-link {
+    min-width: 44px;
+    justify-content: center;
+    padding: 0;
+    border-left: 0;
+  }
+
+  .launcher-settings-text {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+  }
+}
+
+/* Consola de configuracion general: solo superadministradores. */
+.settings-grid.console-single {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.console-single .database-card {
+  grid-column: auto;
+}
+
+.console-pending {
+  margin: 4px 0 0;
+  color: var(--purple-900);
+  font-weight: 700;
+}
+
+.settings-console .table-button,
+.settings-console .status-pill {
+  white-space: nowrap;
+}
+
+.settings-console .announcement-status-draft {
+  background: var(--purple-100);
+  color: var(--purple-900);
+}
+
+.console-dialog-hint {
+  margin: 0 0 14px;
+  padding: 10px 14px;
+  border-left: 4px solid var(--orange-600);
+  background: var(--orange-100);
+  color: var(--ink);
+  font-weight: 600;
+}
+
+.table-button.approve {
+  border-color: var(--orange-600);
+  background: var(--orange-600);
+  color: var(--ink);
+}
+
+/* Titulares compactos tipo agencia: el texto manda y la imagen acompana. */
+.news-entry.is-lead {
+  grid-template-columns: minmax(0, 1fr) minmax(200px, 300px);
+  gap: 24px;
+  align-items: start;
+}
+
+.news-entry.is-lead .news-entry-media {
+  order: 2;
+  border-bottom-width: 4px;
+}
+
+.news-entry.is-lead .news-entry-media.is-fallback,
+.news-list .news-entry-media.is-fallback {
+  align-items: flex-end;
+  font-size: 22px;
+}
+
+.news-entry.is-lead .news-entry-copy {
+  gap: 8px;
+  padding-top: 0;
+}
+
+.news-entry.is-lead h3 {
+  font-size: 28px;
+  line-height: 1.12;
+}
+
+.news-entry.is-lead p {
+  font-size: 16px;
+}
+
+.news-list h4 {
+  font-size: 18px;
+  line-height: 1.15;
+}
+
+.news-article {
+  max-width: 720px;
+  gap: 12px;
+}
+
+.news-article-media {
+  max-height: 360px;
+}
+
+/* Sin imagen, el tipo de comunicado es una franja, no un bloque a toda altura. */
+.news-article-media.is-fallback {
+  aspect-ratio: auto;
+  min-height: 0;
+  padding: 10px 16px;
+  border-bottom-width: 4px;
+  font-size: 20px;
+}
+
+.news-article h3 {
+  font-size: 32px;
+  line-height: 1.1;
+}
+
+.news-article-summary {
+  font-size: 17px;
+}
+
+.news-article-body p {
+  font-size: 16px;
+}
+
+@media (max-width: 680px) {
+  .news-entry.is-lead {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .news-entry.is-lead .news-entry-media {
+    order: 0;
+  }
+
+  .news-entry.is-lead .news-entry-media.is-fallback {
+    aspect-ratio: auto;
+    padding: 10px 14px;
+    font-size: 18px;
+  }
+
+  .news-entry.is-lead h3 {
+    font-size: 24px;
+  }
+
+  .news-article h3 {
+    font-size: 26px;
+  }
 }

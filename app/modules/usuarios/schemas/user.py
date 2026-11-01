@@ -69,6 +69,8 @@ class UserLogin(BaseModel):
     password: str
     # Aplicacion desde la que se inicia sesion; sin acceso no se emite token.
     application: ApplicationCode | None = None
+    # Consola de configuracion general: solo emite sesion a superadministradores.
+    settings_console: bool = False
 
 
 class LoginResponse(BaseModel):

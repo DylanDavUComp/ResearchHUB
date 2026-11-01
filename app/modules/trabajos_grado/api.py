@@ -61,10 +61,7 @@ def list_modalities(
     service: service_dependency,
     include_inactive: bool = False,
 ) -> list[ModalityRead]:
-    if include_inactive and current_user.role not in {
-        "Administrador",
-        "Super administrador",
-    }:
+    if include_inactive and current_user.role != "Super administrador":
         raise AppError(
             "degree_work.forbidden",
             "Tu rol no permite consultar modalidades no publicadas.",

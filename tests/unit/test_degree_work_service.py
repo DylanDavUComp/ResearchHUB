@@ -1,3 +1,4 @@
+import pytest
 from app.core.database import Base
 from app.modules.trabajos_grado.models import DegreeWorkCase
 from app.modules.trabajos_grado.schemas import (
@@ -48,25 +49,33 @@ def test_seed_contains_all_policy_modalities_and_keeps_applied_project_inactive(
         assert applied.workflow_steps == []
 
 
+
+def draft_modality() -> ModalityCreate:
+    return ModalityCreate(
+        code="MODALIDAD_PRUEBA",
+        name="Modalidad de prueba",
+        description="Valida el ciclo de publicación.",
+        is_homologatable=False,
+        min_participants=1,
+        max_participants=2,
+        requirements=[],
+        evaluation_criteria=[],
+        workflow_steps=[],
+    )
+
+
+def test_administrator_no_longer_manages_the_modality_catalog() -> None:
+    with make_session() as db:
+        service = DegreeWorkService(db)
+
+        with pytest.raises(PermissionError):
+            service.create_modality(draft_modality(), make_user("Administrador"))
+
 def test_draft_modality_requires_a_complete_workflow_before_publication() -> None:
     with make_session() as db:
         service = DegreeWorkService(db)
-        admin = make_user("Administrador")
         superadmin = make_user("Super administrador", "super-1")
-        modality = service.create_modality(
-            ModalityCreate(
-                code="MODALIDAD_PRUEBA",
-                name="Modalidad de prueba",
-                description="Valida el ciclo de publicación.",
-                is_homologatable=False,
-                min_participants=1,
-                max_participants=2,
-                requirements=[],
-                evaluation_criteria=[],
-                workflow_steps=[],
-            ),
-            admin,
-        )
+        modality = service.create_modality(draft_modality(), superadmin)
 
         try:
             service.publish_modality(modality.id, superadmin)

@@ -182,17 +182,48 @@ def test_home_dashboard_is_served(client: TestClient) -> None:
     assert "settings-section" in response.text
     assert "degree-work-section" in response.text
     assert "degree-work-case-form" in response.text
-    assert "modality-settings-card" in response.text
+    # Modalidades, comunicados y base de datos viven en /configuracion.
+    assert "modality-settings-card" not in response.text
+    assert "announcement-settings-card" not in response.text
+    assert "database-settings-card" not in response.text
+    assert 'class="launcher-settings-link" href="/configuracion"' in response.text
     assert 'id="degree-work-journey"' in response.text
     assert 'data-stage="OFFER"' in response.text
     assert 'data-stage="CLOSURE"' in response.text
     assert 'id="journey-step-detail"' in response.text
-    assert "/static/styles.css?v=54" in response.text
-    assert "/static/app.js?v=31" in response.text
+    assert "/static/styles.css?v=56" in response.text
+    assert "/static/app.js?v=32" in response.text
     assert "/static/user-admin.js?v=2" in response.text
     assert response.text.index("user-admin.js") < response.text.index("app.js?v")
-    assert "/static/degree-work.js?v=2" in response.text
-    assert "/static/announcements.js?v=3" in response.text
+    assert "/static/degree-work.js?v=3" in response.text
+    assert "/static/announcements.js?v=4" in response.text
+
+
+
+def test_settings_console_page_is_served_with_shared_login(
+    client: TestClient,
+) -> None:
+    response = client.get("/configuracion")
+
+    assert response.status_code == 200
+    html = response.content.decode("utf-8")
+    assert 'id="login-form"' in html
+    assert 'id="access-denied"' in html
+    assert "Solo entran" in html
+    for section in ("announcements", "modalities", "users", "database"):
+        assert f'data-section="{section}"' in html
+    assert 'id="announcement-settings-body"' in html
+    assert 'id="modality-settings-body"' in html
+    assert 'id="users-table-body"' in html
+    assert 'id="database-tables-body"' in html
+    assert "/static/settings-console.js?v=1" in html
+    assert "Microsoft" not in html
+
+    script = client.get("/static/settings-console.js")
+    assert script.status_code == 200
+    assert "localStorage" not in script.text
+    assert "settings_console: true" in script.text
+    assert 'credentials: "same-origin"' in script.text
 
 
 def test_launcher_uses_consistent_action_labels(client: TestClient) -> None:

@@ -308,6 +308,14 @@ class UserService:
                     "applications": user.applications,
                 },
             )
+        if payload.settings_console and user.role != "Super administrador":
+            raise AppError(
+                code="users.settings_console_forbidden",
+                message=(
+                    "La configuración general es exclusiva de superadministradores."
+                ),
+                status_code=403,
+            )
         if password_needs_rehash(user.password_hash):
             user.password_hash = hash_password(payload.password)
             self.repository.update(user)

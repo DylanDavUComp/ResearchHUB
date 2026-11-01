@@ -11,6 +11,10 @@ class AnnouncementRepository:
     def get(self, announcement_id: str) -> Announcement | None:
         return self.db.get(Announcement, announcement_id)
 
+    def exists_with_title(self, title: str) -> bool:
+        statement = select(Announcement.id).where(Announcement.title == title)
+        return self.db.scalar(statement.limit(1)) is not None
+
     def list_page(
         self, *, page: int, page_size: int, status: str | None = None
     ) -> tuple[list[Announcement], int]:

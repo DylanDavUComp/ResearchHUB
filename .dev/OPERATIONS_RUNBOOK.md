@@ -24,6 +24,22 @@ in `.env`, environment variables, command arguments or deployment files.
    `superadmin_exists` and the account is not modified.
 4. Create every other account from `Configuracion > Usuarios`.
 
+## Announcement Drafts For Approval
+
+Announcements, the modality catalog and the database catalog are managed only by
+superadministrators in `/configuracion`. To leave a prepared announcement waiting
+for approval:
+
+1. Write its content as JSON (`category`, `title`, `summary`, `body`, optional
+   `link_url`, `image_url`, `image_alt`); the form rules apply.
+2. Run on the host, with the JSON on standard input:
+   `docker compose -f compose.production.yaml exec -T api python -m app.cli.create_announcement_draft --author <superadmin-email> < announcement.json`.
+3. Confirm `announcement_draft_created`. The draft is never published and a
+   repeated title is refused (`announcement_draft_exists`).
+4. A superadministrator approves it, adjusts it or rejects it in
+   `/configuracion > Comunicados`; every step is recorded in
+   `announcement_audit_events`.
+
 ## Sessions And Login Lockout
 
 - Sessions live in `sesiones`; only HMAC digests are stored. Production requires
