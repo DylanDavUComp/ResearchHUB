@@ -215,4 +215,7 @@ def test_console_offers_the_skill_download(client: ClientFixture) -> None:
     assert 'id="import-announcements-button"' in html
     assert "/static/announcement-import.js?v=1" in html
     assert skill.status_code == 200
-    assert skill.text.startswith("---\nname: comunicados-researchhub")
+    # Git en Windows puede entregar el archivo con saltos de linea CRLF.
+    assert skill.text.replace("\r\n", "\n").startswith(
+        "---\nname: comunicados-researchhub"
+    )
