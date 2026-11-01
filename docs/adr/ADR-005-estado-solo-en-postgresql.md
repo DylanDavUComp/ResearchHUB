@@ -34,6 +34,18 @@ intentos de login solo se exigian al ingress y la aplicacion aceptaba cualquier
    `python -m app.cli.create_superadmin`; no hay variables `BOOTSTRAP_*` ni
    credenciales en `.env`.
 
+## Enmienda 2026-11-01: cookie sin `Secure` mientras no haya HTTPS
+
+La publicacion del 2026-10-30 dejo a todos sin poder iniciar sesion: produccion se
+sirve por HTTP y el navegador descarta una cookie `Secure` recibida por HTTP. El
+atributo `Secure` y el prefijo `__Host-` se aplican ahora solo cuando la peticion
+llega por HTTPS (`SESSION_COOKIE_SECURE=true` y esquema `https`, visto a traves de
+`FORWARDED_ALLOW_IPS`). Por HTTP la cookie sigue siendo `HttpOnly` y
+`SameSite=Strict`, pero viaja sin cifrar; cada login asi registra
+`session_cookie_without_https`. Habilitar HTTPS en el ingress sigue siendo un gate
+obligatorio de produccion y, al hacerlo, la cookie vuelve a ser `Secure` sin
+cambiar configuracion.
+
 ## Fuera de la base, por diseno
 
 - Secretos de infraestructura (`SECRET_KEY` y la credencial con la que la API se

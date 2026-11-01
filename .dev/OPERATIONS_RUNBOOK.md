@@ -43,7 +43,14 @@ for approval:
 ## Sessions And Login Lockout
 
 - Sessions live in `sesiones`; only HMAC digests are stored. Production requires
-  `SESSION_COOKIE_SECURE=true` and HTTPS.
+  `SESSION_COOKIE_SECURE=true`. The cookie is `Secure` (`__Host-` prefix) only
+  when the request arrives over HTTPS; over plain HTTP it is sent without `Secure`
+  so login keeps working, and every such login logs
+  `session_cookie_without_https`. That event in production means HTTPS is still
+  pending at the ingress: credentials travel unencrypted until it is enabled.
+  Behind a TLS proxy set `FORWARDED_ALLOW_IPS` so the API sees `https`.
+- Pages are served with `Cache-Control: no-cache`; after a release, browsers
+  pick up the new versioned scripts without a forced reload.
 - Revoke one account: set it `Inactivo` or change its password in
   `Configuracion > Usuarios`; its sessions end immediately.
 - Revoke every session (suspected compromise): rotate `SECRET_KEY` and redeploy.

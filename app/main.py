@@ -56,17 +56,22 @@ def create_app() -> FastAPI:
     web_dir = Path(__file__).parent / "web"
     app.mount("/static", StaticFiles(directory=web_dir / "static"), name="static")
 
+    # Las paginas se revalidan siempre: asi cada publicacion entrega de inmediato
+    # las nuevas versiones de styles.css y los scripts que cada pagina referencia.
+    def page(name: str) -> FileResponse:
+        return FileResponse(web_dir / name, headers={"Cache-Control": "no-cache"})
+
     @app.get("/", include_in_schema=False)
     def dashboard() -> FileResponse:
-        return FileResponse(web_dir / "index.html")
+        return page("index.html")
 
     @app.get("/researchos", include_in_schema=False)
     def research_os() -> FileResponse:
-        return FileResponse(web_dir / "researchos.html")
+        return page("researchos.html")
 
     @app.get("/configuracion", include_in_schema=False)
     def settings_console() -> FileResponse:
-        return FileResponse(web_dir / "configuracion.html")
+        return page("configuracion.html")
 
     return app
 

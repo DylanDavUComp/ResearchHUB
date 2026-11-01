@@ -37,6 +37,7 @@ class Settings(BaseSettings):
     secret_key: str = "replace_with_secure_value_at_least_32_chars"
     session_idle_minutes: int = Field(default=30, ge=5, le=240)
     session_max_hours: int = Field(default=12, ge=1, le=24)
+    # Secure cuando la peticion llega por HTTPS; en local sin HTTPS va en false.
     session_cookie_secure: bool = True
     login_max_failed_attempts: int = Field(default=5, ge=3, le=20)
     login_lockout_minutes: int = Field(default=15, ge=1, le=1440)
@@ -53,15 +54,6 @@ class Settings(BaseSettings):
         env_file_encoding="utf-8",
         extra="ignore",
     )
-
-    @property
-    def session_cookie_name(self) -> str:
-        # El prefijo __Host- exige Secure, Path=/ y sin Domain en el navegador.
-        return (
-            "__Host-researchhub_session"
-            if self.session_cookie_secure
-            else "researchhub_session"
-        )
 
     @property
     def is_production(self) -> bool:

@@ -1,3 +1,4 @@
+import pytest
 from app.core.config import settings
 from fastapi.testclient import TestClient
 
@@ -428,3 +429,11 @@ def test_home_exposes_responsive_navigation_and_brand_art(client: TestClient) ->
     assert "/static/brand/degree-work-journey-v1.png" not in home.text
     assert 'class="brand-logo"' in home.text
     assert 'src="/static/brand/ucompensar-hacer-para-saber.png"' in home.text
+
+
+@pytest.mark.parametrize("path", ["/", "/researchos", "/configuracion"])
+def test_pages_are_revalidated_on_every_visit(client: TestClient, path: str) -> None:
+    response = client.get(path)
+
+    assert response.status_code == 200
+    assert response.headers["cache-control"] == "no-cache"

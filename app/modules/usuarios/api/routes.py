@@ -55,11 +55,12 @@ users_delete_dependency = Depends(require_permission("users:delete"))
 )
 def login(
     payload: UserLogin,
+    request: Request,
     response: Response,
     service: UserService = user_service_dependency,
 ) -> LoginResponse:
     login_response, token = service.authenticate(payload)
-    set_session_cookie(response, token)
+    set_session_cookie(request, response, token)
     return login_response
 
 

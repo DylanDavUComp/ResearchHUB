@@ -55,19 +55,54 @@ def test_database_stores_only_a_digest_of_the_session_token(
     assert len(sessions[0].token_digest) == 64
 
 
-def test_production_cookie_uses_secure_host_prefix(
+def test_cookie_over_https_uses_secure_host_prefix(
     client: TestClient,
     session_factory: sessionmaker[Session],
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
     create_user(session_factory, EMAIL, ["research_hub"])
     monkeypatch.setattr(settings, "session_cookie_secure", True)
+    client.base_url = "https://testserver"  # type: ignore[assignment]
 
     response = login(client, EMAIL)
 
     set_cookie = response.headers["set-cookie"].lower()
     assert set_cookie.startswith("__host-researchhub_session=")
     assert "secure" in set_cookie
+    assert client.get("/api/v1/usuarios/me").status_code == 200
+
+
+def test_cookie_over_http_is_kept_by_the_browser_until_https_exists(
+    client: TestClient,
+    session_factory: sessionmaker[Session],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    # Produccion servida por HTTP: una cookie Secure se descartaria y nadie entraria.
+    create_user(session_factory, EMAIL, ["research_hub"])
+    monkeypatch.setattr(settings, "session_cookie_secure", True)
+
+    response = login(client, EMAIL)
+
+    set_cookie = response.headers["set-cookie"].lower()
+    assert set_cookie.startswith(f"{COOKIE}=")
+    assert "secure" not in set_cookie
+    assert "httponly" in set_cookie
+    assert "samesite=strict" in set_cookie
+    assert client.get("/api/v1/usuarios/me").status_code == 200
+
+
+def test_logout_clears_both_cookie_names(
+    client: TestClient, session_factory: sessionmaker[Session]
+) -> None:
+    create_user(session_factory, EMAIL, ["research_hub"])
+    login(client, EMAIL)
+
+    response = client.post("/api/v1/usuarios/logout")
+
+    cleared = response.headers.get_list("set-cookie")
+    assert any(c.startswith("__Host-researchhub_session=") for c in cleared)
+    assert any(c.startswith(f"{COOKIE}=") for c in cleared)
+    assert client.get("/api/v1/usuarios/me").status_code == 401
 
 
 def test_requests_without_session_cookie_are_rejected(client: TestClient) -> None:

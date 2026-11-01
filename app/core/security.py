@@ -1,3 +1,4 @@
+import logging
 from collections.abc import Callable
 from typing import Annotated
 
@@ -11,36 +12,58 @@ from app.modules.usuarios.models import APPLICATION_NAMES, ApplicationCode, User
 from app.modules.usuarios.services.session_service import SessionService
 
 db_dependency = Annotated[Session, Depends(get_db)]
+logger = logging.getLogger("researchhub.security")
+
+
+# El prefijo __Host- exige Secure, Path=/ y sin Domain en el navegador.
+SECURE_SESSION_COOKIE = "__Host-researchhub_session"
+PLAIN_SESSION_COOKIE = "researchhub_session"
+
+
+def session_cookie_is_secure(request: Request) -> bool:
+    """Marca la cookie Secure solo cuando la peticion llega por HTTPS.
+
+    Un navegador descarta una cookie Secure recibida por HTTP y nadie podria iniciar
+    sesion. Asi el login funciona mientras produccion se sirve por HTTP y la cookie
+    pasa a Secure sola cuando el proxy entregue HTTPS (con FORWARDED_ALLOW_IPS).
+    """
+    return settings.session_cookie_secure and request.url.scheme == "https"
 
 
 def read_session_token(request: Request) -> str | None:
-    token = request.cookies.get(settings.session_cookie_name)
+    token = request.cookies.get(SECURE_SESSION_COOKIE) or request.cookies.get(
+        PLAIN_SESSION_COOKIE
+    )
     # Los tokens emitidos tienen 43 caracteres; se descarta cualquier valor anomalo.
     if not token or len(token) > 128:
         return None
     return token
 
 
-def set_session_cookie(response: Response, token: str) -> None:
+def set_session_cookie(request: Request, response: Response, token: str) -> None:
+    secure = session_cookie_is_secure(request)
+    if settings.is_production and not secure:
+        logger.warning("session_cookie_without_https")
     response.set_cookie(
-        key=settings.session_cookie_name,
+        key=SECURE_SESSION_COOKIE if secure else PLAIN_SESSION_COOKIE,
         value=token,
         max_age=settings.session_max_hours * 3600,
         path="/",
-        secure=settings.session_cookie_secure,
+        secure=secure,
         httponly=True,
         samesite="strict",
     )
 
 
 def clear_session_cookie(response: Response) -> None:
-    response.delete_cookie(
-        key=settings.session_cookie_name,
-        path="/",
-        secure=settings.session_cookie_secure,
-        httponly=True,
-        samesite="strict",
-    )
+    for name in (SECURE_SESSION_COOKIE, PLAIN_SESSION_COOKIE):
+        response.delete_cookie(
+            key=name,
+            path="/",
+            secure=name == SECURE_SESSION_COOKIE,
+            httponly=True,
+            samesite="strict",
+        )
 
 
 def get_current_user(request: Request, db: db_dependency) -> User:
